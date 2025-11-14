@@ -2,11 +2,13 @@ import { NextResponse } from 'next/server';
 import { sendLeadNotification } from '@/lib/resend';
 import { createClient } from '@supabase/supabase-js';
 
-// Inicializar Supabase con service role para bypass RLS
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-);
+// Función para obtener cliente Supabase (lazy initialization)
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+}
 
 /**
  * API Route para manejar solicitudes de contacto desde el formulario
@@ -55,6 +57,7 @@ export async function POST(request) {
     });
 
     // 1️⃣ Guardar lead en base de datos
+    const supabaseAdmin = getSupabaseAdmin();
     const { data: leadData, error: leadError } = await supabaseAdmin
       .from('leads')
       .insert([
