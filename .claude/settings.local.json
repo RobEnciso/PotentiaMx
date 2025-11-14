@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr /v node_modules)",
+      "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\" /B /A:D)",
+      "Bash(dir \"C:\\Users\\Roberto\\Desktop\\errores\" /B)",
+      "Read(//c/Users/Roberto/Desktop/errores/**)",
+      "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\\app\" /B /A:D)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,224 @@
+🚀 ESTRATEGIA GOOGLE WORKSPACE PARA POTENTIAMX
+📧 1. CONFIGURACIÓN PROFESIONAL DE GMAIL
+Estructura de Cuentas Recomendada:
+hola@potentiamx.com         → Primer contacto/general
+ventas@potentiamx.com        → Pipeline comercial  
+soporte@potentiamx.com       → Tickets de clientes
+captura@potentiamx.com       → Coordinación sesiones foto
+marketplace@potentiamx.com   → Leads del marketplace
+admin@potentiamx.com         → Notificaciones del sistema
+```
+
+#### Configuración Crítica:
+- **Alias estratégicos**: info@, contacto@, ayuda@ → todos redirigen a hola@
+- **Firma profesional HTML** con:
+  - Logo de PotentiaMX
+  - Links a calculadora de ahorro
+  - Botón "Agendar Demo"
+  - Badge "Ahorra hasta 78% vs competencia"
+- **Respuestas automáticas** para fuera de horario con WhatsApp Business
+- **Plantillas predefinidas** (canned responses) para FAQ frecuentes
+
+### 📊 **2. GOOGLE SHEETS COMO CRM TEMPORAL**
+
+#### Dashboard Maestro de Ventas:
+```
+Hoja 1: Pipeline de Prospectos
+- Nombre | Email | Teléfono | Plan Interesado | Etapa | Valor Est. | Siguiente Acción
+- Fórmulas automáticas para calcular MRR proyectado
+- Formato condicional por etapas (prospecto→demo→negociación→cerrado)
+
+Hoja 2: Métricas en Tiempo Real
+- Usuarios registrados (conectar con Zapier/Make)
+- Conversión Free→Paid
+- MRR actual vs proyectado
+- Gráficos automáticos
+
+Hoja 3: Seguimiento Sesiones de Captura
+- Cliente | Propiedad | Fecha | Tipo (terrestre/aérea) | Status | Pago
+```
+
+**Automatización con Apps Script**:
+- Email automático cuando cambia status
+- Recordatorios de seguimiento
+- Reporte semanal de métricas
+
+### 📁 **3. GOOGLE DRIVE - CENTRO DE OPERACIONES**
+
+#### Estructura de Carpetas:
+```
+📁 PotentiaMX/
+├── 📁 01_Ventas/
+│   ├── Presentaciones/
+│   ├── Propuestas/
+│   ├── Contratos_Plantillas/
+│   └── Casos_de_Éxito/
+├── 📁 02_Clientes/
+│   ├── [Carpeta por cliente con tours]/
+│   └── Sesiones_Captura_RAW/
+├── 📁 03_Marketing/
+│   ├── Assets_Visuales/
+│   ├── Copy_Templates/
+│   └── Campañas/
+├── 📁 04_Operaciones/
+│   ├── SOPs_Procesos/
+│   ├── Onboarding_Docs/
+│   └── Knowledge_Base/
+└── 📁 05_Finanzas/
+    ├── Facturas/
+    └── Reportes_Mensuales/
+```
+
+### 📅 **4. GOOGLE CALENDAR - AUTOMATIZACIÓN DE CITAS**
+
+#### Configuración para Conversión:
+- **Calendario público "Demo PotentiaMX"** con Appointment Slots
+- **3 tipos de eventos bookables**:
+  1. "Demo 15 min" → Para interesados rápidos
+  2. "Consultoría 30 min" → Para agencias
+  3. "Sesión de captura" → Coordinación fotógrafos
+
+**Automatizaciones**:
+- Email confirmación con link a calculadora de ahorro
+- Recordatorio 1 día antes con "prepare estas 3 cosas"
+- Follow-up automático post-demo con oferta especial
+
+### 💬 **5. GOOGLE CHAT/SPACES - COORDINACIÓN**
+
+#### Espacios Recomendados:
+```
+🏢 Spaces:
+├── #general - Comunicación diaria
+├── #ventas-pipeline - Actualizaciones deals
+├── #soporte-urgente - Issues críticos
+├── #marketplace-aprobaciones - Nuevos listings
+└── #sesiones-captura - Coordinación fotógrafos
+```
+
+**Bots útiles**:
+- Webhook desde Supabase para nuevos signups
+- Alertas de tours pendientes de aprobación
+- Notificación cuando MRR cruza milestones
+
+### 📝 **6. GOOGLE FORMS - CAPTURA DE DATOS**
+
+#### Forms Estratégicos:
+1. **"Calculadora Extendida"** (embed en site):
+   - Captura más datos que calculadora actual
+   - Auto-populate en CRM Sheet
+   - Trigger email con reporte personalizado
+
+2. **"Solicitud Sesión de Captura"**:
+   - Tipo de propiedad
+   - Ubicación con Maps integration
+   - Fechas disponibles
+   - Auto-crear evento en Calendar
+
+3. **"Onboarding Nuevos Clientes"**:
+   - Datos fiscales
+   - Configuración de marca
+   - Objetivos de negocio
+   - Genera carpeta personalizada en Drive
+
+### 🎬 **7. GOOGLE MEET - VENTAS Y SOPORTE**
+
+#### Optimización para Conversión:
+- **Link permanente**: meet.google.com/potentiamx-demo
+- **Grabación automática** de demos (con permiso)
+- **Compartir pantalla** con tour demo pre-cargado
+- **Fondos virtuales** con branding PotentiaMX
+- **Live captions** para accesibilidad
+
+**Post-reunión**:
+- Transcripción automática → extraer objeciones
+- Clip de "mejores momentos" para marketing
+- Follow-up email con grabación
+
+### 📈 **8. GOOGLE SITES - RECURSOS INTERNOS**
+
+#### Portal Interno (sites.google.com/potentiamx):
+```
+Páginas:
+├── Knowledge Base/
+│   ├── Cómo usar el editor 360
+│   ├── Troubleshooting común
+│   └── Best practices tours
+├── Sales Playbook/
+│   ├── Scripts de venta
+│   ├── Manejo de objeciones
+│   └── Casos de éxito
+└── Partner Portal/
+    ├── Recursos para fotógrafos
+    └── Comisiones y pagos
+🔗 9. INTEGRACIONES CRÍTICAS
+Zapier/Make.com Workflows:
+
+Supabase → Sheets: Nuevo usuario → Añadir a CRM
+Sheets → Gmail: Status = "Demo agendada" → Email prep
+Forms → Calendar: Solicitud captura → Crear evento
+Gmail → Sheets: Email con "cotización" → Crear deal
+Calendar → Chat: Demo en 1 hora → Notificar en Space
+
+Apps Script Customs:
+javascript// Ejemplo: Auto-cálculo de comisión marketplace
+function calcularComisionVenta() {
+  // Si propiedad marcada como vendida
+  // Calcular comisión según plan (3-5%)
+  // Generar factura en Drive
+  // Enviar email a finanzas
+}
+```
+
+### 🚨 **10. QUICK WINS PARA LANZAMIENTO**
+
+#### Semana 1 - Setup Básico:
+- [ ] Configurar cuentas de email profesionales
+- [ ] Crear plantillas de respuesta para FAQ top 10
+- [ ] Setup calendario de demos con appointment slots
+- [ ] Crear Sheet CRM con pipeline básico
+
+#### Semana 2 - Automatización:
+- [ ] Conectar Forms con Sheets para leads
+- [ ] Configurar respuestas automáticas Gmail
+- [ ] Crear carpetas en Drive para primeros 10 clientes
+- [ ] Setup Google Chat Spaces para equipo
+
+### 💰 **ROI ESPERADO**
+
+Con esta configuración de Google Workspace:
+
+- **Ahorro en herramientas**: ~$200 USD/mes (vs HubSpot, Calendly, Slack)
+- **Aumento en conversión**: +20-30% por follow-up automatizado
+- **Reducción tiempo admin**: -10 horas/semana en tareas manuales
+- **Profesionalismo**: Credibilidad instantánea con emails @potentiamx
+
+### 🎯 **MÉTRICAS A TRACKEAR EN SHEETS**
+
+Dashboard principal con estos KPIs:
+```
+- Leads por fuente (Forms, Email, WhatsApp)
+- Tasa conversión por etapa del funnel
+- Tiempo promedio a primera venta
+- LTV por tipo de plan
+- Costo de adquisición por canal
+- Sesiones de captura completadas
+- Listings activos en marketplace
+- MRR actual vs objetivo
+⚡ PRÓXIMOS PASOS INMEDIATOS
+
+HOY: Configurar emails profesionales y firma HTML
+MAÑANA: Crear Sheet CRM con pipeline + métricas
+DÍA 3: Setup calendario demos + Forms de captura
+DÍA 4-5: Automatizaciones básicas con Zapier
+SEMANA 2: Optimizar basado en primeros leads
+
+🔥 HACK ESPECIAL PARA TU MODELO
+Crea un "Tour Demo Maestro" en tu plataforma y úsalo en TODAS las demos de Google Meet. Incluye:
+
+Vista espectacular de propiedad premium
+Todos los tipos de hotspots
+Panel de información completo
+Formulario de contacto activo
+Estadísticas ficticias impresionantes
+
+Compártelo con un click durante las llamadas y observa cómo la conversión se dispara.

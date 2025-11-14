@@ -1,0 +1,306 @@
+═══════════════════════════════════════════════════════════════
+🚀 COMANDOS PARA DEPLOYMENT - GITHUB + NETLIFY + NAMECHEAP
+═══════════════════════════════════════════════════════════════
+
+════ PREPARACIÓN LOCAL ════
+
+# Verificar que todo funcione
+npm run build:netlify
+
+# Formatear código
+npm run format
+
+# Verificar linter
+npm run lint
+
+════ PUSH A GITHUB ════
+
+# Ver estado
+git status
+
+# Add todos los cambios
+git add .
+
+# Commit
+git commit -m "feat: deployment a producción con Netlify"
+
+# Push
+git push origin master
+# O: git push origin main
+
+════ OBTENER CREDENCIALES DE SUPABASE ════
+
+1. Ir a: https://supabase.com/dashboard
+2. Seleccionar proyecto
+3. Settings → API
+4. Copiar:
+
+   NEXT_PUBLIC_SUPABASE_URL:
+   ┌─────────────────────────────────────────┐
+   │ https://tuhojmupstisctgaepsc.supabase.co│
+   └─────────────────────────────────────────┘
+
+   NEXT_PUBLIC_SUPABASE_ANON_KEY:
+   ┌─────────────────────────────────────────┐
+   │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...│
+   └─────────────────────────────────────────┘
+
+   SUPABASE_SERVICE_ROLE_KEY: ⚠️
+   ┌─────────────────────────────────────────┐
+   │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...│
+   └─────────────────────────────────────────┘
+
+════ DEPLOYMENT EN NETLIFY ════
+
+Opción A: Netlify UI (Recomendado)
+1. https://app.netlify.com
+2. Add new site → Import project
+3. Conectar GitHub
+4. Seleccionar repositorio
+5. Configurar:
+   - Build command: npm run build:netlify
+   - Publish directory: .next
+6. Agregar variables de entorno (ver arriba)
+7. Deploy!
+
+Opción B: Netlify CLI
+# Instalar CLI
+npm install -g netlify-cli
+
+# Login
+netlify login
+
+# Deploy
+netlify deploy
+
+# Deploy a producción
+netlify deploy --prod
+
+════ CONFIGURAR DNS EN NAMECHEAP ════
+
+1. Netlify → Domain settings → Add custom domain
+2. Escribir: potentiamx.com
+3. Copiar nameservers (ejemplo):
+   ┌────────────────────────┐
+   │ dns1.p08.nsone.net     │
+   │ dns2.p08.nsone.net     │
+   │ dns3.p08.nsone.net     │
+   │ dns4.p08.nsone.net     │
+   └────────────────────────┘
+
+4. Namecheap → Domain List → Manage
+5. Nameservers → Custom DNS
+6. Pegar los 4 nameservers
+7. Save ✓
+
+════ VERIFICAR DNS ════
+
+# Windows PowerShell
+nslookup potentiamx.com
+
+# Debe mostrar:
+# Address: 75.x.x.x ← IP de Netlify
+
+# Verificar WWW
+nslookup www.potentiamx.com
+
+# Online tools:
+# https://dnschecker.org
+# https://whatsmydns.net
+
+════ VERIFICAR DEPLOYMENT ════
+
+# Abrir URLs
+https://potentiamx.com
+https://www.potentiamx.com
+
+# Verificar HTTPS (debe mostrar 🔒)
+curl -I https://potentiamx.com
+
+# Lighthouse audit
+# F12 → Lighthouse → Generate report
+
+════ NETLIFY CLI COMANDOS ÚTILES ════
+
+# Ver logs en tiempo real
+netlify logs
+
+# Ver lista de sites
+netlify sites:list
+
+# Ver info del site actual
+netlify status
+
+# Abrir dashboard en browser
+netlify open
+
+# Ver funciones serverless
+netlify functions:list
+
+# Agregar variable de entorno
+netlify env:set KEY value
+
+# Ver variables
+netlify env:list
+
+# Re-deploy desde CLI
+netlify deploy --prod --build
+
+════ TROUBLESHOOTING ════
+
+# Build failed en Netlify
+1. Ver logs: Netlify → Deploys → [Latest] → Deploy log
+2. Verificar script: package.json → "build:netlify"
+3. Re-deploy: Deploys → Trigger deploy
+
+# Variables no funcionan
+netlify env:list
+# Verificar que estén todas
+# Re-deployar si falta alguna
+
+# DNS no propaga
+# Esperar 2-6 horas (hasta 48h máximo)
+# Verificar nameservers en Namecheap
+# Limpiar caché DNS:
+ipconfig /flushdns
+
+# SSL no se activa
+# Netlify → HTTPS → Verify DNS configuration
+# Esperar 5-10 minutos
+# Si persiste: Renew certificate
+
+# Imágenes no cargan
+# Verificar next.config.ts:
+# hostname: 'tuhojmupstisctgaepsc.supabase.co'
+
+════ VARIABLES DE ENTORNO EN NETLIFY ════
+
+Configurar en: Site settings → Environment variables
+
+Production:
+┌─────────────────────────────────┬──────────────────────────┐
+│ Key                             │ Value                    │
+├─────────────────────────────────┼──────────────────────────┤
+│ NEXT_PUBLIC_SUPABASE_URL        │ https://xxx.supabase.co  │
+│ NEXT_PUBLIC_SUPABASE_ANON_KEY   │ eyJhbGci...              │
+│ SUPABASE_SERVICE_ROLE_KEY       │ eyJhbGci... (sensitive)  │
+│ RESEND_API_KEY                  │ re_xxxxx (optional)      │
+└─────────────────────────────────┴──────────────────────────┘
+
+⚠️ Marcar como "Sensitive" las keys secretas:
+   - SUPABASE_SERVICE_ROLE_KEY
+   - RESEND_API_KEY
+
+════ WORKFLOW CONTINUO ════
+
+# 1. Desarrollar local
+npm run dev
+
+# 2. Hacer cambios
+# ... código ...
+
+# 3. Probar build
+npm run build:netlify
+
+# 4. Commit y push
+git add .
+git commit -m "feat: nueva funcionalidad"
+git push origin master
+
+# 5. Netlify auto-deploya
+# Esperar 3-5 minutos
+
+# 6. Verificar en producción
+https://potentiamx.com
+
+════ MONITOREO ════
+
+# Ver analytics (si está habilitado)
+Netlify → Analytics
+
+# Ver bandwidth usage
+Site settings → Usage
+
+# Ver deploy history
+Deploys
+
+# Ver function logs
+Functions → [Function] → Logs
+
+════ ROLLBACK (si algo sale mal) ════
+
+# Ver deploys anteriores
+Netlify → Deploys → [Select previous deploy]
+
+# Click "Publish deploy"
+# Rollback instantáneo
+
+════ BRANCH DEPLOYS ════
+
+# Deploy de branches automático
+# Cada push a cualquier branch crea preview:
+# https://branch-name--site.netlify.app
+
+# Configurar en:
+# Site settings → Build & deploy → Deploy contexts
+
+════ DOMINIOS ADICIONALES ════
+
+# Agregar más dominios/subdominios
+Domain settings → Add domain alias
+
+Ejemplos:
+- www.potentiamx.com
+- app.potentiamx.com
+- api.potentiamx.com
+
+════ RECURSOS ════
+
+📚 Documentación:
+- Netlify: https://docs.netlify.com
+- Next.js en Netlify: https://docs.netlify.com/frameworks/next-js
+- Namecheap DNS: https://namecheap.com/support
+
+🔗 Dashboards:
+- Netlify: https://app.netlify.com
+- GitHub: https://github.com
+- Namecheap: https://namecheap.com
+- Supabase: https://supabase.com/dashboard
+
+🛠️ Tools:
+- DNS Checker: https://dnschecker.org
+- SSL Checker: https://www.ssllabs.com/ssltest/
+- Lighthouse: Chrome DevTools (F12)
+
+════ CHECKLIST RÁPIDO ════
+
+Pre-Deploy:
+[ ] npm run build:netlify ✓
+[ ] git push ✓
+
+Deploy:
+[ ] Netlify conectado a GitHub
+[ ] Variables de entorno configuradas
+[ ] Deploy exitoso
+
+DNS:
+[ ] Nameservers en Namecheap
+[ ] DNS propagado (2-6h)
+[ ] SSL activo
+
+Post-Deploy:
+[ ] Sitio accesible
+[ ] Login funciona
+[ ] Dashboard funciona
+[ ] Tours funcionan
+[ ] Lighthouse > 80
+
+════ CONTACTO SOPORTE ════
+
+Netlify Support: https://support.netlify.com
+Namecheap Support: https://namecheap.com/support
+Supabase Support: https://supabase.com/support
+
+═══════════════════════════════════════════════════════════════
+¡LISTO PARA DEPLOY! 🚀
+═══════════════════════════════════════════════════════════════

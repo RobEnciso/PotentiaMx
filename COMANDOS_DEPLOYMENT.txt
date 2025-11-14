@@ -1,0 +1,190 @@
+═══════════════════════════════════════════════════════════════
+🚀 COMANDOS RÁPIDOS PARA DEPLOYMENT - POTENTIAMX
+═══════════════════════════════════════════════════════════════
+
+════ OPCIÓN 1: DEPLOY CON VERCEL CLI (MÁS RÁPIDO) ════
+
+# 1. Instalar Vercel CLI
+npm i -g vercel
+
+# 2. Login en Vercel
+vercel login
+
+# 3. Deploy (primera vez)
+vercel
+
+# 4. Configurar variables de entorno
+vercel env add NEXT_PUBLIC_SUPABASE_URL production
+vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+vercel env add SUPABASE_SERVICE_ROLE_KEY production
+vercel env add RESEND_API_KEY production
+
+# 5. Re-deploy con variables
+vercel --prod
+
+# 6. Ver logs en vivo
+vercel logs --follow
+
+════ OPCIÓN 2: DEPLOY DESDE GITHUB ════
+
+# 1. Push a GitHub
+git add .
+git commit -m "feat: deployment a producción"
+git push origin master
+
+# 2. Ir a Vercel y conectar repo
+# https://vercel.com/new
+
+# 3. Configurar variables en Vercel UI
+# Settings → Environment Variables
+
+════ COMANDOS DE VERIFICACIÓN ════
+
+# Build local (verificar antes de deploy)
+npm run build
+
+# Linter
+npm run lint
+
+# Formatear código
+npm run format
+
+# Ver tamaño del build
+npm run build && du -sh .next
+
+# Servidor de producción local
+npm run build && npm start
+
+════ OBTENER CREDENCIALES DE SUPABASE ════
+
+# 1. Ir a: https://supabase.com/dashboard
+# 2. Seleccionar proyecto
+# 3. Settings → API
+# 4. Copiar:
+#    - Project URL → NEXT_PUBLIC_SUPABASE_URL
+#    - anon public → NEXT_PUBLIC_SUPABASE_ANON_KEY
+#    - service_role → SUPABASE_SERVICE_ROLE_KEY
+
+════ COMANDOS POST-DEPLOYMENT ════
+
+# Ver logs de Vercel (CLI)
+vercel logs
+
+# Ver deployments
+vercel ls
+
+# Ver aliases/dominios
+vercel domains ls
+
+# Agregar dominio custom
+vercel domains add potentiamx.com
+
+# Remover deployment
+vercel rm [deployment-url]
+
+════ TROUBLESHOOTING ════
+
+# Si el build falla, revisar logs:
+vercel logs --follow
+
+# Si las variables no funcionan:
+vercel env ls
+
+# Si necesitas re-deployar:
+vercel --force
+
+# Si necesitas hacer rollback:
+vercel rollback [deployment-url]
+
+════ TESTING POST-DEPLOYMENT ════
+
+# 1. Abrir URL de producción
+https://potentiamx.vercel.app
+
+# 2. Abrir DevTools (F12) y verificar:
+- No errores en console
+- Network requests exitosos
+- Variables de entorno cargadas
+
+# 3. Lighthouse Audit
+DevTools → Lighthouse → Generate Report
+
+# 4. Probar funcionalidades críticas:
+- /signup - Registro
+- /login - Login
+- /dashboard - Dashboard
+- /dashboard/add-terrain - Crear tour
+- /terreno/[id] - Ver tour
+- /propiedades - Marketplace
+
+════ MONITOREO ════
+
+# Vercel Analytics (habilitar en UI)
+https://vercel.com/[tu-proyecto]/analytics
+
+# Ver performance real
+https://vercel.com/[tu-proyecto]/speed-insights
+
+════ VARIABLES DE ENTORNO ════
+
+Copiar estos valores en Vercel → Settings → Environment Variables:
+
+Production + Preview:
+┌─────────────────────────────────┬──────────────────────────┐
+│ Name                            │ Value                    │
+├─────────────────────────────────┼──────────────────────────┤
+│ NEXT_PUBLIC_SUPABASE_URL        │ https://xxx.supabase.co  │
+│ NEXT_PUBLIC_SUPABASE_ANON_KEY   │ eyJhbGci...              │
+└─────────────────────────────────┴──────────────────────────┘
+
+Solo Production (Encrypted):
+┌─────────────────────────────────┬──────────────────────────┐
+│ Name                            │ Value                    │
+├─────────────────────────────────┼──────────────────────────┤
+│ SUPABASE_SERVICE_ROLE_KEY       │ eyJhbGci...              │
+│ RESEND_API_KEY                  │ re_xxxxx                 │
+└─────────────────────────────────┴──────────────────────────┘
+
+════ RECURSOS ÚTILES ════
+
+📚 Documentación:
+- GUIA_DEPLOYMENT_PRODUCCION.md - Guía completa
+- DEPLOY_RAPIDO.md - Deploy en 5 min
+- CHECKLIST_PRE_DEPLOYMENT.md - Checklist
+
+🔗 Links:
+- Vercel: https://vercel.com
+- Supabase: https://supabase.com
+- Resend: https://resend.com
+
+📞 Soporte:
+- Vercel: https://vercel.com/support
+- Supabase: https://supabase.com/support
+- Next.js: https://nextjs.org/docs
+
+════ CHECKLIST RÁPIDO ════
+
+Pre-Deploy:
+[ ] npm run build ✓
+[ ] npm run lint ✓
+[ ] git push ✓
+
+Deploy:
+[ ] vercel login
+[ ] vercel
+[ ] Configurar variables
+[ ] vercel --prod
+
+Post-Deploy:
+[ ] Verificar URL funciona
+[ ] Probar login/signup
+[ ] Crear tour de prueba
+[ ] Verificar marketplace
+[ ] Lighthouse audit
+
+════ ¡LISTO PARA DEPLOY! 🚀 ════
+
+Tiempo estimado: 10-15 minutos
+URL final: https://potentiamx.vercel.app (o tu dominio)
+
+═══════════════════════════════════════════════════════════════

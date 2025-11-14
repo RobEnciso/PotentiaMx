@@ -1,0 +1,157 @@
+el editor debe tener la función para renormbar las vistas 
+poder entrar en el visor del recorrido desde la portada de los terrenos , no quitar la animacion agregar funcion de ver tour desde la imagen 
+planes premiun opción para colocar logo y opciones de estilo para que se adapte mejor a las paginas de los clientes 
+agregar formulario en los recorridos para captar leds calificados
+texto principal de dashboard donde están los terrenos publicados " modificar subtitulo  a algo como lienzos perfectos para tu próximo proyecto " 
+confrirmar que no exista complejidad para poder incrustar el recorrido en cualquier pagina editor
+opción de agregar audio de fondo o narración personalizada
+bibloteca con sonidos ambiantales que puedan ponerse en loop yo los consigo 
+editor con posibilidad de agregar un reproductor de video para clips en 1080 o a la medida que no produzca sobre carga o imposibilite la fluidez de la pagina  
+estadísticas de aceeso y comportamiento de visitas 
+
+Integración necesaria con CRM para plan premiun 
+
+Permitir que los datos de contacto y formularios llenados dentro del tour virtual se envíen automáticamente al CRM. Esto incluye nombre, correo, teléfono, intereses, etc.
+
+Compatibilidad con los CRMs más usados en bienes raíces, como Salesforce, HubSpot, Zoho CRM, Pipedrive o Microsoft Dynamics.
+
+Integración mediante API o conectores para que no se requiera intervención manual y los leads se sincronicen en tiempo real.
+
+Registro automático de la actividad del lead en el recorrido virtual, como tiempo de navegación y puntos de interés visitados, para mejor calificación.
+
+Seguimiento y asignación automática de leads a agentes o equipos según reglas predefinidas.
+
+Automatización de campañas de email marketing y notificaciones basadas en la interacción del lead con el tour.
+
+
+Métricas y analíticas clave que debe ofrecer el editor
+
+Número total de visitas al tour virtual.
+
+Duración promedio de cada visita para medir el nivel de interés.
+
+Páginas o escenas más visitadas dentro del recorrido.
+
+Tasa de conversión de visitantes que llenan formularios o generan leads.
+
+Origen del tráfico: redes sociales, email, webs externas, QR, etc.
+
+Interacciones dentro del tour: clics en puntos de interés, reproducción de videos o audios.
+
+Dispositivos usados para visualizar el tour: móvil, desktop, VR.
+
+Horarios y días con mayor tráfico para optimizar campañas.
+
+Seguimiento de usuarios recurrentes versus nuevos visitantes.
+
+Reportes descargables para análisis externo.
+
+Las agencias inmobiliarias enfrentan varios puntos de dolor con las plataformas actuales de recorridos virtuales 360 que pueden ser oportunidades clave para mejorar tu plataforma:
+
+Costos elevados y poco flexibles: muchas plataformas tienen precios altos o modelos de suscripción que no se adaptan a proyectos pequeños o medianos, limitando el acceso para muchas agencias. Esto genera insatisfacción y búsqueda de alternativas más económicas.
+
+Complejidad técnica y falta de usabilidad: las interfaces a menudo son poco intuitivas, con curvas de aprendizaje largas, lo que dificulta que agentes sin conocimientos técnicos creen o editen tours por sí mismos.
+
+Limitaciones de personalización y branding: no permiten ajustar suficientemente el diseño, eliminar marcas de agua o adaptar el recorrido a la identidad visual de la agencia, afectando la percepción profesional.
+
+Problemas de integración con otros sistemas: la falta de integración fluida con CRMs, herramientas de marketing o sitios web genera procesos manuales que consumen tiempo y pueden conllevar errores.
+
+Rendimiento y estabilidad: los problemas de velocidad de carga o inaccesibilidad de tours por servidores inestables o lentos generan frustración en los usuarios finales y pérdida de oportunidades.
+
+Soporte técnico deficiente: la demora o ineficacia en la resolución de problemas complica la operación diaria y reduce la confianza en la plataforma.
+
+Restricciones en volumen o funcionalidad según el plan contratado, dificultando la escalabilidad y el crecimiento de las agencias.
+
+Abordar estos puntos con una plataforma más intuitiva, flexible, económica, bien integrada y con soporte robusto puede ser una ventaja competitiva clave para tu startup y generar alto valor para tus clientes.
+
+
+en la pagina de demo embedding , darle forma de celular a lavista movil , en este momento tenemos dos vistas pero se ven muy similares adaptar a la vista de movil pero ajustar el nodal para que tenga forma de celular , si es posible mostrar la version movil desde un iphon 
+
+aprovechar google workspace basdo en la siguiente informacion:
+
+## 🗂️ 1. Centraliza toda tu documentación con Google Drive y Docs
+Actualmente tienes una gran cantidad de archivos .md y .sql muy bien documentados. El siguiente nivel es convertirlos en documentos vivos y colaborativos.
+
+Google Drive como Repositorio Central: En lugar de tener los archivos en local, crea una carpeta compartida en Drive para "Potentia MX". Dentro, puedes organizar todo:
+
+📄 Documentación/: Aquí vivirían archivos como MINUTA.md, ROADMAP_PRIORIZADO.md y IDENTIDAD_VISUAL_POTENTIA.md, pero convertidos a Google Docs.
+
+💻 Scripts SQL/: Guarda todos tus scripts .sql para tener un respaldo en la nube y un historial de versiones.
+
+🎨 Activos de Marca/: Sube tus logos, paletas de colores y tipografías.
+
+📈 Marketing y Ventas/: Guarda presentaciones para clientes y estrategias.
+
+Ventajas de usar Google Docs para tus minutas:
+
+Edición en tiempo real: Varias personas pueden trabajar sobre la minuta o el roadmap al mismo tiempo.
+
+Control de versiones: Puedes ver quién cambió qué y cuándo, y revertir a versiones anteriores si es necesario.
+
+Comentarios y sugerencias: En lugar de solo leer el documento, tu equipo puede dejar comentarios, asignar tareas y aprobar cambios directamente en el archivo. ¡Ideal para revisar los "Próximos Pasos"!
+
+## 🗓️ 2. Organiza tus Sprints y Reuniones con Calendar y Meet
+Tu roadmap está muy bien definido en sprints. Google Workspace puede ayudarte a ejecutar ese plan.
+
+Google Calendar para Planificación:
+
+Calendario de Proyecto: Crea un calendario compartido llamado "Potentia MX Sprints".
+
+Bloquea Fechas Clave: Añade las fechas de inicio y fin de cada sprint (ej: "Sprint 1: Quick Wins").
+
+Agenda Reuniones: Programa las reuniones diarias (stand-ups), revisiones de sprint y retrospectivas.
+
+Recordatorios de Tareas: Fija fechas límite para las tareas de "Prioridad Alta" para que todo el equipo las tenga presentes.
+
+Google Meet para Comunicación:
+
+Videollamadas Integradas: Cada evento que creas en Calendar puede tener un enlace de Google Meet generado automáticamente.
+
+Reuniones con Clientes: Perfecto para hacer demos de la plataforma a agencias inmobiliarias.
+
+Sesiones de Debugging: Comparte tu pantalla para resolver problemas en equipo, como el bug de los hotspots que mencionas.
+
+## 💬 3. Mejora la Comunicación Interna con Google Chat
+En lugar de depender únicamente del correo para la comunicación interna, pueden usar Google Chat para conversaciones rápidas y organizadas.
+
+Crea "Espacios" (Canales): Puedes tener diferentes espacios para temas específicos:
+
+#desarrollo: Para discutir temas técnicos, como la implementación de la función RPC.
+
+#marketing: Para planear el lanzamiento de potentiamx.com.
+
+#bugs: Para reportar y discutir errores como el de los hotspots en la Vista 1.
+
+Integración con Drive: Puedes compartir archivos de Drive directamente en el chat, y los permisos se gestionan automáticamente.
+
+## 📊 4. Gestiona Clientes y Tareas con Sheets y Forms
+Google Sheets como un CRM Sencillo:
+
+Crea una hoja de cálculo para llevar un registro de tus clientes potenciales (leads).
+
+Puedes tener columnas para "Nombre de la Inmobiliaria", "Contacto", "Estado" (Contactado, Demo Realizada, Cliente), y el plan que les interesa.
+
+También puedes usarlo para llevar un control más detallado de la lista de "Próximos Pasos", asignando responsables y fechas.
+
+Google Forms para Recopilar Información:
+
+Formulario de Contacto: Incrusta un Google Form en tu landing page para capturar leads de forma automática y volcar los datos en tu Google Sheet.
+
+Encuestas de Feedback: Cuando tengas los primeros usuarios, puedes enviarles un formulario para recopilar sus opiniones sobre la plataforma.
+
+En resumen, más allá del correo, Google Workspace te ofrece un ecosistema integrado para que todo tu proyecto (documentos, planificación, comunicación y gestión) viva en un solo lugar, de forma colaborativa y segura. ¡Le dará un impulso enorme a la organización de Potentia MX!
+
+modificar todo el proyecto con base al nuevo plan de negocio , al entar como usuario free que solo puedo tener 2 recorridos , me aparece que puedo crear 3 , agregar al formulario qeu tipo de propiedad es , casa , terreno , departamento , terreno dejar opciones para categorizar , terreo para residencia, terreno para desarrollo terreno para proyecto , si fueran para desarrollo o proyectos agregar casialla para mencionar que se puede ofrecer en aportacion para proyecto . ya que principalmente era solo para terrenos , ocultar opcion de tipo de uso cuando son casas o deptartamentos ,en este orden de ideas mejorar el visor de propidedades disponibles categorizando con sus nuevas opciones . 
+
+entendiendo el plan de negocios actualizado , crear contrato legal y pedir cofirmacion cuando marquen casilla de publicar en marketplace , este contrato debera especificar el acuerdo del porcentaje beneficios a si como obligaciones ( mas adelante pensar en la idea de solicitar documentacion valida para proteger a vendedores como a compradores, esta caracteristica basarnos en aibnb ya que tengo clientes que prefieren rentar sus propiedades mediante airbnb por el respaldo que tienen mientras todo se haga mediante la plataforma)
+
+pagina de login agregar recuperar o olvide mi contraseña la forma mas casual pero que se alinie a la logica del proyecto 
+
+agregar eliminar cuenta , usar metologia de adobe que antes de cancelar subcripsion te pregunte si estas seguro que quieres cancelar ,ofreces descuento en creacion de contenido fotos aereas y fotos 360 
+
+eliminar el apartado de mis tours de dashboard de administracion 
+
+desarrollar al crear cuenta e iniciar sesion por primera vez un mini tutorial con imagenes precargadas estilo Pixieset , que te acompaña en cada paso indicando que hace cada boton , siempre en todo momento existe la funcion skip para brincar el tutorial esto solo ocurre laprimera vez que entra alguien nuevo 
+
+inclusive la manera de hacer cualqueir cambio se gaurda en automatico tomar de referencia Pixieset para mejoras de XUI 
+ajusatr diseño del brandin de correos , ejemplo todo centrado

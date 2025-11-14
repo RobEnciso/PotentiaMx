@@ -1,0 +1,131 @@
+# ═══════════════════════════════════════════════════
+# Configuración de Netlify para PotentiaMX
+# Next.js 15.5.4 + Supabase + React 19
+# ═══════════════════════════════════════════════════
+
+[build]
+  # Comando de build (sin Turbopack - Netlify no lo soporta aún)
+  command = "npm run build:netlify"
+
+  # Directorio de publicación para Next.js
+  publish = ".next"
+
+  # Funciones serverless
+  functions = "netlify/functions"
+
+[build.environment]
+  # Node.js version (requerido para Next.js 15)
+  NODE_VERSION = "20.11.0"
+
+  # Next.js environment
+  NEXT_TELEMETRY_DISABLED = "1"
+
+  # Optimizaciones
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# ═══════════════════════════════════════════════════
+# PLUGIN DE NEXT.JS (ESENCIAL)
+# ═══════════════════════════════════════════════════
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ═══════════════════════════════════════════════════
+# REDIRECTS Y REWRITES
+# ═══════════════════════════════════════════════════
+
+# Redirect www a apex domain (sin www)
+[[redirects]]
+  from = "https://www.potentiamx.com/*"
+  to = "https://potentiamx.com/:splat"
+  status = 301
+  force = true
+
+# Redirect HTTP a HTTPS
+[[redirects]]
+  from = "http://potentiamx.com/*"
+  to = "https://potentiamx.com/:splat"
+  status = 301
+  force = true
+
+# ═══════════════════════════════════════════════════
+# HEADERS DE SEGURIDAD
+# ═══════════════════════════════════════════════════
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevenir clickjacking
+    X-Frame-Options = "DENY"
+
+    # Prevenir MIME sniffing
+    X-Content-Type-Options = "nosniff"
+
+    # XSS Protection
+    X-XSS-Protection = "1; mode=block"
+
+    # Referrer Policy
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Permissions Policy
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
+
+    # Content Security Policy (CSP) - Ajustar según necesites
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://vercel.live;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https: blob:;
+      font-src 'self' data:;
+      connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+      frame-src 'self';
+    """
+
+# ═══════════════════════════════════════════════════
+# CACHE OPTIMIZATION
+# ═══════════════════════════════════════════════════
+
+# Cache agresivo para assets estáticos
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache de imágenes optimizadas
+[[headers]]
+  for = "/_next/image/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache de fonts
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ═══════════════════════════════════════════════════
+# CONFIGURACIÓN DE CONTEXTOS
+# ═══════════════════════════════════════════════════
+
+# Production
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+# Deploy previews (branches)
+[context.deploy-preview]
+  environment = { NODE_ENV = "production" }
+
+# Branch deploys
+[context.branch-deploy]
+  environment = { NODE_ENV = "production" }
+
+# ═══════════════════════════════════════════════════
+# NOTAS
+# ═══════════════════════════════════════════════════
+#
+# Variables de entorno a configurar en Netlify UI:
+# - NEXT_PUBLIC_SUPABASE_URL
+# - NEXT_PUBLIC_SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY (sensitive)
+# - RESEND_API_KEY (sensitive)
+#
+# Configurar en: Site settings → Environment variables
