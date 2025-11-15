@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description:
     'Potencia tu propiedad con tours virtuales 360° inmersivos. La plataforma mexicana para agentes inmobiliarios que vende más rápido.',
   keywords:
-    'tours virtuales, 360, bienes raíces, inmobiliaria, México, tours inmersivos, propiedades',
+    'tours virtuales, 360, bienes raíces, inmobiliaria, México, tours inmersivos, propiedades, puerto vallarta, terrenos, casas, departamentos',
   authors: [{ name: 'PotentiaMX' }],
   icons: {
     icon: [
@@ -26,12 +26,32 @@ export const metadata: Metadata = {
       },
     ],
   },
+  metadataBase: new URL('https://potentiamx.com'),
   openGraph: {
     title: 'PotentiaMX - Tours Virtuales 360°',
-    description: 'Potencia tu propiedad con tours virtuales inmersivos',
+    description:
+      'Potencia tu propiedad con tours virtuales 360° inmersivos. La plataforma mexicana para agentes inmobiliarios que vende más rápido.',
+    url: 'https://potentiamx.com',
     siteName: 'PotentiaMX',
     locale: 'es_MX',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PotentiaMX - Tours Virtuales 360°',
+    description:
+      'Potencia tu propiedad con tours virtuales 360° inmersivos',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
