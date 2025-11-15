@@ -86,10 +86,10 @@ export default function AddTerrain() {
 
       setUserProfile(profile);
 
-      // Contar terrenos actuales del usuario
-      const { count, error: countError } = await supabase
+      // Contar terrenos actuales del usuario (excluyendo tours demo)
+      const { data: allTerrenos, error: countError } = await supabase
         .from('terrenos')
-        .select('*', { count: 'exact', head: true })
+        .select('id, metadata')
         .eq('user_id', session.user.id);
 
       if (countError) {
@@ -97,10 +97,15 @@ export default function AddTerrain() {
         return;
       }
 
-      setTerrenosCount(count || 0);
+      // Contar solo tours reales (excluir demos del límite)
+      const realToursCount = (allTerrenos || []).filter(
+        (t) => !t.metadata?.is_demo,
+      ).length;
 
-      // Verificar si alcanzó el límite
-      if (count >= profile.max_tours) {
+      setTerrenosCount(realToursCount);
+
+      // Verificar si alcanzó el límite (demos no cuentan)
+      if (realToursCount >= profile.max_tours) {
         setLimitReached(true);
       }
     };

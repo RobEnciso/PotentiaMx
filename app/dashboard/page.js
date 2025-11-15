@@ -797,7 +797,8 @@ export default function Dashboard() {
                   </span>{' '}
                   • Tours:{' '}
                   <span className="font-semibold">
-                    {terrenos.length}/{userProfile.max_tours}
+                    {terrenos.filter((t) => !t.metadata?.is_demo).length}/
+                    {userProfile.max_tours}
                   </span>
                 </div>
               )}
@@ -857,7 +858,8 @@ export default function Dashboard() {
               </span>{' '}
               • Tours:{' '}
               <span className="font-semibold">
-                {terrenos.length}/{userProfile.max_tours}
+                {terrenos.filter((t) => !t.metadata?.is_demo).length}/
+                {userProfile.max_tours}
               </span>
             </div>
           )}
@@ -1447,11 +1449,24 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {terrenos.map((terreno, index) => (
-                <div
-                  key={terreno.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200"
-                >
+              {terrenos
+                .sort((a, b) => {
+                  // Ordenar: demos primero
+                  const aIsDemo = a.metadata?.is_demo === true;
+                  const bIsDemo = b.metadata?.is_demo === true;
+                  if (aIsDemo && !bIsDemo) return -1;
+                  if (!aIsDemo && bIsDemo) return 1;
+                  return 0;
+                })
+                .map((terreno, index) => {
+                  // Identificar si este terreno es el tour demo
+                  const isDemoTour = terreno.metadata?.is_demo === true;
+
+                  return (
+                    <div
+                      key={terreno.id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200"
+                    >
                   {/* Imagen - Clickeable */}
                   {(terreno.cover_image_url || terreno.image_urls) &&
                     (terreno.cover_image_url ||
@@ -1472,6 +1487,12 @@ export default function Dashboard() {
                               {getStatusBadge(terreno)}
                             </div>
                           )}
+                          {isDemoTour && (
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                              <span className="text-sm">🎨</span>
+                              TOUR DEMO
+                            </div>
+                          )}
                         </div>
                       </Link>
                     )}
@@ -1487,11 +1508,19 @@ export default function Dashboard() {
                       </p>
                     )}
 
+                    {/* Tour Demo Info */}
+                    {isDemoTour && (
+                      <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg">
+                        <p className="text-xs text-amber-900 leading-relaxed">
+                          <span className="font-semibold">💡 Tour de práctica:</span>{' '}
+                          Usa este tour para probar funciones. Puedes editarlo, agregar hotspots y personalizarlo libremente.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Marketplace Toggle */}
                     <div
-                      data-tutorial={
-                        index === 0 ? 'marketplace-toggle' : undefined
-                      }
+                      data-tutorial={index === 0 ? 'marketplace-toggle' : undefined}
                       className="mb-4 pb-4 border-b border-slate-200"
                     >
                       <label className="flex items-center gap-2 cursor-pointer">
@@ -1565,18 +1594,26 @@ export default function Dashboard() {
                         </button>
                       </div>
 
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => handleDelete(terreno.id)}
-                        className="w-full inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Eliminar
-                      </button>
+                      {/* Delete Button - Condicional para demo tour */}
+                      {!isDemoTour ? (
+                        <button
+                          onClick={() => handleDelete(terreno.id)}
+                          className="w-full inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Eliminar
+                        </button>
+                      ) : (
+                        <div className="w-full px-3 py-2 bg-amber-50 border-2 border-amber-200 text-amber-700 text-xs font-medium rounded-lg text-center flex items-center justify-center gap-1.5">
+                          <span className="text-sm">🔒</span>
+                          <span>Tour demo protegido</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              ))}
+                  );
+                })}
             </div>
           ))}
       </main>
