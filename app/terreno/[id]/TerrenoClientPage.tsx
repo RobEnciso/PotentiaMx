@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import PhotoSphereViewer from './PhotoSphereViewer';
+import type { User } from '@supabase/supabase-js';
 
 // ✅ CORRECCIÓN CLAVE: Creamos el cliente UNA SOLA VEZ aquí fuera.
 const supabase = createClient();
 
 export default function TerrenoClientPage({ id }: { id: string }) {
-  const [terrain, setTerrain] = useState(null);
-  const [hotspots, setHotspots] = useState([]);
+  const [terrain, setTerrain] = useState<any>(null);
+  const [hotspots, setHotspots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Obtener usuario actual
   useEffect(() => {
