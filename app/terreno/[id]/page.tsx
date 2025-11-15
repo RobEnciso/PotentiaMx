@@ -162,10 +162,9 @@ export async function generateMetadata({
     other: {
       'geo.region': 'MX-JAL',
       'geo.placename': 'Puerto Vallarta',
-      'geo.position':
-        terreno.latitude && terreno.longitude
-          ? `${terreno.latitude};${terreno.longitude}`
-          : undefined,
+      ...(terreno.latitude && terreno.longitude
+        ? { 'geo.position': `${terreno.latitude};${terreno.longitude}` }
+        : {}),
     },
   };
 }
