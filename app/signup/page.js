@@ -127,7 +127,7 @@ export default function SignupPage() {
 
     // Crear tour demo personal (estilo Pixieset)
     try {
-      await fetch('/api/create-demo-tour', {
+      const demoResponse = await fetch('/api/create-demo-tour', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -136,9 +136,16 @@ export default function SignupPage() {
           userName: formData.fullName,
         }),
       });
-      console.log('✅ Tour demo personal creado');
+
+      const demoResult = await demoResponse.json();
+
+      if (demoResponse.ok && demoResult.success) {
+        console.log('✅ Tour demo personal creado:', demoResult.tourId);
+      } else {
+        console.error('⚠️ Error creando tour demo:', demoResult.error);
+      }
     } catch (demoError) {
-      console.error('⚠️ Error creando tour demo:', demoError);
+      console.error('⚠️ Excepción creando tour demo:', demoError);
       // No fallar el registro si el tour demo falla
     }
 
