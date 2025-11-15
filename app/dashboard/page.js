@@ -1467,151 +1467,161 @@ export default function Dashboard() {
                       key={terreno.id}
                       className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200"
                     >
-                  {/* Imagen - Clickeable */}
-                  {(terreno.cover_image_url || terreno.image_urls) &&
-                    (terreno.cover_image_url ||
-                      terreno.image_urls.length > 0) && (
-                      <Link href={`/terreno/${terreno.id}`} className="block">
-                        <div className="relative w-full h-48 bg-slate-100 cursor-pointer group">
-                          <Image
-                            src={
-                              terreno.cover_image_url || terreno.image_urls[0]
-                            }
-                            alt={terreno.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          {getStatusBadge(terreno) && (
-                            <div className="absolute top-3 right-3">
-                              {getStatusBadge(terreno)}
+                      {/* Imagen - Clickeable */}
+                      {(terreno.cover_image_url || terreno.image_urls) &&
+                        (terreno.cover_image_url ||
+                          terreno.image_urls.length > 0) && (
+                          <Link
+                            href={`/terreno/${terreno.id}`}
+                            className="block"
+                          >
+                            <div className="relative w-full h-48 bg-slate-100 cursor-pointer group">
+                              <Image
+                                src={
+                                  terreno.cover_image_url ||
+                                  terreno.image_urls[0]
+                                }
+                                alt={terreno.title}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              {getStatusBadge(terreno) && (
+                                <div className="absolute top-3 right-3">
+                                  {getStatusBadge(terreno)}
+                                </div>
+                              )}
+                              {isDemoTour && (
+                                <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
+                                  <span className="text-sm">🎨</span>
+                                  TOUR DEMO
+                                </div>
+                              )}
                             </div>
-                          )}
-                          {isDemoTour && (
-                            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm">
-                              <span className="text-sm">🎨</span>
-                              TOUR DEMO
+                          </Link>
+                        )}
+
+                      {/* Content */}
+                      <div className="p-5">
+                        <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
+                          {terreno.title}
+                        </h3>
+                        {terreno.description && (
+                          <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                            {terreno.description}
+                          </p>
+                        )}
+
+                        {/* Tour Demo Info */}
+                        {isDemoTour && (
+                          <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg">
+                            <p className="text-xs text-amber-900 leading-relaxed">
+                              <span className="font-semibold">
+                                💡 Tour de práctica:
+                              </span>{' '}
+                              Usa este tour para probar funciones. Puedes
+                              editarlo, agregar hotspots y personalizarlo
+                              libremente.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Marketplace Toggle */}
+                        <div
+                          data-tutorial={
+                            index === 0 ? 'marketplace-toggle' : undefined
+                          }
+                          className="mb-4 pb-4 border-b border-slate-200"
+                        >
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={terreno.is_marketplace_listing || false}
+                              onChange={() =>
+                                handleToggleMarketplace(
+                                  terreno.id,
+                                  terreno.is_marketplace_listing,
+                                )
+                              }
+                              className="w-4 h-4 text-teal-500 border-slate-300 rounded focus:ring-teal-500"
+                            />
+                            <span className="text-sm text-slate-700">
+                              Publicar en Marketplace
+                            </span>
+                          </label>
+                        </div>
+
+                        {/* Actions - Reorganizadas para mejor UX */}
+                        <div className="space-y-2">
+                          {/* Acciones Principales - Más grandes y destacadas */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <Link
+                              href={`/dashboard/edit-terrain/${terreno.id}`}
+                              data-tutorial={
+                                index === 0 ? 'edit-button' : undefined
+                              }
+                              className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Editar
+                            </Link>
+                            <Link
+                              href={`/terreno/${terreno.id}/editor`}
+                              data-tutorial={
+                                index === 0 ? 'hotspots-button' : undefined
+                              }
+                              className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                            >
+                              <Target className="w-4 h-4" />
+                              Hotspots
+                            </Link>
+                          </div>
+
+                          {/* Acciones Secundarias */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <Link
+                              href={`/terreno/${terreno.id}`}
+                              data-tutorial={
+                                index === 0 ? 'view-button' : undefined
+                              }
+                              className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg transition-colors"
+                            >
+                              <Eye className="w-4 h-4" />
+                              Ver
+                            </Link>
+                            <button
+                              onClick={() => {
+                                setSelectedTerrenoForEmbed(terreno);
+                                setEmbedModalOpen(true);
+                              }}
+                              data-tutorial={
+                                index === 0 ? 'embed-button' : undefined
+                              }
+                              className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition-colors"
+                            >
+                              <Code className="w-4 h-4" />
+                              Embed
+                            </button>
+                          </div>
+
+                          {/* Delete Button - Condicional para demo tour */}
+                          {!isDemoTour ? (
+                            <button
+                              onClick={() => handleDelete(terreno.id)}
+                              className="w-full inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Eliminar
+                            </button>
+                          ) : (
+                            <div className="w-full px-3 py-2 bg-amber-50 border-2 border-amber-200 text-amber-700 text-xs font-medium rounded-lg text-center flex items-center justify-center gap-1.5">
+                              <span className="text-sm">🔒</span>
+                              <span>Tour demo protegido</span>
                             </div>
                           )}
                         </div>
-                      </Link>
-                    )}
-
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
-                      {terreno.title}
-                    </h3>
-                    {terreno.description && (
-                      <p className="text-sm text-slate-600 mb-4 line-clamp-2">
-                        {terreno.description}
-                      </p>
-                    )}
-
-                    {/* Tour Demo Info */}
-                    {isDemoTour && (
-                      <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg">
-                        <p className="text-xs text-amber-900 leading-relaxed">
-                          <span className="font-semibold">💡 Tour de práctica:</span>{' '}
-                          Usa este tour para probar funciones. Puedes editarlo, agregar hotspots y personalizarlo libremente.
-                        </p>
                       </div>
-                    )}
-
-                    {/* Marketplace Toggle */}
-                    <div
-                      data-tutorial={index === 0 ? 'marketplace-toggle' : undefined}
-                      className="mb-4 pb-4 border-b border-slate-200"
-                    >
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={terreno.is_marketplace_listing || false}
-                          onChange={() =>
-                            handleToggleMarketplace(
-                              terreno.id,
-                              terreno.is_marketplace_listing,
-                            )
-                          }
-                          className="w-4 h-4 text-teal-500 border-slate-300 rounded focus:ring-teal-500"
-                        />
-                        <span className="text-sm text-slate-700">
-                          Publicar en Marketplace
-                        </span>
-                      </label>
                     </div>
-
-                    {/* Actions - Reorganizadas para mejor UX */}
-                    <div className="space-y-2">
-                      {/* Acciones Principales - Más grandes y destacadas */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          href={`/dashboard/edit-terrain/${terreno.id}`}
-                          data-tutorial={
-                            index === 0 ? 'edit-button' : undefined
-                          }
-                          className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
-                        >
-                          <Edit className="w-4 h-4" />
-                          Editar
-                        </Link>
-                        <Link
-                          href={`/terreno/${terreno.id}/editor`}
-                          data-tutorial={
-                            index === 0 ? 'hotspots-button' : undefined
-                          }
-                          className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
-                        >
-                          <Target className="w-4 h-4" />
-                          Hotspots
-                        </Link>
-                      </div>
-
-                      {/* Acciones Secundarias */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          href={`/terreno/${terreno.id}`}
-                          data-tutorial={
-                            index === 0 ? 'view-button' : undefined
-                          }
-                          className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg transition-colors"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Ver
-                        </Link>
-                        <button
-                          onClick={() => {
-                            setSelectedTerrenoForEmbed(terreno);
-                            setEmbedModalOpen(true);
-                          }}
-                          data-tutorial={
-                            index === 0 ? 'embed-button' : undefined
-                          }
-                          className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition-colors"
-                        >
-                          <Code className="w-4 h-4" />
-                          Embed
-                        </button>
-                      </div>
-
-                      {/* Delete Button - Condicional para demo tour */}
-                      {!isDemoTour ? (
-                        <button
-                          onClick={() => handleDelete(terreno.id)}
-                          className="w-full inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Eliminar
-                        </button>
-                      ) : (
-                        <div className="w-full px-3 py-2 bg-amber-50 border-2 border-amber-200 text-amber-700 text-xs font-medium rounded-lg text-center flex items-center justify-center gap-1.5">
-                          <span className="text-sm">🔒</span>
-                          <span>Tour demo protegido</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
                   );
                 })}
             </div>
