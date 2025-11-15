@@ -447,3 +447,17 @@ section[id] {
 .leaflet-popup-tip {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
+
+/* ====================================
+   SCROLLBAR HIDE - Para scroll horizontal
+   ==================================== */
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

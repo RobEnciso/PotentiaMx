@@ -599,24 +599,41 @@ export default function Dashboard() {
       // 4. Eliminar archivos en lotes de 100
       const batchSize = 100;
       let deletedCount = 0;
+      let errorCount = 0;
+
+      console.log(`🗑️ Iniciando eliminación de ${orphanFiles.length} archivos...`);
 
       for (let i = 0; i < orphanFiles.length; i += batchSize) {
         const batch = orphanFiles.slice(i, i + batchSize);
-        const { error } = await supabase.storage
+        console.log(`Eliminando lote ${Math.floor(i / batchSize) + 1}: ${batch.length} archivos`);
+
+        const { data, error } = await supabase.storage
           .from('tours-panoramicos')
           .remove(batch);
 
         if (!error) {
           deletedCount += batch.length;
+          console.log(`✅ Lote eliminado: ${batch.length} archivos`);
         } else {
-          console.error('Error eliminando batch:', error);
+          errorCount += batch.length;
+          console.error('❌ Error eliminando batch:', error);
+          console.error('Archivos que fallaron:', batch);
         }
       }
 
-      setAdminMessage({
-        type: 'success',
-        text: `✅ Limpieza completada: ${deletedCount} archivos eliminados`,
-      });
+      console.log(`📊 Resumen: ${deletedCount} eliminados, ${errorCount} fallaron`);
+
+      if (deletedCount > 0) {
+        setAdminMessage({
+          type: 'success',
+          text: `✅ Limpieza completada: ${deletedCount} archivos eliminados${errorCount > 0 ? ` (${errorCount} fallaron)` : ''}`,
+        });
+      } else {
+        setAdminMessage({
+          type: 'error',
+          text: `❌ No se pudo eliminar ningún archivo. Revisa los permisos de Storage en Supabase.`,
+        });
+      }
 
       // Reanalizar storage
       setTimeout(() => analyzeStorage(), 1000);

@@ -103,19 +103,57 @@ export default function PropiedadesPage() {
       {/* Header */}
       <header className="bg-white border-b border-slate-200 z-50 flex-shrink-0">
         <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
-                Potentia<span className="text-teal-500">MX</span>
-              </h1>
-            </Link>
+          {/* Mobile Header - Reorganizado */}
+          <div className="lg:hidden">
+            {/* Primera fila: Logo y botón volver */}
+            <div className="flex items-center justify-between mb-3">
+              <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="font-medium text-sm">Volver</span>
+              </Link>
 
-            {/* Filtros de Categoría - Mobile (3 botones alineados a la derecha) */}
-            <div className="flex lg:hidden items-center gap-2 overflow-x-auto flex-1 justify-end">
+              <Link href="/" className="flex items-center gap-2">
+                <h1 className="text-xl font-black tracking-tight text-slate-900">
+                  Potentia<span className="text-teal-500">MX</span>
+                </h1>
+              </Link>
+
+              <button
+                onClick={() => setShowMap(!showMap)}
+                className="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-medium text-slate-700 transition-colors flex items-center gap-2"
+              >
+                {showMap ? (
+                  <>
+                    <SlidersHorizontal className="w-4 h-4" />
+                    <span className="hidden xs:inline">Lista</span>
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="w-4 h-4" />
+                    <span className="hidden xs:inline">Mapa</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Segunda fila: Filtros de categoría con scroll horizontal */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
+                  selectedCategory === 'all'
+                    ? 'bg-teal-500 text-white'
+                    : 'bg-slate-100 text-slate-700 active:bg-slate-200'
+                }`}
+              >
+                Todas ({categoryCounts.all})
+              </button>
               <button
                 onClick={() => setSelectedCategory('terreno')}
-                className={`px-2.5 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
-                  selectedCategory === 'terreno' || selectedCategory === 'all'
+                className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
+                  selectedCategory === 'terreno'
                     ? 'bg-teal-500 text-white'
                     : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                 }`}
@@ -124,7 +162,7 @@ export default function PropiedadesPage() {
               </button>
               <button
                 onClick={() => setSelectedCategory('casa')}
-                className={`px-2.5 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
+                className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
                   selectedCategory === 'casa'
                     ? 'bg-teal-500 text-white'
                     : 'bg-slate-100 text-slate-700 active:bg-slate-200'
@@ -134,15 +172,24 @@ export default function PropiedadesPage() {
               </button>
               <button
                 onClick={() => setSelectedCategory('departamento')}
-                className={`px-2.5 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
+                className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
                   selectedCategory === 'departamento'
                     ? 'bg-teal-500 text-white'
                     : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                 }`}
               >
-                Deptos ({categoryCounts.departamento})
+                Departamentos ({categoryCounts.departamento})
               </button>
             </div>
+          </div>
+
+          {/* Desktop Header - Sin cambios */}
+          <div className="hidden lg:flex items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                Potentia<span className="text-teal-500">MX</span>
+              </h1>
+            </Link>
 
             {/* Filtros de Categoría - Desktop (4 botones) */}
             <div className="hidden lg:flex items-center gap-2">
@@ -189,7 +236,7 @@ export default function PropiedadesPage() {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-slate-600">
                 <MapPin className="w-4 h-4" />
                 <span>{terrenosFiltrados.length} propiedades</span>
@@ -201,24 +248,6 @@ export default function PropiedadesPage() {
                 Publicar Propiedad
               </Link>
             </div>
-
-            {/* Mobile Toggle Map/List */}
-            <button
-              onClick={() => setShowMap(!showMap)}
-              className="md:hidden px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-medium text-slate-700 transition-colors flex items-center gap-2 flex-shrink-0"
-            >
-              {showMap ? (
-                <>
-                  <SlidersHorizontal className="w-4 h-4" />
-                  Lista
-                </>
-              ) : (
-                <>
-                  <MapPin className="w-4 h-4" />
-                  Mapa
-                </>
-              )}
-            </button>
           </div>
         </div>
       </header>

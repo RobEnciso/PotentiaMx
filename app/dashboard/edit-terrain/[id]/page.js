@@ -113,6 +113,8 @@ export default function EditTerrain() {
         contact_type: terreno.contact_type || 'casual',
         contact_email: terreno.contact_email || '',
         contact_phone: terreno.contact_phone || '5213221234567',
+        latitude: terreno.latitude || null, // ✅ Cargar coordenadas
+        longitude: terreno.longitude || null, // ✅ Cargar coordenadas
       });
 
       setLoadingData(false);
@@ -168,6 +170,8 @@ export default function EditTerrain() {
           contact_type: formData.contact_type,
           contact_email: formData.contact_email,
           contact_phone: formData.contact_phone,
+          latitude: formData.latitude, // ✅ Guardar coordenadas
+          longitude: formData.longitude, // ✅ Guardar coordenadas
         })
         .eq('id', terrenoId);
 
