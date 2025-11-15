@@ -100,6 +100,45 @@ export default function Dashboard() {
       console.error('Error fetching terrenos:', error.message);
     } else {
       setTerrenos(data);
+
+      // 🎨 Si el usuario NO tiene terrenos, crear tour demo automáticamente
+      if (!data || data.length === 0) {
+        console.log('🎨 Usuario nuevo sin terrenos, creando tour demo...');
+        try {
+          const demoResponse = await fetch('/api/create-demo-tour', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              userEmail: user.email,
+              userName:
+                user.user_metadata?.full_name || user.email.split('@')[0],
+            }),
+          });
+
+          const demoResult = await demoResponse.json();
+
+          if (demoResponse.ok && demoResult.success) {
+            console.log(
+              '✅ Tour demo creado automáticamente:',
+              demoResult.tourId,
+            );
+            // Recargar terrenos para mostrar el demo
+            const { data: updatedData } = await supabase
+              .from('terrenos')
+              .select('*')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false });
+            if (updatedData) {
+              setTerrenos(updatedData);
+            }
+          } else {
+            console.error('⚠️ Error creando tour demo:', demoResult.error);
+          }
+        } catch (demoError) {
+          console.error('⚠️ Excepción creando tour demo:', demoError);
+        }
+      }
     }
     setLoading(false);
   }, [supabase]);
