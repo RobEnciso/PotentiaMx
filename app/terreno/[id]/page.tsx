@@ -6,15 +6,16 @@ import TerrenoClientPage from './TerrenoClientPage';
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const supabase = createClient();
+  const { id } = await params;
 
   // Obtener datos del terreno
   const { data: terreno } = await supabase
     .from('terrenos')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   // Si no existe, metadata genérica
@@ -105,7 +106,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://potentiamx.com/terreno/${params.id}`,
+      url: `https://potentiamx.com/terreno/${id}`,
       siteName: 'PotentiaMX',
       images: terreno.cover_image_url
         ? [
@@ -170,10 +171,11 @@ export async function generateMetadata({
 }
 
 // Componente que renderiza la página
-export default function TerrenoPage({
+export default async function TerrenoPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  return <TerrenoClientPage id={params.id} />;
+  const { id } = await params;
+  return <TerrenoClientPage id={id} />;
 }
