@@ -838,12 +838,14 @@ export default function Dashboard() {
             {/* Logo y Info */}
             <div className="flex items-center gap-6">
               <Link href="/" className="group">
-                <h1 className="text-2xl font-black tracking-tight text-slate-900 group-hover:text-slate-700 transition-colors">
-                  Potentia
-                  <span className="text-teal-500 group-hover:text-teal-600">
-                    MX
-                  </span>
-                </h1>
+                <Image
+                  src="/logo-page-black.png"
+                  alt="PotentiaMX"
+                  width={600}
+                  height={150}
+                  priority
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
               {userProfile && (
                 <div className="hidden md:block text-sm text-slate-600">
