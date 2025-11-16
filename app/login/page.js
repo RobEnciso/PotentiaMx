@@ -35,18 +35,35 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    console.log('🔐 [LOGIN] Iniciando login...', { email });
 
-    if (signInError) {
-      setError(signInError.message);
-    } else {
-      router.push('/dashboard');
-      router.refresh();
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      console.log('🔐 [LOGIN] Resultado:', {
+        hasData: !!data,
+        hasSession: !!data?.session,
+        hasUser: !!data?.user,
+        error: signInError,
+      });
+
+      if (signInError) {
+        console.error('❌ [LOGIN] Error:', signInError);
+        setError(signInError.message);
+        setLoading(false);
+      } else {
+        console.log('✅ [LOGIN] Login exitoso, redirigiendo...');
+        router.push('/dashboard');
+        router.refresh();
+      }
+    } catch (err) {
+      console.error('❌ [LOGIN] Error inesperado:', err);
+      setError('Error inesperado al iniciar sesión. Por favor intenta nuevamente.');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handlePasswordReset = async (e) => {
