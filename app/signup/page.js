@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   User,
   Mail,
@@ -194,9 +195,14 @@ export default function SignupPage() {
         {/* Header */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-block mb-4">
-            <h1 className="text-3xl font-black tracking-tight text-white">
-              Potentia<span className="text-teal-200">MX</span>
-            </h1>
+            <Image
+              src="/logo-login-white.png"
+              alt="PotentiaMX"
+              width={1000}
+              height={250}
+              priority
+              className="h-14 sm:h-20 w-auto object-contain mx-auto"
+            />
           </Link>
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             Crea tu Cuenta Gratis

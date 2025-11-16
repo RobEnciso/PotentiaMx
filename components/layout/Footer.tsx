@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Facebook,
   Instagram,
@@ -56,9 +57,13 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-2">
-              <h3 className="text-2xl font-black tracking-tight text-white">
-                Potentia<span className="text-teal-400">MX</span>
-              </h3>
+              <Image
+                src="/logo-page-white.png"
+                alt="PotentiaMX"
+                width={600}
+                height={150}
+                className="h-8 w-auto object-contain"
+              />
             </Link>
             <p className="text-sm text-teal-400 font-semibold mb-4">
               Potencia tu propiedad

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
+import Image from 'next/image';
 import PropiedadesGrid from '@/components/PropiedadesGrid';
 import CategoryNav from '@/components/CategoryNav';
 
@@ -67,9 +68,14 @@ export default function DepartamentosPage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <h1 className="text-2xl font-black tracking-tight text-slate-900">
-                Potentia<span className="text-teal-500">MX</span>
-              </h1>
+              <Image
+                src="/logo-page-black.png"
+                alt="PotentiaMX"
+                width={600}
+                height={150}
+                priority
+                className="h-10 w-auto object-contain"
+              />
             </Link>
             <Link
               href="/login"
@@ -107,9 +113,13 @@ export default function DepartamentosPage() {
       <footer className="bg-slate-900 text-slate-300 py-8 mt-16">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
           <Link href="/" className="inline-block mb-4">
-            <h2 className="text-2xl font-black tracking-tight text-white">
-              Potentia<span className="text-teal-400">MX</span>
-            </h2>
+            <Image
+              src="/logo-page-white.png"
+              alt="PotentiaMX"
+              width={600}
+              height={150}
+              className="h-6 w-auto object-contain mx-auto"
+            />
           </Link>
           <p className="text-sm text-slate-400 mb-4">
             Tours virtuales 360° para departamentos en Puerto Vallarta

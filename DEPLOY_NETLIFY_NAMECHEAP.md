@@ -33,6 +33,7 @@ git push origin master
 ### 1.2 Conectar Repositorio a Netlify
 
 1. **Ir a Netlify:**
+
    ```
    https://app.netlify.com
    ```
@@ -47,6 +48,7 @@ git push origin master
 ### 1.3 Configurar el Build
 
 **Site settings:**
+
 - **Branch to deploy:** `master` (o `main`)
 - **Build command:** `npm run build:netlify`
 - **Publish directory:** `.next`
@@ -63,19 +65,20 @@ Agregar **TODAS** estas variables:
 
 #### Variables Públicas (visibles en el navegador)
 
-| Variable Name | Value | Dónde Obtener |
-|--------------|-------|---------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxx.supabase.co` | Supabase → Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...` | Supabase → Settings → API |
+| Variable Name                   | Value                     | Dónde Obtener             |
+| ------------------------------- | ------------------------- | ------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | `https://xxx.supabase.co` | Supabase → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...`             | Supabase → Settings → API |
 
 #### Variables Secretas (solo servidor)
 
-| Variable Name | Value | Dónde Obtener |
-|--------------|-------|---------------|
+| Variable Name               | Value         | Dónde Obtener                            |
+| --------------------------- | ------------- | ---------------------------------------- |
 | `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGci...` | Supabase → Settings → API → service_role |
-| `RESEND_API_KEY` | `re_xxx...` | https://resend.com/api-keys |
+| `RESEND_API_KEY`            | `re_xxx...`   | https://resend.com/api-keys              |
 
 **⚠️ IMPORTANTE:**
+
 - La `SERVICE_ROLE_KEY` tiene permisos de admin
 - Nunca la compartas ni la expongas en el cliente
 - Resend es opcional (solo si quieres emails)
@@ -87,6 +90,7 @@ Agregar **TODAS** estas variables:
 3. **Ver el progreso** en tiempo real
 
 Netlify te asignará un URL temporal:
+
 ```
 https://random-name-12345.netlify.app
 ```
@@ -111,16 +115,19 @@ https://random-name-12345.netlify.app
 ### 2.1 Obtener DNS de Netlify
 
 1. **En Netlify Dashboard:**
+
    ```
    Site settings → Domain management → Add custom domain
    ```
 
 2. **Escribir tu dominio:**
+
    ```
    potentiamx.com
    ```
 
 3. **Netlify te mostrará los DNS servers:**
+
    ```
    dns1.p0X.nsone.net
    dns2.p0X.nsone.net
@@ -133,6 +140,7 @@ https://random-name-12345.netlify.app
 ### 2.2 Configurar DNS en Namecheap
 
 1. **Ir a Namecheap Dashboard:**
+
    ```
    https://namecheap.com → Account → Domain List
    ```
@@ -155,11 +163,13 @@ https://random-name-12345.netlify.app
 Si quieres que `www.potentiamx.com` redirija a `potentiamx.com`:
 
 1. **En Netlify:**
+
    ```
    Domain settings → Domain aliases → Add domain alias
    ```
 
 2. **Agregar:**
+
    ```
    www.potentiamx.com
    ```
@@ -171,6 +181,7 @@ Si quieres que `www.potentiamx.com` redirija a `potentiamx.com`:
 ⏰ **Tiempo de espera: 30 minutos a 48 horas**
 
 Para verificar propagación:
+
 ```bash
 # En terminal/PowerShell:
 nslookup potentiamx.com
@@ -179,6 +190,7 @@ nslookup potentiamx.com
 ```
 
 Herramientas online:
+
 - https://dnschecker.org
 - https://www.whatsmydns.net
 
@@ -189,6 +201,7 @@ Herramientas online:
 ### 3.1 Netlify configura HTTPS automáticamente
 
 1. **Ir a:**
+
    ```
    Domain settings → HTTPS → Verify DNS configuration
    ```
@@ -237,11 +250,13 @@ Herramientas online:
 ### 4.3 Performance Check
 
 **Ejecutar Lighthouse en DevTools:**
+
 ```
 F12 → Lighthouse → Generate report
 ```
 
 **Metas:**
+
 - Performance: > 80
 - SEO: > 90
 - Best Practices: > 90
@@ -254,6 +269,7 @@ F12 → Lighthouse → Generate report
 ### Error: "Build failed"
 
 **Solución:**
+
 1. Ver logs en Netlify: `Site → Deploys → [Latest] → Deploy log`
 2. Buscar el error específico
 3. Común: Falta el comando `build:netlify` en `package.json`
@@ -271,6 +287,7 @@ F12 → Lighthouse → Generate report
 
 **Solución:**
 Verificar que `netlify.toml` esté en la raíz del proyecto y tenga:
+
 ```toml
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -279,6 +296,7 @@ Verificar que `netlify.toml` esté en la raíz del proyecto y tenga:
 ### Error: "Supabase client not initialized"
 
 **Solución:**
+
 1. Ir a `Site settings → Environment variables`
 2. Verificar que estén todas las variables:
    - `NEXT_PUBLIC_SUPABASE_URL`
@@ -289,6 +307,7 @@ Verificar que `netlify.toml` esté en la raíz del proyecto y tenga:
 ### Dominio no apunta a Netlify
 
 **Solución:**
+
 1. Verificar nameservers en Namecheap
 2. Esperar 24-48 horas para propagación
 3. Verificar con: `nslookup potentiamx.com`
@@ -298,6 +317,7 @@ Verificar que `netlify.toml` esté en la raíz del proyecto y tenga:
 
 **Solución:**
 Verificar `next.config.ts`:
+
 ```typescript
 images: {
   remotePatterns: [
@@ -312,6 +332,7 @@ images: {
 ### SSL no se activa
 
 **Solución:**
+
 1. Esperar 1 hora después de configurar DNS
 2. Ir a `Domain settings → HTTPS → Verify DNS configuration`
 3. Si persiste: `Domain settings → HTTPS → Renew certificate`
@@ -325,6 +346,7 @@ images: {
 **Para cada Pull Request, Netlify crea un preview:**
 
 1. **Habilitar en:**
+
    ```
    Site settings → Build & deploy → Deploy contexts
    ```
@@ -356,11 +378,13 @@ images: {
 ### 6.3 Configurar Notificaciones
 
 **En Netlify:**
+
 ```
 Site settings → Build & deploy → Deploy notifications
 ```
 
 **Opciones:**
+
 - Email cuando falla el deploy
 - Slack webhook
 - Discord webhook
@@ -368,6 +392,7 @@ Site settings → Build & deploy → Deploy notifications
 ### 6.4 Habilitar Analytics
 
 **Netlify Analytics (opcional - $9/mes):**
+
 ```
 Site → Add → Analytics
 ```
@@ -392,6 +417,7 @@ Site → Deploys → Deploy summary
 ```
 
 **Monitorear:**
+
 - Build time (debe ser < 5 min)
 - Deploy time
 - Errores de build
@@ -404,6 +430,7 @@ Site → Usage → Bandwidth
 ```
 
 **Plan gratuito de Netlify:**
+
 - 100 GB bandwidth/mes
 - 300 build minutes/mes
 - Ilimitado sitios
@@ -521,11 +548,13 @@ Antes de dar por terminado el deployment:
 ## 🎉 ¡Felicidades!
 
 **Tu sitio está live en:**
+
 ```
 🌐 https://potentiamx.com
 ```
 
 **Próximos pasos:**
+
 1. ✅ Crear datos demo
 2. ✅ Compartir para feedback
 3. ⏳ Iterar según feedback

@@ -5,7 +5,11 @@
       "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\" /B /A:D)",
       "Bash(dir \"C:\\Users\\Roberto\\Desktop\\errores\" /B)",
       "Read(//c/Users/Roberto/Desktop/errores/**)",
-      "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\\app\" /B /A:D)"
+      "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\\app\" /B /A:D)",
+      "Bash(npm audit fix:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

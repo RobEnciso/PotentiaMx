@@ -59,6 +59,7 @@ RESEND_API_KEY = re_xxx... (opcional)
 ```
 
 **Dónde obtener:**
+
 - Supabase Dashboard → Settings → API
 
 ### 2.4 Deploy!
@@ -98,6 +99,7 @@ RESEND_API_KEY = re_xxx... (opcional)
 ⏰ **Máximo:** 48 horas
 
 **Verificar:**
+
 ```powershell
 nslookup potentiamx.com
 ```
@@ -111,6 +113,7 @@ Debe mostrar IP de Netlify (75.x.x.x)
 **Netlify configura HTTPS automáticamente** cuando DNS propague.
 
 **Verificar:**
+
 1. Netlify → Domain settings → HTTPS
 2. "Verify DNS configuration"
 3. Esperar 1-5 minutos
@@ -141,6 +144,7 @@ https://potentiamx.com/dashboard
 ### Build failed
 
 **Ver logs:**
+
 ```
 Netlify → Deploys → [Latest] → Deploy log
 ```
@@ -150,6 +154,7 @@ Netlify → Deploys → [Latest] → Deploy log
 ### Variables no funcionan
 
 **Re-deployar:**
+
 ```
 Netlify → Deploys → Trigger deploy → Deploy site
 ```
@@ -157,6 +162,7 @@ Netlify → Deploys → Trigger deploy → Deploy site
 ### Dominio no apunta
 
 **Verificar nameservers:**
+
 ```
 Namecheap → Domain List → Manage → Nameservers
 ```
@@ -212,6 +218,7 @@ Supabase: https://supabase.com/dashboard
 ## 🎉 ¡Éxito!
 
 Tu sitio estará live en:
+
 ```
 https://potentiamx.com 🚀
 ```

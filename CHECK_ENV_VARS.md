@@ -5,17 +5,20 @@
 Para que el sistema de demo tours funcione correctamente, necesitas configurar estas variables de entorno en Netlify:
 
 ### 1. Variables Públicas (ya configuradas)
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
 ```
 
 ### 2. Variables del Servidor (CRÍTICO - verifica que estén configuradas)
+
 ```
 SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
 ```
 
 Esta variable es **CRÍTICA** porque:
+
 - Se usa en `lib/createDemoTour.js` para crear tours con permisos de administrador
 - Sin ella, el API `/api/create-demo-tour` fallará
 - No debe estar en el código ni en `.env.local` público por seguridad
@@ -45,6 +48,7 @@ Esta variable es **CRÍTICA** porque:
 ## Verificar si está configurada
 
 En los logs de Netlify al hacer deploy, deberías ver:
+
 ```
 Environment variables set:
 ✓ NEXT_PUBLIC_SUPABASE_URL

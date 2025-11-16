@@ -24,6 +24,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 1.1 Verificar Configuración de Supabase
 
 1. **Ir al Dashboard de Supabase:**
+
    ```
    https://supabase.com/dashboard/project/YOUR_PROJECT_ID
    ```
@@ -41,6 +42,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 1.2 Configurar Storage para Imágenes
 
 1. **Ir a Storage:**
+
    ```
    Dashboard → Storage → Create Bucket
    ```
@@ -61,6 +63,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 1.3 Obtener Credenciales
 
 1. **Ir a Settings → API:**
+
    ```
    https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
    ```
@@ -79,6 +82,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 2.1 Preparar Repositorio Git
 
 1. **Verificar que todo esté commiteado:**
+
    ```bash
    git status
    git add .
@@ -94,6 +98,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 2.2 Conectar Proyecto a Vercel
 
 1. **Ir a Vercel:**
+
    ```
    https://vercel.com/new
    ```
@@ -113,18 +118,19 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 2.3 Configurar Variables de Entorno en Vercel
 
 1. **En la página de configuración del proyecto, ir a:**
+
    ```
    Environment Variables
    ```
 
 2. **Agregar las siguientes variables:**
 
-   | Variable Name                      | Value                              | Environment         |
-   | ---------------------------------- | ---------------------------------- | ------------------- |
-   | `NEXT_PUBLIC_SUPABASE_URL`         | `https://xxx.supabase.co`          | Production, Preview |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY`    | `eyJhbGci...`                      | Production, Preview |
-   | `SUPABASE_SERVICE_ROLE_KEY` ⚠️     | `eyJhbGci...`                      | Production          |
-   | `RESEND_API_KEY` (opcional)        | `re_xxxxx`                         | Production          |
+   | Variable Name                   | Value                     | Environment         |
+   | ------------------------------- | ------------------------- | ------------------- |
+   | `NEXT_PUBLIC_SUPABASE_URL`      | `https://xxx.supabase.co` | Production, Preview |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...`             | Production, Preview |
+   | `SUPABASE_SERVICE_ROLE_KEY` ⚠️  | `eyJhbGci...`             | Production          |
+   | `RESEND_API_KEY` (opcional)     | `re_xxxxx`                | Production          |
 
    **⚠️ IMPORTANTE:**
    - Marca `SUPABASE_SERVICE_ROLE_KEY` como **Encrypted**
@@ -142,6 +148,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 1. **Esperar a que termine el deployment (~2-5 minutos)**
 
 2. **Acceder al URL de producción:**
+
    ```
    https://your-project.vercel.app
    ```
@@ -154,29 +161,34 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### 3.2 Probar Funcionalidades Clave
 
 #### ✅ Test 1: Registro de Usuario
+
 1. Ir a `/signup`
 2. Crear una cuenta nueva
 3. Verificar que reciba email de confirmación (si está configurado)
 4. Confirmar email en Supabase Dashboard
 
 #### ✅ Test 2: Login
+
 1. Ir a `/login`
 2. Iniciar sesión con la cuenta creada
 3. Verificar redirección a `/dashboard`
 
 #### ✅ Test 3: Crear Tour
+
 1. En el dashboard, click en "Agregar Terreno"
 2. Subir algunas imágenes 360°
 3. Llenar datos del formulario
 4. Guardar y verificar que se cree correctamente
 
 #### ✅ Test 4: Visor Público
+
 1. Abrir el tour creado
 2. Verificar que las imágenes carguen
 3. Probar navegación entre panoramas
 4. Probar botones de contacto (WhatsApp/Formulario)
 
 #### ✅ Test 5: Marketplace
+
 1. Ir a `/propiedades`
 2. Verificar que aparezca el tour creado
 3. Verificar que el mapa funcione
@@ -205,6 +217,7 @@ Antes de hacer el deployment, verifica que todo esté listo:
 ### Error: "Supabase client has not been initialized"
 
 **Solución:**
+
 ```bash
 # Verificar que las variables estén en Vercel:
 Vercel Dashboard → Settings → Environment Variables
@@ -217,6 +230,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 ### Error: "Failed to load images"
 
 **Solución:**
+
 1. Verificar que el bucket de Supabase sea público
 2. Verificar CORS en Supabase Storage
 3. Actualizar `next.config.ts`:
@@ -234,6 +248,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 ### Error: "Build failed: TypeScript errors"
 
 **Solución:**
+
 ```bash
 # Ejecutar localmente para ver errores:
 npm run build
@@ -245,6 +260,7 @@ npm run build
 ### Error: "Function exceeded time limit"
 
 **Solución:**
+
 - Las funciones serverless en Vercel tienen límite de 10s (hobby plan)
 - Optimizar queries de base de datos
 - Implementar paginación
@@ -257,12 +273,14 @@ npm run build
 ### 5.1 Variables de Entorno Seguras
 
 ✅ **SÍ hacer:**
+
 - Usar variables `NEXT_PUBLIC_*` solo para URLs y keys públicas
 - Mantener `SERVICE_ROLE_KEY` en servidor únicamente
 - Rotar keys si se exponen accidentalmente
 - Usar diferentes keys para development y production
 
 ❌ **NO hacer:**
+
 - Commitear `.env.local` a Git
 - Exponer `SERVICE_ROLE_KEY` en el cliente
 - Usar la misma key de production en development
@@ -301,6 +319,7 @@ Implementar rate limiting para formularios de contacto:
 ### 6.1 Vercel Analytics
 
 1. **Habilitar Analytics:**
+
    ```
    Vercel Dashboard → Analytics → Enable
    ```
@@ -328,6 +347,7 @@ Implementar rate limiting para formularios de contacto:
 
 1. **Ir a Settings → Domains**
 2. **Add Domain:**
+
    ```
    potentiamx.com
    www.potentiamx.com
@@ -394,11 +414,13 @@ Una vez completado el checklist:
 Si encuentras algún problema durante el deployment:
 
 1. **Revisar logs de Vercel:**
+
    ```
    Vercel Dashboard → Deployments → [Latest] → Function Logs
    ```
 
 2. **Revisar logs de Supabase:**
+
    ```
    Supabase Dashboard → Logs → Database / Auth / Storage
    ```
@@ -415,6 +437,7 @@ Si encuentras algún problema durante el deployment:
 Tu proyecto está preparado para producción. Sigue esta guía paso a paso y tendrás tu aplicación live en ~30 minutos.
 
 **Próximos pasos sugeridos:**
+
 1. ✅ Deploy a Vercel
 2. ✅ Crear datos de prueba
 3. ✅ Enviar link para retroalimentación

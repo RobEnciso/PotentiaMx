@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import PropertyCard from '@/components/PropertyCard';
 import { MapPin, SlidersHorizontal } from 'lucide-react';
@@ -115,9 +116,14 @@ export default function PropiedadesPage() {
               </Link>
 
               <Link href="/" className="flex items-center gap-2">
-                <h1 className="text-xl font-black tracking-tight text-slate-900">
-                  Potentia<span className="text-teal-500">MX</span>
-                </h1>
+                <Image
+                  src="/logo-page-black.png"
+                  alt="PotentiaMX"
+                  width={600}
+                  height={150}
+                  priority
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
 
               <button
@@ -186,9 +192,14 @@ export default function PropiedadesPage() {
           {/* Desktop Header - Sin cambios */}
           <div className="hidden lg:flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
-                Potentia<span className="text-teal-500">MX</span>
-              </h1>
+              <Image
+                src="/logo-page-black.png"
+                alt="PotentiaMX"
+                width={600}
+                height={150}
+                priority
+                className="h-10 w-auto object-contain"
+              />
             </Link>
 
             {/* Filtros de Categoría - Desktop (4 botones) */}

@@ -207,6 +207,7 @@ Estas mejoras tienen **alto impacto** y **baja-media complejidad**. Generan valo
 - **Categoría**: Analytics
 - **Descripción**: Registrar cada visita al tour
 - **Implementación**:
+
   ```sql
   CREATE TABLE tour_visits (
     id SERIAL PRIMARY KEY,
@@ -221,6 +222,7 @@ Estas mejoras tienen **alto impacto** y **baja-media complejidad**. Generan valo
   - Registrar visita en `app/terreno/[id]/page.js` (useEffect)
   - Mostrar contador en dashboard del propietario
   - Gráfica simple últimos 30 días (Recharts)
+
 - **Archivos**:
   - `app/terreno/[id]/page.js` - Trackear visita
   - `app/dashboard/page.js` - Mostrar contador
@@ -350,6 +352,7 @@ ALTER TABLE user_profiles ADD COLUMN subscription_expires_at TIMESTAMP;
   - Biblioteca de sonidos ambientales (loop)
   - Control de volumen y play/pause
 - **Implementación**:
+
   ```sql
   ALTER TABLE terrenos ADD COLUMN background_audio_url TEXT;
   ```

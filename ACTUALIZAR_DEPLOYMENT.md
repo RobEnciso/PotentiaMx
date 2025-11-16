@@ -7,12 +7,14 @@ Tu dominio **https://potentiamx.com** ya está funcionando. Esta guía te ayudar
 ## 🎯 Cambios Recientes Implementados
 
 ### ✅ Navegación Mejorada
+
 - Botones del header ahora funcionan correctamente
 - Scroll suave a secciones (#contacto, #caracteristicas, #precios)
 - Menú móvil se cierra automáticamente
 - Offset para navbar fijo (no tapa contenido)
 
 ### ✅ Preparación para Producción
+
 - Código formateado con Prettier
 - Build optimizado
 - `netlify.toml` mejorado
@@ -43,11 +45,13 @@ git push origin master
 ### Opción B: Deploy Manual desde Netlify UI
 
 1. **Ir a Netlify Dashboard:**
+
    ```
    https://app.netlify.com → Sites → potentiamx
    ```
 
 2. **Trigger deploy manual:**
+
    ```
    Deploys → Trigger deploy → Deploy site
    ```
@@ -65,12 +69,14 @@ https://potentiamx.com
 ```
 
 **Debe mostrar:**
+
 - ✅ Landing page actualizada
 - ✅ Sin errores en consola (F12)
 
 ### 2. Probar Navegación del Header
 
 **Desktop:**
+
 ```
 1. Click en "Características" → Debe hacer scroll suave
 2. Click en "Precios" → Debe hacer scroll suave
@@ -79,6 +85,7 @@ https://potentiamx.com
 ```
 
 **Mobile:**
+
 ```
 1. Abrir menú hamburguesa
 2. Click en cualquier opción
@@ -116,11 +123,13 @@ https://potentiamx.com/terreno/[id]
 ### Variables de Entorno
 
 **Ir a Netlify:**
+
 ```
 Site settings → Environment variables
 ```
 
 **Verificar que existan:**
+
 ```
 ✅ NEXT_PUBLIC_SUPABASE_URL
 ✅ NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -133,11 +142,13 @@ Site settings → Environment variables
 ### Build Settings
 
 **Verificar en:**
+
 ```
 Site settings → Build & deploy → Build settings
 ```
 
 **Debe tener:**
+
 ```
 Build command: npm run build:netlify
 Publish directory: .next
@@ -152,16 +163,19 @@ Publish directory: .next
 ### Build falla después del deploy
 
 **Ver logs:**
+
 ```
 Netlify → Deploys → [Latest failed] → Deploy log
 ```
 
 **Común:**
+
 1. Error de TypeScript → Ya lo arreglamos, pero verificar
 2. Variables faltantes → Agregar en Site settings
 3. Cambio de sintaxis → Ver log específico
 
 **Solución rápida:**
+
 ```bash
 # Probar build localmente primero
 npm run build:netlify
@@ -173,6 +187,7 @@ npm run build:netlify
 ### Navegación no funciona
 
 **Verificar:**
+
 ```
 1. Abrir DevTools (F12)
 2. Ir a Console
@@ -181,6 +196,7 @@ npm run build:netlify
 ```
 
 **Si hay errores:**
+
 ```bash
 # Limpiar caché del navegador
 Ctrl + Shift + R (hard reload)
@@ -192,6 +208,7 @@ Ctrl + Shift + N
 ### Cambios no se reflejan
 
 **Forzar nuevo deploy:**
+
 ```
 Netlify → Deploys → Trigger deploy → Clear cache and deploy site
 ```
@@ -203,11 +220,13 @@ Netlify → Deploys → Trigger deploy → Clear cache and deploy site
 ### Ver Deploy en Tiempo Real
 
 **Mientras Netlify deploya:**
+
 ```
 Netlify Dashboard → Deploys → [Building...]
 ```
 
 **Ver logs:**
+
 - Build log
 - Function log
 - Deploy summary
@@ -215,6 +234,7 @@ Netlify Dashboard → Deploys → [Building...]
 ### Verificar Build Success
 
 **Deploy exitoso muestra:**
+
 ```
 ✅ Site is live
 🔗 https://potentiamx.com
@@ -226,17 +246,20 @@ Netlify Dashboard → Deploys → [Building...]
 ## 🎯 Checklist de Deployment
 
 ### Pre-Deploy
+
 - [x] ✅ Cambios commiteados
 - [x] ✅ Build local exitoso (`npm run build:netlify`)
 - [x] ✅ Push a GitHub
 - [ ] ⬜ Netlify detecta cambios
 
 ### Durante Deploy
+
 - [ ] ⬜ Build inicia en Netlify
 - [ ] ⬜ Build completo (~3-5 min)
 - [ ] ⬜ Deploy exitoso
 
 ### Post-Deploy
+
 - [ ] ⬜ Sitio carga en https://potentiamx.com
 - [ ] ⬜ Navegación funciona correctamente
 - [ ] ⬜ No hay errores en consola
@@ -299,11 +322,13 @@ https://potentiamx.com
 ## 🎉 ¡Deploy Completado!
 
 **Tu sitio actualizado está en:**
+
 ```
 🌐 https://potentiamx.com
 ```
 
 **Nuevas features funcionando:**
+
 - ✅ Navegación del header arreglada
 - ✅ Scroll suave
 - ✅ Menú móvil mejorado
@@ -314,16 +339,19 @@ https://potentiamx.com
 ## 📞 Si Necesitas Ayuda
 
 **Ver logs de Netlify:**
+
 ```
 https://app.netlify.com → Sites → potentiamx → Deploys
 ```
 
 **Rollback si algo sale mal:**
+
 ```
 Netlify → Deploys → [Deploy anterior] → Publish deploy
 ```
 
 **Contacto:**
+
 - Netlify Support: https://support.netlify.com
 - Docs: https://docs.netlify.com
 

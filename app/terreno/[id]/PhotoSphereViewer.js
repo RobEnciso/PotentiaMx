@@ -482,16 +482,15 @@ export default function PhotoSphereViewer({
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             }}
           >
-            <h2
+            <img
+              src="/logo-page-black.png"
+              alt="PotentiaMX"
               style={{
-                margin: 0,
-                fontSize: '20px',
-                fontWeight: 'bold',
-                color: '#1f2937',
+                height: '32px',
+                width: 'auto',
+                objectFit: 'contain',
               }}
-            >
-              Potentia<span style={{ color: '#14b8a6' }}>MX</span>
-            </h2>
+            />
           </Link>
         )}
 

@@ -112,12 +112,12 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo-full.png"
+              src={isScrolled ? "/logo-navbar-black.png" : "/logo-navbar-white.png"}
               alt="PotentiaMX"
-              width={150}
-              height={40}
+              width={800}
+              height={200}
               priority
-              className="h-8 sm:h-10 w-auto object-contain"
+              className="h-10 sm:h-12 w-auto object-contain"
             />
           </Link>
 

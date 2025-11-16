@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Mail,
   Lock,
@@ -101,10 +102,15 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
           {/* Logo */}
           <div className="text-center mb-8">
-            <Link href="/" className="inline-block">
-              <h1 className="text-3xl font-black tracking-tight text-slate-900">
-                Potentia<span className="text-teal-500">MX</span>
-              </h1>
+            <Link href="/" className="inline-block mb-3">
+              <Image
+                src="/logo-login-black.png"
+                alt="PotentiaMX"
+                width={1000}
+                height={250}
+                priority
+                className="h-12 sm:h-16 w-auto object-contain mx-auto"
+              />
             </Link>
             <p className="text-slate-600 mt-2">Inicia sesión en tu cuenta</p>
           </div>

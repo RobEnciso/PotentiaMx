@@ -13,6 +13,7 @@ Apuntar tu dominio `potentiamx.com` (o el que tengas) a Netlify para que funcion
 ## 📋 Antes de Empezar
 
 Necesitas:
+
 - ✅ Dominio comprado en Namecheap
 - ✅ Sitio deployado en Netlify
 - ✅ Los nameservers de Netlify (los obtienes primero)
@@ -132,6 +133,7 @@ Nameserver 4: dns4.p08.nsone.net
 ```
 
 **⚠️ IMPORTANTE:**
+
 - Pegar solo el hostname (ej: `dns1.p08.nsone.net`)
 - NO agregar `http://` ni `https://`
 - NO agregar puntos al final
@@ -158,6 +160,7 @@ Nameserver 4: dns4.p08.nsone.net
 ### 3.1 Esperar Propagación
 
 ⏰ **Tiempo de espera:**
+
 - **Mínimo:** 30 minutos
 - **Típico:** 2-6 horas
 - **Máximo:** 48 horas
@@ -165,11 +168,13 @@ Nameserver 4: dns4.p08.nsone.net
 ### 3.2 Verificar con Comando
 
 **En Windows PowerShell:**
+
 ```powershell
 nslookup potentiamx.com
 ```
 
 **Respuesta esperada:**
+
 ```
 Server:  UnKnown
 Address:  192.168.x.x
@@ -184,16 +189,19 @@ Address:  75.2.60.5  ← IP de Netlify
 ### 3.3 Verificar con Herramientas Online
 
 **DNSChecker.org:**
+
 ```
 https://dnschecker.org/#A/potentiamx.com
 ```
 
 Verás un mapa mundial mostrando:
+
 - ✅ Verde = DNS propagado
 - ⏳ Amarillo = Propagando
 - ❌ Rojo = No propagado aún
 
 **WhatsMyDNS.net:**
+
 ```
 https://www.whatsmydns.net/#A/potentiamx.com
 ```
@@ -214,11 +222,13 @@ Similar a DNSChecker, muestra propagación global.
 ### 4.2 Netlify Configurará Automáticamente
 
 Netlify:
+
 - ✅ Creará el alias `www.potentiamx.com`
 - ✅ Redirigirá `www` → `potentiamx.com` (sin www)
 - ✅ Configurará SSL para ambos
 
 **Ya está configurado en `netlify.toml`:**
+
 ```toml
 [[redirects]]
   from = "https://www.potentiamx.com/*"
@@ -242,11 +252,13 @@ Netlify:
 ### 5.2 Verificar HTTPS
 
 Abrir en navegador:
+
 ```
 https://potentiamx.com
 ```
 
 **Debe mostrar:**
+
 - 🔒 Candado verde en la barra de direcciones
 - Certificado válido (click en el candado para ver)
 - Conexión segura
@@ -258,11 +270,13 @@ https://potentiamx.com
 ### Error: "DNS not propagated yet"
 
 **Solución:**
+
 - Esperar más tiempo (hasta 48h)
 - Verificar que pegaste los nameservers correctamente
 - Verificar que no haya typos
 
 **Verificar en Namecheap:**
+
 ```
 Domain List → Manage → Nameservers
 ```
@@ -272,20 +286,24 @@ Deben estar exactamente como los de Netlify.
 ### Error: "This site can't be reached"
 
 **Solución:**
+
 - DNS aún no ha propagado globalmente
 - Limpiar caché DNS local:
 
 **Windows:**
+
 ```powershell
 ipconfig /flushdns
 ```
 
 **Mac:**
+
 ```bash
 sudo dscacheutil -flushcache
 ```
 
 **Linux:**
+
 ```bash
 sudo systemd-resolve --flush-caches
 ```
@@ -293,6 +311,7 @@ sudo systemd-resolve --flush-caches
 ### Error: "NET::ERR_CERT_COMMON_NAME_INVALID"
 
 **Solución:**
+
 - SSL aún no está configurado
 - Ir a Netlify → HTTPS → "Renew certificate"
 - Esperar 5 minutos
@@ -300,6 +319,7 @@ sudo systemd-resolve --flush-caches
 ### WWW no funciona
 
 **Solución:**
+
 1. Verificar que agregaste `www.potentiamx.com` como alias en Netlify
 2. Verificar que DNS haya propagado para www:
    ```powershell
@@ -348,6 +368,7 @@ Tu dominio ahora apunta a Netlify y está funcionando con:
 - ✅ Sitio accesible en tu dominio
 
 **URLs funcionando:**
+
 ```
 https://potentiamx.com ✅
 https://www.potentiamx.com → https://potentiamx.com ✅
