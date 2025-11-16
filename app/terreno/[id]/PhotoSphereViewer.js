@@ -15,6 +15,193 @@ export default function PhotoSphereViewer({
   currentUser,
   isEmbedMode = false,
 }) {
+  // Obtener estilo de marcador desde terreno (default: 'apple')
+  const markerStyle = terreno?.marker_style || 'apple';
+
+  // Generar estilos CSS dinámicamente según el tipo seleccionado
+  const getMarkerStyles = () => {
+    const styles = {
+      apple: `
+        .public-marker {
+          background: rgba(255, 255, 255, 0.92);
+          color: #1d1d1f;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 0 rgba(0, 0, 0, 0.04);
+          border: 0.5px solid rgba(0, 0, 0, 0.04);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          opacity: 0;
+          animation: fadeInMarker 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                     pulseGlow 3s ease-in-out 0.6s infinite;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(20px) saturate(180%);
+          position: relative;
+          overflow: visible;
+          letter-spacing: -0.01em;
+        }
+        .public-marker::before {
+          content: '';
+          position: absolute;
+          left: 6px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 4px;
+          background: #007aff;
+          border-radius: 50%;
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+        .public-marker span {
+          margin-left: 6px;
+        }
+        .public-marker:hover {
+          background: rgba(255, 255, 255, 0.98);
+          transform: scale(1.08) translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(0, 122, 255, 0.12);
+          border-color: rgba(0, 122, 255, 0.2);
+        }
+        .public-marker:hover::before {
+          background: #0051d5;
+          box-shadow: 0 0 8px rgba(0, 122, 255, 0.6);
+          transform: translateY(-50%) scale(1.3);
+        }
+        .public-marker:active {
+          transform: scale(1.02) translateY(-1px);
+          background: rgba(245, 245, 247, 0.95);
+        }
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 0 rgba(0, 122, 255, 0.04); }
+          50% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14), 0 0 0 2px rgba(0, 122, 255, 0.08); }
+        }
+      `,
+      android: `
+        .public-marker {
+          background: #1976d2;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.16);
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0;
+          animation: fadeInMarker 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                     pulseGlow 3s ease-in-out 0.6s infinite;
+          transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: visible;
+          text-transform: none;
+          letter-spacing: 0.25px;
+        }
+        .public-marker::before {
+          content: '';
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 6px;
+          height: 6px;
+          background: #fff;
+          border-radius: 50%;
+          opacity: 0.9;
+          transition: all 0.28s ease;
+        }
+        .public-marker span {
+          margin-left: 8px;
+        }
+        .public-marker:hover {
+          background: #1565c0;
+          transform: translateY(-4px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .public-marker:hover::before {
+          transform: translateY(-50%) scale(1.4);
+          box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+        .public-marker:active {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.24);
+        }
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.16); }
+          50% { box-shadow: 0 4px 8px rgba(25, 118, 210, 0.4), 0 6px 12px rgba(25, 118, 210, 0.3); }
+        }
+      `,
+      classic: `
+        .public-marker {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          padding: 10px 18px;
+          border-radius: 30px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0.7);
+          border: 2.5px solid rgba(255, 255, 255, 0.95);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0;
+          animation: fadeInMarker 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                     pulseGlow 3s ease-in-out 0.6s infinite;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(8px);
+          position: relative;
+          overflow: hidden;
+        }
+        .public-marker::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%);
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .public-marker:hover {
+          transform: scale(1.15) translateY(-4px);
+          box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6), 0 0 0 8px rgba(16, 185, 129, 0.2);
+          border-color: white;
+          filter: brightness(1.1);
+        }
+        .public-marker:hover::before {
+          opacity: 1;
+        }
+        .public-marker:active {
+          transform: scale(1.05) translateY(-2px);
+        }
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0.7); }
+          50% { box-shadow: 0 4px 25px rgba(16, 185, 129, 0.6), 0 0 0 4px rgba(16, 185, 129, 0.3); }
+        }
+      `,
+    };
+
+    return (
+      styles[markerStyle] ||
+      styles.apple + `
+        @keyframes fadeInMarker {
+          0% { opacity: 0; transform: scale(0.5) translateY(30px); }
+          60% { opacity: 1; transform: scale(1.1) translateY(-5px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `
+    );
+  };
+
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
   const markersPluginRef = useRef(null);
@@ -358,18 +545,23 @@ export default function PhotoSphereViewer({
   return (
     <>
       <style>{`
-        .public-marker {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-          color: white; padding: 10px 18px; border-radius: 30px; font-size: 15px;
-          font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-          border: 2px solid white; display: flex; align-items: center; gap: 8px;
-          opacity: 0;
-          animation: fadeInMarker 0.5s ease-in forwards;
-        }
+        ${getMarkerStyles()}
+
         @keyframes fadeInMarker {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
+          0% {
+            opacity: 0;
+            transform: scale(0.5) translateY(30px);
+          }
+          60% {
+            opacity: 1;
+            transform: scale(1.1) translateY(-5px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
         }
+
         .psv-loader-container { display: none !important; }
       `}</style>
       <div
@@ -857,19 +1049,47 @@ export default function PhotoSphereViewer({
         )}
 
         {images && images.length > 1 && (
-          <div
-            className={`viewer-controls ${!controlsVisible ? 'hidden' : ''}`}
-          >
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`viewer-button ${currentIndex === index ? 'viewer-button-active' : 'viewer-button-inactive'}`}
+          <>
+            {/* Dots Navigation - Para 1-6 vistas */}
+            {images.length <= 6 && (
+              <div
+                className={`dots-navigator ${!controlsVisible ? 'hidden' : ''}`}
               >
-                Vista {index + 1}
-              </button>
-            ))}
-          </div>
+                {images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`dot ${currentIndex === index ? 'active' : ''}`}
+                    aria-label={`Ir a vista ${index + 1}`}
+                    title={`Vista ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Thumbnail Navigation - Para 7+ vistas */}
+            {images.length > 6 && (
+              <div
+                className={`thumbnail-navigator ${!controlsVisible ? 'hidden' : ''}`}
+              >
+                {images.map((imageUrl, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
+                    title={`Vista ${index + 1}`}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Vista ${index + 1}`}
+                      loading="lazy"
+                    />
+                    <span className="thumbnail-label">Vista {index + 1}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
 
         {/* Modal de Formulario de Contacto */}

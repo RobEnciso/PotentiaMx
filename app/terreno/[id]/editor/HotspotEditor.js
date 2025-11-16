@@ -12,11 +12,16 @@ export default function HotspotEditor({
   imageUrls,
   existingHotspots,
   viewNames = [],
+  markerStyle = 'apple',
+  hasStyleChanges = false,
   onSaveHotspots,
   isSaving,
+  isSavingStyle,
   onUploadNewImage,
   onDeleteView,
   onRenameView,
+  onMarkerStyleChange,
+  onSaveMarkerStyle,
 }) {
   const router = useRouter();
   const viewerRef = useRef(null);
@@ -486,24 +491,155 @@ export default function HotspotEditor({
     }
   };
 
+  // Generar estilos CSS dinámicamente según el estilo seleccionado (igual que PhotoSphereViewer)
+  const getMarkerStyles = () => {
+    const styles = {
+      apple: `
+        .custom-marker {
+          background: rgba(255, 255, 255, 0.92);
+          color: #1d1d1f;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 0 rgba(0, 0, 0, 0.04);
+          border: 0.5px solid rgba(0, 0, 0, 0.04);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(20px) saturate(180%);
+          position: relative;
+          overflow: visible;
+          letter-spacing: -0.01em;
+        }
+        .custom-marker::before {
+          content: '';
+          position: absolute;
+          left: 6px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 4px;
+          background: #007aff;
+          border-radius: 50%;
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+        .custom-marker span {
+          margin-left: 6px;
+        }
+        .clickable-marker:hover {
+          background: rgba(255, 255, 255, 0.98);
+          transform: scale(1.08) translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(0, 122, 255, 0.12);
+          border-color: rgba(0, 122, 255, 0.2);
+        }
+        .clickable-marker:hover::before {
+          background: #0051d5;
+          box-shadow: 0 0 8px rgba(0, 122, 255, 0.6);
+          transform: translateY(-50%) scale(1.3);
+        }
+      `,
+      android: `
+        .custom-marker {
+          background: #1976d2;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.16);
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: visible;
+          text-transform: none;
+          letter-spacing: 0.25px;
+        }
+        .custom-marker::before {
+          content: '';
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 6px;
+          height: 6px;
+          background: #fff;
+          border-radius: 50%;
+          opacity: 0.9;
+          transition: all 0.28s ease;
+        }
+        .custom-marker span {
+          margin-left: 8px;
+        }
+        .clickable-marker:hover {
+          background: #1565c0;
+          transform: translateY(-4px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .clickable-marker:hover::before {
+          transform: translateY(-50%) scale(1.4);
+          box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+      `,
+      classic: `
+        .custom-marker {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          padding: 10px 18px;
+          border-radius: 30px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0.7);
+          border: 2.5px solid rgba(255, 255, 255, 0.95);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(8px);
+          position: relative;
+          overflow: hidden;
+        }
+        .custom-marker::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%);
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .clickable-marker:hover {
+          transform: scale(1.15) translateY(-4px);
+          box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6), 0 0 0 8px rgba(16, 185, 129, 0.2);
+          border-color: white;
+          filter: brightness(1.1);
+        }
+        .clickable-marker:hover::before {
+          opacity: 1;
+        }
+      `,
+    };
+
+    return styles[markerStyle] || styles.apple;
+  };
+
   if (loadError) return <div>❌ Error: {loadError}</div>;
 
   return (
     <>
       <style>{`
-        .custom-marker {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white; padding: 8px 14px; border-radius: 20px;
-          font-size: 14px; font-weight: 600; cursor: pointer;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white;
-          display: flex; align-items: center; gap: 8px;
-          transition: all 0.2s ease;
-        }
-        .clickable-marker:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-          background: linear-gradient(135deg, #7c8ff0 0%, #8b5cb8 100%);
-        }
+        ${getMarkerStyles()}
         @keyframes pulse-save {
           0%, 100% {
             box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
@@ -866,6 +1002,226 @@ export default function HotspotEditor({
                   </div>
                 ))}
             </div>
+          </div>
+
+          {/* Selector de Estilo de Marcadores */}
+          <div
+            style={{
+              padding: '16px',
+              background: 'rgba(31, 41, 55, 0.6)',
+              borderRadius: '8px',
+              marginBottom: '16px',
+            }}
+          >
+            <label
+              style={{
+                display: 'block',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '12px',
+              }}
+            >
+              🎨 Estilo de Marcadores
+            </label>
+            <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
+              <button
+                onClick={() => onMarkerStyleChange && onMarkerStyleChange('apple')}
+                style={{
+                  padding: '10px 16px',
+                  background: markerStyle === 'apple'
+                    ? 'rgba(255, 255, 255, 0.95)'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  color: markerStyle === 'apple' ? '#1d1d1f' : 'white',
+                  border: markerStyle === 'apple'
+                    ? '2px solid #007aff'
+                    : '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (markerStyle !== 'apple') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (markerStyle !== 'apple') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    background: 'rgba(255, 255, 255, 0.92)',
+                    border: '0.5px solid rgba(0, 0, 0, 0.1)',
+                    borderRadius: '10px',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '6px',
+                      height: '6px',
+                      background: '#007aff',
+                      borderRadius: '50%',
+                    }}
+                  />
+                </div>
+                <span>Apple (Minimalista)</span>
+              </button>
+
+              <button
+                onClick={() => onMarkerStyleChange && onMarkerStyleChange('android')}
+                style={{
+                  padding: '10px 16px',
+                  background: markerStyle === 'android'
+                    ? '#1976d2'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                  border: markerStyle === 'android'
+                    ? '2px solid #42a5f5'
+                    : '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (markerStyle !== 'android') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (markerStyle !== 'android') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    background: '#1976d2',
+                    border: 'none',
+                    borderRadius: '3px',
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '6px',
+                      height: '6px',
+                      background: 'white',
+                      borderRadius: '50%',
+                    }}
+                  />
+                </div>
+                <span>Android (Material)</span>
+              </button>
+
+              <button
+                onClick={() => onMarkerStyleChange && onMarkerStyleChange('classic')}
+                style={{
+                  padding: '10px 16px',
+                  background: markerStyle === 'classic'
+                    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                  border: markerStyle === 'classic'
+                    ? '2px solid #34d399'
+                    : '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (markerStyle !== 'classic') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (markerStyle !== 'classic') {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    border: '2px solid white',
+                    borderRadius: '10px',
+                  }}
+                />
+                <span>Classic (Verde)</span>
+              </button>
+            </div>
+            <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '8px' }}>
+              El estilo seleccionado se aplicará a todos los visitantes del tour
+            </p>
+            {hasStyleChanges && (
+              <button
+                onClick={onSaveMarkerStyle}
+                disabled={isSavingStyle}
+                style={{
+                  width: '100%',
+                  padding: '10px 16px',
+                  marginTop: '12px',
+                  background: isSavingStyle
+                    ? 'rgba(34, 197, 94, 0.5)'
+                    : 'linear-gradient(135deg, #14b8a6 0%, #0891b2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  cursor: isSavingStyle ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 2px 8px rgba(20, 184, 166, 0.3)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSavingStyle) {
+                    e.target.style.background =
+                      'linear-gradient(135deg, #0d9488 0%, #0e7490 100%)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSavingStyle) {
+                    e.target.style.background =
+                      'linear-gradient(135deg, #14b8a6 0%, #0891b2 100%)';
+                  }
+                }}
+              >
+                {isSavingStyle ? '⏳ Guardando estilo...' : '💾 Guardar Estilo'}
+              </button>
+            )}
           </div>
 
           <button

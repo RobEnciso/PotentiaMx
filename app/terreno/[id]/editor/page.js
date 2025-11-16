@@ -16,8 +16,11 @@ export default function EditorPage() {
   const [terrain, setTerrain] = useState(null);
   const [hotspots, setHotspots] = useState([]);
   const [viewNames, setViewNames] = useState([]);
+  const [markerStyle, setMarkerStyle] = useState('apple');
+  const [originalMarkerStyle, setOriginalMarkerStyle] = useState('apple');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingStyle, setSavingStyle] = useState(false);
   const [error, setError] = useState(null);
 
   // Declarar loadData ANTES del useEffect que lo usa
@@ -65,6 +68,11 @@ export default function EditorPage() {
           (_, index) => storedViewNames[index] || `Vista ${index + 1}`,
         );
         setViewNames(initializedViewNames);
+
+        // ✅ Cargar estilo de marcadores (default: 'apple')
+        const loadedStyle = terrainData.marker_style || 'apple';
+        setMarkerStyle(loadedStyle);
+        setOriginalMarkerStyle(loadedStyle);
 
         const { data: hotspotsData, error: hotspotsError } = await supabase
           .from('hotspots')
@@ -358,6 +366,40 @@ export default function EditorPage() {
     }
   };
 
+  const handleMarkerStyleChange = (newStyle) => {
+    // Solo actualizar estado local (no guardar en BD aún)
+    setMarkerStyle(newStyle);
+    console.log(`🎨 Estilo de marcadores cambiado a: "${newStyle}" (pendiente de guardar)`);
+  };
+
+  // Función para guardar SOLO el estilo (sin necesidad de hotspots)
+  const handleSaveMarkerStyle = async () => {
+    try {
+      setSavingStyle(true);
+
+      const { error: styleError } = await supabase
+        .from('terrenos')
+        .update({ marker_style: markerStyle })
+        .eq('id', params.id);
+
+      if (styleError) {
+        console.error('Error al guardar estilo:', styleError);
+        alert('❌ Error al guardar el estilo: ' + styleError.message);
+        return;
+      }
+
+      // Actualizar estilo original para que ya no marque como cambio pendiente
+      setOriginalMarkerStyle(markerStyle);
+      console.log(`✅ Estilo de marcadores guardado: "${markerStyle}"`);
+      alert('✅ Estilo de marcadores guardado correctamente');
+    } catch (error) {
+      console.error('Error al guardar estilo:', error);
+      alert('❌ Error al guardar: ' + error.message);
+    } finally {
+      setSavingStyle(false);
+    }
+  };
+
   const handleSaveHotspots = async (newHotspots) => {
     setSaving(true);
     // Verificación de sesión ANTES de llamar al RPC
@@ -390,6 +432,21 @@ export default function EditorPage() {
 
       if (rpcError) throw rpcError;
 
+      // ✅ Guardar marker_style en la BD
+      const { error: styleError } = await supabase
+        .from('terrenos')
+        .update({ marker_style: markerStyle })
+        .eq('id', params.id);
+
+      if (styleError) {
+        console.error('Error al guardar estilo:', styleError);
+        // No lanzar error, solo advertir
+        alert('⚠️ Hotspots guardados, pero hubo un error al guardar el estilo de marcadores.');
+      } else {
+        // Actualizar estilo original si se guardó exitosamente
+        setOriginalMarkerStyle(markerStyle);
+      }
+
       // Recargar hotspots desde la BD para sincronizar
       const { data: hotspotsData, error: hotspotsError } = await supabase
         .from('hotspots')
@@ -408,7 +465,7 @@ export default function EditorPage() {
         setHotspots(transformedHotspots);
       }
 
-      alert(`✅ ${newHotspots.length} hotspot(s) guardado(s) correctamente.`);
+      alert(`✅ ${newHotspots.length} hotspot(s) y estilo de marcadores guardados correctamente.`);
     } catch (error) {
       console.error('❌ Error al guardar hotspots:', error);
       alert('Error al guardar: ' + error.message);
@@ -437,17 +494,24 @@ export default function EditorPage() {
   if (imageUrls.length === 0)
     return <div>⚠️ Este terreno no tiene imágenes 360°.</div>;
 
+  const hasStyleChanges = markerStyle !== originalMarkerStyle;
+
   return (
     <HotspotEditor
       terrainId={params.id}
       imageUrls={imageUrls}
       existingHotspots={hotspots}
       viewNames={viewNames}
+      markerStyle={markerStyle}
+      hasStyleChanges={hasStyleChanges}
       onSaveHotspots={handleSaveHotspots}
       onUploadNewImage={handleUploadNewImage}
       onDeleteView={handleDeleteView}
       onRenameView={handleRenameView}
+      onMarkerStyleChange={handleMarkerStyleChange}
+      onSaveMarkerStyle={handleSaveMarkerStyle}
       isSaving={saving}
+      isSavingStyle={savingStyle}
     />
   );
 }
