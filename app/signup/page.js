@@ -196,7 +196,7 @@ export default function SignupPage() {
         <div className="text-center mb-6">
           <Link href="/" className="inline-block mb-4">
             <Image
-              src="/logo-login-white.png"
+              src="/logo-signup-white.png"
               alt="PotentiaMX"
               width={1000}
               height={250}
