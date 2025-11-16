@@ -7,8 +7,8 @@
   # Comando de build (sin Turbopack - Netlify no lo soporta aún)
   command = "npm run build:netlify"
 
-  # CRÍTICO: El plugin de Next.js maneja el publish automáticamente
-  # NO especificar publish aquí para que @netlify/plugin-nextjs funcione
+  # Directorio de publicación para Next.js (requerido por @netlify/plugin-nextjs)
+  publish = ".next"
 
   # Funciones serverless
   functions = "netlify/functions"
