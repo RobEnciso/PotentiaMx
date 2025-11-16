@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X, LayoutDashboard, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
@@ -110,13 +111,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <h1
-              className={`text-2xl font-black tracking-tight transition-colors ${
-                isScrolled ? 'text-slate-900' : 'text-white'
-              }`}
-            >
-              Potentia<span className="text-teal-500">MX</span>
-            </h1>
+            <Image
+              src="/logo-full.png"
+              alt="PotentiaMX"
+              width={150}
+              height={40}
+              priority
+              className="h-8 sm:h-10 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
