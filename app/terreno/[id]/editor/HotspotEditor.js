@@ -7,6 +7,10 @@ import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
 import { AUDIO_LIBRARY, getAudioById } from '@/lib/audioLibrary';
+import { isMobileDevice } from '@/lib/deviceDetection';
+import MobileBottomBar from '@/components/MobileBottomBar';
+import MobileBottomSheet from '@/components/MobileBottomSheet';
+import MobileHotspotForm from '@/components/MobileHotspotForm';
 
 export default function HotspotEditor({
   terrainId,
@@ -73,6 +77,10 @@ export default function HotspotEditor({
   const [editingViewIndex, setEditingViewIndex] = useState(null);
   const [editingViewName, setEditingViewName] = useState('');
 
+  // Estado para detección móvil
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMobileForm, setShowMobileForm] = useState(false);
+
   // Estados para audio de fondo por vista
   const [viewAudioSettings, setViewAudioSettings] = useState({
     ambientUrl: '',
@@ -83,6 +91,11 @@ export default function HotspotEditor({
   });
   const [uploadingViewAudio, setUploadingViewAudio] = useState(false);
   const [uploadingViewAudioType, setUploadingViewAudioType] = useState('');
+
+  // Detectar si estamos en móvil (solo en cliente)
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
 
   // Sincroniza hotspots del padre cuando tienen IDs reales (después de guardar)
   useEffect(() => {
@@ -269,13 +282,12 @@ export default function HotspotEditor({
           setTempMarkerPosition({ yaw, pitch });
           setTimeout(() => setTempMarkerPosition(null), 2000);
 
-          setPlacementMode(false);
-          placementModeRef.current = false;
-
           const nextImageIndex =
             currentImageIndexRef.current === imageUrls.length - 1
               ? 0
               : currentImageIndexRef.current + 1;
+
+          // Guardar la posición del hotspot
           setNewHotspot({
             title: '',
             yaw,
@@ -293,7 +305,19 @@ export default function HotspotEditor({
             create_backlink: true,
             custom_icon_url: '',
           });
-          setShowModal(true);
+
+          // En móvil, el form ya está visible (bottom sheet)
+          // En desktop, abrir el modal
+          if (!isMobileDevice()) {
+            setPlacementMode(false);
+            placementModeRef.current = false;
+            setShowModal(true);
+          } else {
+            // En móvil, solo desactivar el modo de colocación
+            // El bottom sheet ya está abierto
+            setPlacementMode(false);
+            placementModeRef.current = false;
+          }
         });
 
         markersPluginRef.current.addEventListener('select-marker', (e) => {
@@ -680,8 +704,54 @@ export default function HotspotEditor({
   };
 
   const handleNewHotspotClick = () => {
-    setPlacementMode(true);
-    placementModeRef.current = true;
+    // En móvil, mostrar el bottom sheet directamente sin modo de colocación
+    // El usuario tocará la panorámica para colocar el hotspot
+    if (isMobile) {
+      setShowMobileForm(true);
+      setPlacementMode(true);
+      placementModeRef.current = true;
+    } else {
+      setPlacementMode(true);
+      placementModeRef.current = true;
+    }
+  };
+
+  // Handler específico para móvil: cuando se envía el formulario móvil
+  const handleMobileFormSubmit = async (formData) => {
+    // Crear el hotspot con los datos del formulario
+    const hotspotToAdd = {
+      id: `new-${Date.now()}`,
+      title: formData.title,
+      yaw: newHotspot.yaw,
+      pitch: newHotspot.pitch,
+      imageIndex: currentImageIndex,
+      type: formData.type,
+      targetImageIndex: formData.targetImageIndex,
+      create_backlink: formData.create_backlink,
+      content_text: formData.content_text || '',
+    };
+
+    let updatedHotspots = [...hotspots, hotspotToAdd];
+
+    // Crear backlink si es necesario
+    if (formData.type === 'navigation' && formData.create_backlink) {
+      const backlinkHotspot = {
+        id: `new-${Date.now()}-backlink`,
+        title: `Regreso a ${viewNames[currentImageIndex] || `Vista ${currentImageIndex + 1}`}`,
+        yaw: newHotspot.yaw,
+        pitch: newHotspot.pitch,
+        imageIndex: formData.targetImageIndex,
+        targetImageIndex: currentImageIndex,
+        type: 'navigation',
+        create_backlink: false,
+      };
+      updatedHotspots = [...updatedHotspots, backlinkHotspot];
+    }
+
+    setHotspots(updatedHotspots);
+    setShowMobileForm(false);
+    setPlacementMode(false);
+    placementModeRef.current = false;
   };
 
   const handleBackToDashboard = () => {
@@ -1205,7 +1275,8 @@ export default function HotspotEditor({
           )}
         </div>
 
-        {/* Panel lateral */}
+        {/* Panel lateral - Solo en desktop */}
+        {!isMobile && (
         <div className="w-96 bg-gray-800 text-white p-6 overflow-y-auto flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold m-0">Editor de Hotspots</h2>
@@ -1861,8 +1932,9 @@ export default function HotspotEditor({
             </p>
           )}
         </div>
+        )}
 
-        {/* Modal Multimedia Mejorado */}
+        {/* Modal Multimedia Mejorado - Solo en desktop */}
         {showModal && (
           <div className="fixed inset-0 bg-black/85 flex justify-center items-center z-50 overflow-y-auto p-4">
             <div className="card p-8 min-w-[500px] max-w-[600px] text-gray-900 my-8 max-h-[90vh] overflow-y-auto">
@@ -2341,6 +2413,50 @@ export default function HotspotEditor({
           </div>
         )}
       </div>
+
+      {/* Mobile UI Components */}
+      {isMobile && (
+        <>
+          {/* Bottom Bar para navegación móvil */}
+          <MobileBottomBar
+            currentView={currentImageIndex}
+            totalViews={imageUrls.length}
+            hotspotCount={hotspots.filter((h) => h.imageIndex === currentImageIndex).length}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isSaving={isSaving}
+            onAddHotspot={handleNewHotspotClick}
+            onBack={handleBackToDashboard}
+            onSave={handleSave}
+            onViewChange={(index) => setCurrentImageIndex(index)}
+          />
+
+          {/* Bottom Sheet con formulario de hotspot */}
+          <MobileBottomSheet
+            isOpen={showMobileForm}
+            onClose={() => {
+              setShowMobileForm(false);
+              setPlacementMode(false);
+              placementModeRef.current = false;
+            }}
+            title={editingHotspot ? '✏️ Editar Hotspot' : '➕ Nuevo Hotspot'}
+            fullHeight={false}
+          >
+            <MobileHotspotForm
+              hotspot={editingHotspot || newHotspot}
+              isEditing={!!editingHotspot}
+              viewNames={viewNames}
+              currentViewIndex={currentImageIndex}
+              onSubmit={handleMobileFormSubmit}
+              onCancel={() => {
+                setShowMobileForm(false);
+                setPlacementMode(false);
+                placementModeRef.current = false;
+              }}
+              isLoading={isSaving}
+            />
+          </MobileBottomSheet>
+        </>
+      )}
     </>
   );
 }
