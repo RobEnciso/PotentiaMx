@@ -8,7 +8,9 @@
     "build:netlify": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "verify:middleware": "node verify-middleware.js",
+    "precommit": "npm run verify:middleware"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
