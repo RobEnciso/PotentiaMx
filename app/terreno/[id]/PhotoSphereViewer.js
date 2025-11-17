@@ -320,32 +320,76 @@ export default function PhotoSphereViewer({
       narrationAudioRef.current = null;
     }
 
-    // Reproducir audio ambiente (loop)
+    // ✅ DELAY: Esperar 2s para que el panorama cargue, luego fade-in de 1s
+    const AUDIO_DELAY = 2000; // 2 segundos de delay
+    const FADE_DURATION = 1000; // 1 segundo de fade-in
+
+    // Reproducir audio ambiente (loop) con delay + fade-in
     if (ambientUrl) {
+      const targetVolume = ambientVolumes[currentIndex] || 0.3;
       const ambientAudio = new Audio(ambientUrl);
       ambientAudio.loop = true;
-      ambientAudio.volume = ambientVolumes[currentIndex] || 0.3;
+      ambientAudio.volume = 0; // Empezar en silencio
 
-      ambientAudio.play().then(() => {
-        console.log(`🎵 Audio ambiente reproducido: ${ambientUrl}`);
-      }).catch((error) => {
-        console.warn('⚠️ No se pudo reproducir audio ambiente (requiere interacción del usuario):', error);
-      });
+      // Esperar 2s, luego reproducir con fade-in
+      setTimeout(() => {
+        ambientAudio.play().then(() => {
+          console.log(`🎵 Audio ambiente reproducido con fade-in: ${ambientUrl}`);
+
+          // Fade-in gradual durante 1 segundo
+          const fadeSteps = 20; // 20 pasos
+          const fadeInterval = FADE_DURATION / fadeSteps; // 50ms por paso
+          const volumeStep = targetVolume / fadeSteps;
+          let currentStep = 0;
+
+          const fadeInInterval = setInterval(() => {
+            currentStep++;
+            ambientAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+            if (currentStep >= fadeSteps) {
+              clearInterval(fadeInInterval);
+              console.log(`✅ Fade-in completado al ${(targetVolume * 100).toFixed(0)}%`);
+            }
+          }, fadeInterval);
+        }).catch((error) => {
+          console.warn('⚠️ No se pudo reproducir audio ambiente (requiere interacción del usuario):', error);
+        });
+      }, AUDIO_DELAY);
 
       ambientAudioRef.current = ambientAudio;
     }
 
-    // Reproducir narración (una sola vez)
+    // Reproducir narración (una sola vez) con delay + fade-in
     if (narrationUrl) {
+      const targetVolume = narrationVolumes[currentIndex] || 0.7;
       const narrationAudio = new Audio(narrationUrl);
       narrationAudio.loop = false;
-      narrationAudio.volume = narrationVolumes[currentIndex] || 0.7;
+      narrationAudio.volume = 0; // Empezar en silencio
 
-      narrationAudio.play().then(() => {
-        console.log(`🗣️ Narración reproducida: ${narrationUrl}`);
-      }).catch((error) => {
-        console.warn('⚠️ No se pudo reproducir narración (requiere interacción del usuario):', error);
-      });
+      // Esperar 2s, luego reproducir con fade-in
+      setTimeout(() => {
+        narrationAudio.play().then(() => {
+          console.log(`🗣️ Narración reproducida con fade-in: ${narrationUrl}`);
+
+          // Fade-in gradual durante 1 segundo
+          const fadeSteps = 20;
+          const fadeInterval = FADE_DURATION / fadeSteps;
+          const volumeStep = targetVolume / fadeSteps;
+          let currentStep = 0;
+
+          const fadeInInterval = setInterval(() => {
+            currentStep++;
+            narrationAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+            if (currentStep >= fadeSteps) {
+              clearInterval(fadeInInterval);
+              console.log(`✅ Fade-in narración completado al ${(targetVolume * 100).toFixed(0)}%`);
+            }
+          }, fadeInterval);
+        }).catch((error) => {
+          console.warn('⚠️ No se pudo reproducir narración (requiere interacción del usuario):', error);
+        });
+      }, AUDIO_DELAY);
 
       narrationAudioRef.current = narrationAudio;
     }
