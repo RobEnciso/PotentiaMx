@@ -62,12 +62,18 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
+     * OPTIMIZADO: Solo ejecutar middleware en rutas que requieren autenticación
+     * Excluir:
+     * - _next/static (archivos estáticos)
+     * - _next/image (optimización de imágenes)
+     * - favicon.ico
+     * - /terreno/[id] (vista pública del tour - no requiere auth)
+     * - api/*, .png, .jpg, .jpeg, .gif, .svg, .webp, .ico (recursos estáticos)
+     * - Archivos de Supabase Storage
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|terreno|api|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|css|js|woff|woff2|ttf|eot)$|supabase).*)',
+    '/dashboard/:path*',
+    '/login',
+    '/signup',
   ],
 };
