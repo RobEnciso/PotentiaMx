@@ -6,6 +6,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
+import { AUDIO_LIBRARY, getAudioById } from '@/lib/audioLibrary';
 
 export default function HotspotEditor({
   terrainId,
@@ -14,14 +15,17 @@ export default function HotspotEditor({
   viewNames = [],
   markerStyle = 'apple',
   hasStyleChanges = false,
+  viewAudioData = { ambient: [], ambientVolume: [], narration: [], narrationVolume: [], autoplay: [] },
   onSaveHotspots,
   isSaving,
   isSavingStyle,
   onUploadNewImage,
+  onUploadMediaFile,
   onDeleteView,
   onRenameView,
   onMarkerStyleChange,
   onSaveMarkerStyle,
+  onSaveViewAudio,
 }) {
   const router = useRouter();
   const viewerRef = useRef(null);
@@ -34,11 +38,23 @@ export default function HotspotEditor({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hotspots, setHotspots] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [editingHotspot, setEditingHotspot] = useState(null); // Hotspot siendo editado
   const [newHotspot, setNewHotspot] = useState({
     title: '',
     yaw: 0,
     pitch: 0,
     targetImageIndex: 0,
+    type: 'navigation', // 'navigation', 'info', 'image', 'video', 'audio'
+    content_text: '',
+    content_images: [],
+    content_video_url: '',
+    audio_ambient_url: '',
+    audio_ambient_volume: 0.3,
+    audio_narration_url: '',
+    audio_narration_volume: 0.7,
+    audio_autoplay: false,
+    create_backlink: true,
+    custom_icon_url: '',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
@@ -47,6 +63,9 @@ export default function HotspotEditor({
   const [newImageFile, setNewImageFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [createNewView, setCreateNewView] = useState(false);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [uploadingMediaType, setUploadingMediaType] = useState('');
+  const [videoSourceType, setVideoSourceType] = useState('upload'); // 'upload' o 'embed'
   const [loadedPanoramaIndex, setLoadedPanoramaIndex] = useState(-1);
   const [isViewerReady, setIsViewerReady] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
@@ -54,12 +73,23 @@ export default function HotspotEditor({
   const [editingViewIndex, setEditingViewIndex] = useState(null);
   const [editingViewName, setEditingViewName] = useState('');
 
+  // Estados para audio de fondo por vista
+  const [viewAudioSettings, setViewAudioSettings] = useState({
+    ambientUrl: '',
+    ambientVolume: 0.3,
+    narrationUrl: '',
+    narrationVolume: 0.7,
+    autoplay: true,
+  });
+  const [uploadingViewAudio, setUploadingViewAudio] = useState(false);
+  const [uploadingViewAudioType, setUploadingViewAudioType] = useState('');
+
   // Sincroniza hotspots del padre cuando tienen IDs reales (después de guardar)
   useEffect(() => {
     const hasRealIds =
       existingHotspots &&
       existingHotspots.length > 0 &&
-      existingHotspots.every((h) => typeof h.id === 'number');
+      existingHotspots.every((h) => h.id !== undefined && h.id !== null);
 
     if (hasRealIds) {
       console.log(
@@ -120,6 +150,17 @@ export default function HotspotEditor({
     currentImageIndexRef.current = currentImageIndex;
   }, [currentImageIndex]);
 
+  // ✅ Cargar audio de la vista actual cuando cambia
+  useEffect(() => {
+    setViewAudioSettings({
+      ambientUrl: viewAudioData.ambient[currentImageIndex] || '',
+      ambientVolume: viewAudioData.ambientVolume[currentImageIndex] || 0.3,
+      narrationUrl: viewAudioData.narration[currentImageIndex] || '',
+      narrationVolume: viewAudioData.narrationVolume[currentImageIndex] || 0.7,
+      autoplay: viewAudioData.autoplay[currentImageIndex] !== false,
+    });
+  }, [currentImageIndex, viewAudioData]);
+
   useEffect(() => {
     hotspotsRef.current = hotspots;
   }, [hotspots]);
@@ -142,15 +183,52 @@ export default function HotspotEditor({
     console.log(
       `📍 Actualizando ${currentHotspots.length} marcadores en ${viewNames[currentImageIndex] || `Vista ${currentImageIndex + 1}`}`,
     );
+
+    // Iconos predeterminados por tipo de hotspot
+    const defaultIcons = {
+      navigation: '🧭',
+      info: 'ℹ️',
+      image: '🖼️',
+      video: '🎥',
+      audio: '🔊',
+    };
+
     currentHotspots.forEach((hotspot) => {
-      const targetViewName =
-        viewNames[hotspot.targetImageIndex] ||
-        `Vista ${hotspot.targetImageIndex + 1}`;
+      const hotspotType = hotspot.type || 'navigation';
+      const icon = defaultIcons[hotspotType] || '📍';
+
+      // Tooltip diferente según tipo
+      let tooltip = '';
+      if (hotspotType === 'navigation') {
+        const targetViewName =
+          viewNames[hotspot.targetImageIndex] ||
+          `Vista ${hotspot.targetImageIndex + 1}`;
+        tooltip = `Ir a ${targetViewName}`;
+      } else if (hotspotType === 'info') {
+        tooltip = `Ver información`;
+      } else if (hotspotType === 'image') {
+        tooltip = `Ver galería`;
+      } else if (hotspotType === 'video') {
+        tooltip = `Reproducir video`;
+      } else if (hotspotType === 'audio') {
+        tooltip = `Reproducir audio`;
+      }
+
+      // Diferenciar estilo entre navegación y multimedia
+      let markerHtml;
+      if (hotspotType === 'navigation') {
+        // Marcador completo con etiqueta para navegación
+        markerHtml = `<div class="custom-marker clickable-marker">${icon} <span>${hotspot.title}</span></div>`;
+      } else {
+        // Solo icono grande para multimedia (punto de interés fijo)
+        markerHtml = `<div class="multimedia-marker clickable-marker" title="${hotspot.title}">${icon}</div>`;
+      }
+
       markersPluginRef.current.addMarker({
         id: String(hotspot.id),
         position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
-        html: `<div class="custom-marker clickable-marker">📍 <span>${hotspot.title}</span></div>`,
-        tooltip: `Ir a ${targetViewName}`,
+        html: markerHtml,
+        tooltip: tooltip,
       });
     });
   }, [hotspots, currentImageIndex, viewNames]);
@@ -203,6 +281,17 @@ export default function HotspotEditor({
             yaw,
             pitch,
             targetImageIndex: nextImageIndex,
+            type: 'navigation',
+            content_text: '',
+            content_images: [],
+            content_video_url: '',
+            audio_ambient_url: '',
+            audio_ambient_volume: 0.3,
+            audio_narration_url: '',
+            audio_narration_volume: 0.7,
+            audio_autoplay: false,
+            create_backlink: true,
+            custom_icon_url: '',
           });
           setShowModal(true);
         });
@@ -213,16 +302,21 @@ export default function HotspotEditor({
           const hotspot = hotspotsRef.current.find(
             (h) => String(h.id) === String(marker.id),
           );
-          if (hotspot && hotspot.targetImageIndex !== undefined) {
-            console.log('🔀 Navegando a Vista', hotspot.targetImageIndex + 1);
+
+          if (!hotspot) {
+            console.warn('⚠️ No se encontró hotspot con id:', marker.id);
+            return;
+          }
+
+          const hotspotType = hotspot.type || 'navigation';
+
+          // Solo navegar si es tipo 'navigation' y tiene targetImageIndex
+          if (hotspotType === 'navigation' && hotspot.targetImageIndex !== undefined) {
+            console.log('🧭 Navegando a Vista', hotspot.targetImageIndex + 1);
             setCurrentImageIndex(hotspot.targetImageIndex);
           } else {
-            console.warn(
-              '⚠️ No se encontró hotspot con id:',
-              marker.id,
-              'en',
-              hotspotsRef.current,
-            );
+            console.log(`${hotspot.type === 'info' ? 'ℹ️' : hotspot.type === 'image' ? '🖼️' : hotspot.type === 'video' ? '🎥' : '🔊'} Hotspot multimedia clickeado (no navega)`);
+            // TODO: En el futuro, aquí se abrirá el modal con el contenido
           }
         });
       } catch (error) {
@@ -349,6 +443,28 @@ export default function HotspotEditor({
     }
   }, [imageUrls.length, currentImageIndex]);
 
+  // Helper para subir archivos multimedia
+  const handleUploadMedia = async (file, mediaType) => {
+    if (!onUploadMediaFile) {
+      alert('La función de subida no está disponible');
+      return null;
+    }
+
+    setUploadingMedia(true);
+    setUploadingMediaType(mediaType);
+    try {
+      const url = await onUploadMediaFile(file, mediaType);
+      return url;
+    } catch (error) {
+      console.error(`Error al subir ${mediaType}:`, error);
+      alert(`Error al subir ${mediaType}: ${error.message}`);
+      return null;
+    } finally {
+      setUploadingMedia(false);
+      setUploadingMediaType('');
+    }
+  };
+
   const handleAddHotspot = async () => {
     if (!newHotspot.title.trim()) {
       alert('Por favor ingresa un título para el hotspot');
@@ -379,23 +495,67 @@ export default function HotspotEditor({
       setUploadingImage(false);
     }
 
+    // Crear objeto base del hotspot
     const hotspotToAdd = {
       id: `new-${Date.now()}`,
       title: newHotspot.title,
       yaw: newHotspot.yaw,
       pitch: newHotspot.pitch,
       imageIndex: currentImageIndex,
-      targetImageIndex: finalTargetIndex,
+      type: newHotspot.type,
+      custom_icon_url: newHotspot.custom_icon_url,
     };
 
+    // Solo agregar campos de navegación si es tipo 'navigation'
+    if (newHotspot.type === 'navigation') {
+      hotspotToAdd.targetImageIndex = finalTargetIndex;
+      hotspotToAdd.create_backlink = newHotspot.create_backlink;
+    }
+
+    // Agregar campos específicos según tipo
+    if (newHotspot.type === 'info') {
+      hotspotToAdd.content_text = newHotspot.content_text;
+    } else if (newHotspot.type === 'image') {
+      hotspotToAdd.content_images = newHotspot.content_images;
+      hotspotToAdd.content_text = newHotspot.content_text; // Descripción de la galería
+    } else if (newHotspot.type === 'video') {
+      hotspotToAdd.content_video_url = newHotspot.content_video_url;
+    } else if (newHotspot.type === 'audio') {
+      hotspotToAdd.audio_ambient_url = newHotspot.audio_ambient_url;
+      hotspotToAdd.audio_ambient_volume = newHotspot.audio_ambient_volume;
+      hotspotToAdd.audio_narration_url = newHotspot.audio_narration_url;
+      hotspotToAdd.audio_narration_volume = newHotspot.audio_narration_volume;
+      hotspotToAdd.audio_autoplay = newHotspot.audio_autoplay;
+    }
+
     // Actualizar estado local
-    const updatedHotspots = [...hotspots, hotspotToAdd];
+    let updatedHotspots = [...hotspots, hotspotToAdd];
+
+    // ✅ Crear hotspot de regreso automático si está habilitado
+    if (newHotspot.type === 'navigation' && newHotspot.create_backlink) {
+      const backlinkHotspot = {
+        id: `new-${Date.now()}-backlink`,
+        title: `Regreso a ${viewNames[currentImageIndex] || `Vista ${currentImageIndex + 1}`}`,
+        yaw: newHotspot.yaw, // Misma posición horizontal
+        pitch: newHotspot.pitch, // Misma posición vertical
+        imageIndex: finalTargetIndex, // En la vista de destino
+        targetImageIndex: currentImageIndex, // Regresa a la vista actual
+        type: 'navigation',
+        create_backlink: false, // No crear backlink del backlink
+        custom_icon_url: newHotspot.custom_icon_url,
+      };
+
+      console.log('🔗 Creando hotspot de regreso automático:', backlinkHotspot);
+      updatedHotspots = [...updatedHotspots, backlinkHotspot];
+    }
+
     setHotspots(updatedHotspots);
 
     // Cerrar modal
     setShowModal(false);
     setNewImageFile(null);
     setCreateNewView(false);
+    setVideoSourceType('upload');
 
     // Si se subió una imagen, auto-guardar inmediatamente
     if (imageWasUploaded && onSaveHotspots) {
@@ -435,6 +595,81 @@ export default function HotspotEditor({
     if (confirm('¿Estás seguro de que quieres eliminar este hotspot?')) {
       setHotspots((prev) => prev.filter((h) => h.id !== hotspotId));
     }
+  };
+
+  const handleEditHotspot = (hotspot) => {
+    setEditingHotspot(hotspot);
+    setNewHotspot({
+      title: hotspot.title,
+      yaw: hotspot.yaw,
+      pitch: hotspot.pitch,
+      targetImageIndex: hotspot.targetImageIndex || 0,
+      type: hotspot.type || 'navigation',
+      content_text: hotspot.content_text || '',
+      content_images: hotspot.content_images || [],
+      content_video_url: hotspot.content_video_url || '',
+      audio_ambient_url: hotspot.audio_ambient_url || '',
+      audio_ambient_volume: hotspot.audio_ambient_volume || 0.3,
+      audio_narration_url: hotspot.audio_narration_url || '',
+      audio_narration_volume: hotspot.audio_narration_volume || 0.7,
+      audio_autoplay: hotspot.audio_autoplay || false,
+      create_backlink: hotspot.create_backlink !== false,
+      custom_icon_url: hotspot.custom_icon_url || '',
+    });
+    setShowModal(true);
+  };
+
+  const handleUpdateHotspot = () => {
+    if (!newHotspot.title.trim()) {
+      alert('Por favor ingresa un título para el hotspot');
+      return;
+    }
+
+    // Crear objeto actualizado
+    const updatedHotspot = {
+      ...editingHotspot,
+      title: newHotspot.title,
+      yaw: newHotspot.yaw,
+      pitch: newHotspot.pitch,
+      type: newHotspot.type,
+      custom_icon_url: newHotspot.custom_icon_url,
+    };
+
+    // Solo agregar campos de navegación si es tipo 'navigation'
+    if (newHotspot.type === 'navigation') {
+      updatedHotspot.targetImageIndex = newHotspot.targetImageIndex;
+      updatedHotspot.create_backlink = newHotspot.create_backlink;
+    } else {
+      // Remover campos de navegación si cambió el tipo
+      delete updatedHotspot.targetImageIndex;
+      delete updatedHotspot.create_backlink;
+    }
+
+    // Agregar campos específicos según tipo
+    if (newHotspot.type === 'info') {
+      updatedHotspot.content_text = newHotspot.content_text;
+    } else if (newHotspot.type === 'image') {
+      updatedHotspot.content_images = newHotspot.content_images;
+      updatedHotspot.content_text = newHotspot.content_text; // Descripción de la galería
+    } else if (newHotspot.type === 'video') {
+      updatedHotspot.content_video_url = newHotspot.content_video_url;
+    } else if (newHotspot.type === 'audio') {
+      updatedHotspot.audio_ambient_url = newHotspot.audio_ambient_url;
+      updatedHotspot.audio_ambient_volume = newHotspot.audio_ambient_volume;
+      updatedHotspot.audio_narration_url = newHotspot.audio_narration_url;
+      updatedHotspot.audio_narration_volume = newHotspot.audio_narration_volume;
+      updatedHotspot.audio_autoplay = newHotspot.audio_autoplay;
+    }
+
+    // Actualizar en la lista
+    setHotspots((prev) =>
+      prev.map((h) => (h.id === editingHotspot.id ? updatedHotspot : h))
+    );
+
+    // Cerrar modal
+    setShowModal(false);
+    setEditingHotspot(null);
+    setVideoSourceType('upload');
   };
 
   // ✅ CORREGIDO: Función de guardado simple y directa
@@ -640,6 +875,33 @@ export default function HotspotEditor({
     <>
       <style>{`
         ${getMarkerStyles()}
+
+        /* Estilos para hotspots multimedia (solo icono, sin etiqueta) */
+        .multimedia-marker {
+          background: rgba(255, 255, 255, 0.95);
+          color: #1d1d1f;
+          padding: 0;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          font-size: 24px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.3);
+          border: 2px solid rgba(0, 122, 255, 0.3);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(10px);
+          animation: fadeInMarker 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .multimedia-marker:hover {
+          transform: scale(1.2);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 122, 255, 0.2);
+          border-color: rgba(0, 122, 255, 0.6);
+          background: rgba(255, 255, 255, 1);
+        }
+
         @keyframes pulse-save {
           0%, 100% {
             box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
@@ -980,28 +1242,372 @@ export default function HotspotEditor({
             <div className="space-y-3">
               {hotspots
                 .filter((h) => h.imageIndex === currentImageIndex)
-                .map((h) => (
-                  <div
-                    key={h.id}
-                    className="bg-gray-700 rounded-lg p-3 flex justify-between items-center"
-                  >
-                    <div>
-                      <strong className="text-white">{h.title}</strong>
-                      <p className="text-sm text-gray-300 m-0">
-                        → Lleva a{' '}
-                        {viewNames[h.targetImageIndex] ||
-                          `Vista ${h.targetImageIndex + 1}`}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteHotspot(h.id)}
-                      className="btn-danger px-3 py-1 text-sm"
+                .map((h) => {
+                  const typeIcons = {
+                    navigation: '🧭',
+                    info: 'ℹ️',
+                    image: '🖼️',
+                    video: '🎥',
+                    audio: '🔊',
+                  };
+                  const typeLabels = {
+                    navigation: 'Navegación',
+                    info: 'Información',
+                    image: 'Galería',
+                    video: 'Video',
+                    audio: 'Audio',
+                  };
+                  const hotspotType = h.type || 'navigation';
+
+                  return (
+                    <div
+                      key={h.id}
+                      className="bg-gray-700 rounded-lg p-3 flex justify-between items-center"
                     >
-                      🗑️
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span>{typeIcons[hotspotType]}</span>
+                          <strong className="text-white">{h.title}</strong>
+                        </div>
+                        <p className="text-xs text-gray-400 m-0">
+                          {typeLabels[hotspotType]}
+                        </p>
+                        {hotspotType === 'navigation' && h.targetImageIndex !== undefined && (
+                          <p className="text-sm text-gray-300 m-0 mt-1">
+                            → {viewNames[h.targetImageIndex] || `Vista ${h.targetImageIndex + 1}`}
+                          </p>
+                        )}
+                        {hotspotType === 'info' && h.content_text && (
+                          <p className="text-xs text-gray-400 m-0 mt-1 truncate">
+                            {h.content_text.substring(0, 50)}...
+                          </p>
+                        )}
+                        {hotspotType === 'audio' && (
+                          <p className="text-xs text-gray-400 m-0 mt-1">
+                            {h.audio_ambient_url && '🎵 Ambiente'}
+                            {h.audio_ambient_url && h.audio_narration_url && ' + '}
+                            {h.audio_narration_url && '🗣️ Narración'}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditHotspot(h)}
+                          className="px-3 py-1 text-sm"
+                          style={{
+                            background: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            transition: 'all 0.2s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#2563eb';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#3b82f6';
+                          }}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDeleteHotspot(h.id)}
+                          className="btn-danger px-3 py-1 text-sm"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
+          </div>
+
+          {/* Panel de Audio de Fondo por Vista */}
+          <div
+            style={{
+              padding: '16px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              border: '2px solid rgba(16, 185, 129, 0.3)',
+            }}
+          >
+            <h4
+              style={{
+                color: 'white',
+                fontSize: '15px',
+                fontWeight: '600',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              🎵 Audio de Fondo - {viewNames[currentImageIndex] || `Vista ${currentImageIndex + 1}`}
+            </h4>
+            <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '12px' }}>
+              El audio se reproducirá automáticamente al entrar a esta vista
+            </p>
+
+            {/* Selector de biblioteca de audios ambiente */}
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ display: 'block', color: 'white', fontSize: '13px', fontWeight: '500', marginBottom: '6px' }}>
+                📚 Biblioteca de Audios Ambiente
+              </label>
+              <select
+                onChange={(e) => {
+                  const audioId = e.target.value;
+                  if (audioId) {
+                    const audio = getAudioById(audioId);
+                    if (audio) {
+                      setViewAudioSettings(prev => ({
+                        ...prev,
+                        ambientUrl: audio.file,
+                        ambientVolume: audio.recommendedVolume || 0.3
+                      }));
+                    }
+                  }
+                  e.target.value = '';
+                }}
+                disabled={uploadingViewAudio}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(31, 41, 55, 0.8)',
+                  color: 'white',
+                  fontSize: '12px',
+                }}
+              >
+                <option value="">🎼 Selecciona un audio...</option>
+                {AUDIO_LIBRARY.ambient.map((audio) => (
+                  <option key={audio.id} value={audio.id}>
+                    {audio.name} ({audio.duration})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Separador O */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '12px 0' }}>
+              <div style={{ flex: 1, borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}></div>
+              <span style={{ fontSize: '11px', color: '#9ca3af', fontWeight: '600' }}>O</span>
+              <div style={{ flex: 1, borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}></div>
+            </div>
+
+            {/* Subir audio ambiente personalizado */}
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ display: 'block', color: 'white', fontSize: '13px', fontWeight: '500', marginBottom: '6px' }}>
+                📤 Subir Audio Ambiente
+              </label>
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  setUploadingViewAudio(true);
+                  setUploadingViewAudioType('ambiente');
+                  try {
+                    const url = await onUploadMediaFile(file, 'audio');
+                    if (url) {
+                      setViewAudioSettings(prev => ({ ...prev, ambientUrl: url }));
+                    }
+                  } catch (error) {
+                    alert('Error al subir audio: ' + error.message);
+                  } finally {
+                    setUploadingViewAudio(false);
+                    setUploadingViewAudioType('');
+                  }
+                  e.target.value = '';
+                }}
+                disabled={uploadingViewAudio}
+                style={{
+                  width: '100%',
+                  padding: '6px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(31, 41, 55, 0.8)',
+                  color: 'white',
+                  fontSize: '12px',
+                }}
+              />
+              {uploadingViewAudio && uploadingViewAudioType === 'ambiente' && (
+                <p style={{ fontSize: '11px', color: '#60a5fa', marginTop: '4px' }}>⏳ Subiendo audio...</p>
+              )}
+            </div>
+
+            {/* Vista previa audio ambiente */}
+            {viewAudioSettings.ambientUrl && (
+              <div style={{ marginBottom: '12px', padding: '8px', background: 'rgba(31, 41, 55, 0.6)', borderRadius: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '12px', color: 'white', fontWeight: '500' }}>🎧 Audio Ambiente</span>
+                  <button
+                    onClick={() => setViewAudioSettings(prev => ({ ...prev, ambientUrl: '' }))}
+                    style={{
+                      marginLeft: 'auto',
+                      background: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '2px 8px',
+                      fontSize: '11px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <audio src={viewAudioSettings.ambientUrl} controls style={{ width: '100%', height: '30px' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                  <label style={{ fontSize: '11px', color: 'white', display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+                    🔉 Volumen:
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={viewAudioSettings.ambientVolume}
+                      onChange={(e) => setViewAudioSettings(prev => ({ ...prev, ambientVolume: parseFloat(e.target.value) }))}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{(viewAudioSettings.ambientVolume * 100).toFixed(0)}%</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Separador */}
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', margin: '12px 0' }}></div>
+
+            {/* Subir narración */}
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ display: 'block', color: 'white', fontSize: '13px', fontWeight: '500', marginBottom: '6px' }}>
+                🗣️ Subir Narración (opcional)
+              </label>
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  setUploadingViewAudio(true);
+                  setUploadingViewAudioType('narracion');
+                  try {
+                    const url = await onUploadMediaFile(file, 'audio');
+                    if (url) {
+                      setViewAudioSettings(prev => ({ ...prev, narrationUrl: url }));
+                    }
+                  } catch (error) {
+                    alert('Error al subir narración: ' + error.message);
+                  } finally {
+                    setUploadingViewAudio(false);
+                    setUploadingViewAudioType('');
+                  }
+                  e.target.value = '';
+                }}
+                disabled={uploadingViewAudio}
+                style={{
+                  width: '100%',
+                  padding: '6px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(31, 41, 55, 0.8)',
+                  color: 'white',
+                  fontSize: '12px',
+                }}
+              />
+              {uploadingViewAudio && uploadingViewAudioType === 'narracion' && (
+                <p style={{ fontSize: '11px', color: '#60a5fa', marginTop: '4px' }}>⏳ Subiendo narración...</p>
+              )}
+              <p style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>
+                La narración se reproduce una vez, mientras el audio ambiente hace loop
+              </p>
+            </div>
+
+            {/* Vista previa narración */}
+            {viewAudioSettings.narrationUrl && (
+              <div style={{ marginBottom: '12px', padding: '8px', background: 'rgba(31, 41, 55, 0.6)', borderRadius: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '12px', color: 'white', fontWeight: '500' }}>🗣️ Narración</span>
+                  <button
+                    onClick={() => setViewAudioSettings(prev => ({ ...prev, narrationUrl: '' }))}
+                    style={{
+                      marginLeft: 'auto',
+                      background: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '2px 8px',
+                      fontSize: '11px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <audio src={viewAudioSettings.narrationUrl} controls style={{ width: '100%', height: '30px' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                  <label style={{ fontSize: '11px', color: 'white', display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+                    🔉 Volumen:
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={viewAudioSettings.narrationVolume}
+                      onChange={(e) => setViewAudioSettings(prev => ({ ...prev, narrationVolume: parseFloat(e.target.value) }))}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{(viewAudioSettings.narrationVolume * 100).toFixed(0)}%</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Autoplay checkbox */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'white', fontSize: '12px', cursor: 'pointer', marginBottom: '12px' }}>
+              <input
+                type="checkbox"
+                checked={viewAudioSettings.autoplay}
+                onChange={(e) => setViewAudioSettings(prev => ({ ...prev, autoplay: e.target.checked }))}
+                style={{ width: '14px', height: '14px' }}
+              />
+              <span>▶️ Reproducir automáticamente al entrar a esta vista</span>
+            </label>
+
+            {/* Botón guardar audio */}
+            <button
+              onClick={async () => {
+                if (onSaveViewAudio) {
+                  await onSaveViewAudio(currentImageIndex, viewAudioSettings);
+                }
+              }}
+              disabled={uploadingViewAudio || (!viewAudioSettings.ambientUrl && !viewAudioSettings.narrationUrl)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                background: (!viewAudioSettings.ambientUrl && !viewAudioSettings.narrationUrl)
+                  ? 'rgba(156, 163, 175, 0.3)'
+                  : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: (!viewAudioSettings.ambientUrl && !viewAudioSettings.narrationUrl) ? 'not-allowed' : 'pointer',
+                opacity: uploadingViewAudio ? 0.5 : 1,
+              }}
+            >
+              {uploadingViewAudio ? '⏳ Subiendo...' : '💾 Guardar Audio de Vista'}
+            </button>
           </div>
 
           {/* Selector de Estilo de Marcadores */}
@@ -1256,122 +1862,464 @@ export default function HotspotEditor({
           )}
         </div>
 
-        {/* Modal */}
+        {/* Modal Multimedia Mejorado */}
         {showModal && (
-          <div className="fixed inset-0 bg-black/85 flex justify-center items-center z-50">
-            <div className="card p-8 min-w-[450px] text-gray-900">
-              <h3 className="text-xl font-bold mb-6">📍 Nuevo Hotspot</h3>
-              <div className="space-y-4">
+          <div className="fixed inset-0 bg-black/85 flex justify-center items-center z-50 overflow-y-auto p-4">
+            <div className="card p-8 min-w-[500px] max-w-[600px] text-gray-900 my-8 max-h-[90vh] overflow-y-auto">
+              <h3 className="text-xl font-bold mb-6">
+                {editingHotspot ? '✏️ Editar Hotspot' : '📍 Nuevo Hotspot Multimedia'}
+              </h3>
+
+              <div className="space-y-5">
+                {/* Título */}
                 <label className="block">
                   <strong className="block mb-2">Título del hotspot *</strong>
                   <input
                     type="text"
-                    value={newHotspot.title}
+                    value={newHotspot.title || ''}
                     onChange={(e) =>
                       setNewHotspot({ ...newHotspot, title: e.target.value })
                     }
                     autoFocus
                     className="input-field"
+                    placeholder="Ej: Área de estar"
                   />
                 </label>
 
-                <div className="block">
-                  <label className="flex items-center gap-2 cursor-pointer mb-3">
-                    <input
-                      type="checkbox"
-                      checked={createNewView}
-                      onChange={(e) => {
-                        setCreateNewView(e.target.checked);
-                        if (!e.target.checked) setNewImageFile(null);
-                      }}
-                      className="w-4 h-4"
-                    />
-                    <span className="font-semibold">
-                      Crear nueva vista (subir imagen 360°)
-                    </span>
-                  </label>
-                </div>
+                {/* Tipo de Hotspot */}
+                <label className="block">
+                  <strong className="block mb-2">🎯 Tipo de Hotspot *</strong>
+                  <select
+                    value={newHotspot.type}
+                    onChange={(e) =>
+                      setNewHotspot({ ...newHotspot, type: e.target.value })
+                    }
+                    className="input-field"
+                  >
+                    <option value="navigation">🧭 Navegación (ir a otra vista)</option>
+                    <option value="info">ℹ️ Información (texto descriptivo)</option>
+                    <option value="image">🖼️ Galería de imágenes</option>
+                    <option value="video">🎥 Video</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Para audio de fondo, usa el panel "Audio de Fondo" en el lateral
+                  </p>
+                </label>
 
-                {!createNewView ? (
-                  <label className="block">
-                    <strong className="block mb-2">
-                      ¿A qué vista lleva este hotspot? *
-                    </strong>
-                    <select
-                      value={newHotspot.targetImageIndex}
-                      onChange={(e) =>
-                        setNewHotspot({
-                          ...newHotspot,
-                          targetImageIndex: parseInt(e.target.value),
-                        })
-                      }
-                      className="input-field"
-                    >
-                      {imageUrls.map((_, index) => (
-                        <option key={index} value={index}>
-                          {viewNames[index] || `Vista ${index + 1}`}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                ) : (
-                  <label className="block">
-                    <strong className="block mb-2">
-                      Seleccionar imagen 360° *
-                    </strong>
+                {/* Campos condicionales según tipo */}
+                {newHotspot.type === 'navigation' && (
+                  <>
                     <div
                       style={{
-                        backgroundColor: '#e7f3ff',
+                        backgroundColor: '#dbeafe',
                         padding: '0.75rem',
                         borderRadius: '5px',
                         marginBottom: '0.75rem',
-                        border: '1px solid #b3d9ff',
+                        border: '1px solid #93c5fd',
                       }}
                     >
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: '13px',
-                          color: '#0369a1',
-                        }}
-                      >
-                        💡 La imagen se optimizará automáticamente (4K, calidad
-                        85%, WebP)
+                      <p style={{ margin: 0, fontSize: '13px', color: '#1e40af' }}>
+                        🧭 Este hotspot permitirá navegar a otra vista 360°
                       </p>
                     </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setNewImageFile(e.target.files[0])}
-                      className="input-field"
-                    />
-                    {newImageFile && (
-                      <p className="text-sm text-green-600 mt-2">
-                        ✅ {newImageFile.name} (
-                        {(newImageFile.size / 1024 / 1024).toFixed(2)} MB) -
-                        Será optimizada al subir
-                      </p>
+
+                    <div className="block">
+                      <label className="flex items-center gap-2 cursor-pointer mb-3">
+                        <input
+                          type="checkbox"
+                          checked={createNewView}
+                          onChange={(e) => {
+                            setCreateNewView(e.target.checked);
+                            if (!e.target.checked) setNewImageFile(null);
+                          }}
+                          className="w-4 h-4"
+                        />
+                        <span className="font-semibold">
+                          Crear nueva vista (subir imagen 360°)
+                        </span>
+                      </label>
+                    </div>
+
+                    {!createNewView ? (
+                      <label className="block">
+                        <strong className="block mb-2">
+                          ¿A qué vista lleva este hotspot? *
+                        </strong>
+                        <select
+                          value={newHotspot.targetImageIndex}
+                          onChange={(e) =>
+                            setNewHotspot({
+                              ...newHotspot,
+                              targetImageIndex: parseInt(e.target.value),
+                            })
+                          }
+                          className="input-field"
+                        >
+                          {imageUrls.map((_, index) => (
+                            <option key={index} value={index}>
+                              {viewNames[index] || `Vista ${index + 1}`}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ) : (
+                      <label className="block">
+                        <strong className="block mb-2">
+                          Seleccionar imagen 360° *
+                        </strong>
+                        <div
+                          style={{
+                            backgroundColor: '#e7f3ff',
+                            padding: '0.75rem',
+                            borderRadius: '5px',
+                            marginBottom: '0.75rem',
+                            border: '1px solid #b3d9ff',
+                          }}
+                        >
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: '13px',
+                              color: '#0369a1',
+                            }}
+                          >
+                            💡 La imagen se optimizará automáticamente (4K, WebP)
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setNewImageFile(e.target.files[0])}
+                          className="input-field"
+                        />
+                        {newImageFile && (
+                          <p className="text-sm text-green-600 mt-2">
+                            ✅ {newImageFile.name} (
+                            {(newImageFile.size / 1024 / 1024).toFixed(2)} MB)
+                          </p>
+                        )}
+                      </label>
                     )}
-                  </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={newHotspot.create_backlink}
+                        onChange={(e) =>
+                          setNewHotspot({ ...newHotspot, create_backlink: e.target.checked })
+                        }
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">
+                        ↩️ Crear hotspot de regreso automático
+                      </span>
+                    </label>
+                  </>
                 )}
+
+                {newHotspot.type === 'info' && (
+                  <>
+                    <div
+                      style={{
+                        backgroundColor: '#fef3c7',
+                        padding: '0.75rem',
+                        borderRadius: '5px',
+                        marginBottom: '0.75rem',
+                        border: '1px solid #fcd34d',
+                      }}
+                    >
+                      <p style={{ margin: 0, fontSize: '13px', color: '#92400e' }}>
+                        ℹ️ Este hotspot abrirá un popup con texto informativo (no navega)
+                      </p>
+                    </div>
+                    <label className="block">
+                      <strong className="block mb-2">📝 Texto Informativo *</strong>
+                      <textarea
+                        value={newHotspot.content_text || ''}
+                        onChange={(e) =>
+                          setNewHotspot({ ...newHotspot, content_text: e.target.value })
+                        }
+                        className="input-field"
+                        rows="4"
+                        placeholder="Escribe la información que se mostrará..."
+                      />
+                    </label>
+                  </>
+                )}
+
+                {newHotspot.type === 'image' && (
+                  <>
+                    <div
+                      style={{
+                        backgroundColor: '#e0e7ff',
+                        padding: '0.75rem',
+                        borderRadius: '5px',
+                        marginBottom: '0.75rem',
+                        border: '1px solid #a5b4fc',
+                      }}
+                    >
+                      <p style={{ margin: 0, fontSize: '13px', color: '#3730a3' }}>
+                        🖼️ Este hotspot abrirá una galería de imágenes (no navega)
+                      </p>
+                    </div>
+
+                    <label className="block mb-4">
+                      <strong className="block mb-2">📝 Descripción de la Galería (opcional)</strong>
+                      <textarea
+                        value={newHotspot.content_text || ''}
+                        onChange={(e) =>
+                          setNewHotspot({ ...newHotspot, content_text: e.target.value })
+                        }
+                        className="input-field"
+                        rows="3"
+                        placeholder="Agrega una descripción para esta galería de imágenes..."
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Este texto aparecerá en el modal junto con las imágenes
+                      </p>
+                    </label>
+
+                    <div className="block mb-4">
+                      <strong className="block mb-2">📤 Subir Imágenes</strong>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={async (e) => {
+                          const files = Array.from(e.target.files);
+                          if (files.length === 0) return;
+
+                          for (const file of files) {
+                            const url = await handleUploadMedia(file, 'image');
+                            if (url) {
+                              setNewHotspot(prev => ({
+                                ...prev,
+                                content_images: [...prev.content_images, url]
+                              }));
+                            }
+                          }
+                          e.target.value = '';
+                        }}
+                        disabled={uploadingMedia}
+                        className="input-field"
+                      />
+                      {uploadingMedia && uploadingMediaType === 'image' && (
+                        <p className="text-sm text-blue-600 mt-2">⏳ Subiendo imagen...</p>
+                      )}
+                    </div>
+
+                    <label className="block">
+                      <strong className="block mb-2">🖼️ Imágenes Agregadas</strong>
+                      {newHotspot.content_images.length > 0 ? (
+                        <div className="space-y-2">
+                          {newHotspot.content_images.map((url, index) => (
+                            <div key={index} className="flex items-center gap-2 bg-gray-100 p-2 rounded">
+                              <img src={url} alt={`Imagen ${index + 1}`} className="w-12 h-12 object-cover rounded" />
+                              <span className="flex-1 text-xs truncate">{url}</span>
+                              <button
+                                onClick={() => {
+                                  setNewHotspot(prev => ({
+                                    ...prev,
+                                    content_images: prev.content_images.filter((_, i) => i !== index)
+                                  }));
+                                }}
+                                className="text-red-600 text-sm px-2 py-1"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">No hay imágenes agregadas</p>
+                      )}
+                    </label>
+                  </>
+                )}
+
+                {newHotspot.type === 'video' && (
+                  <>
+                    <div
+                      style={{
+                        backgroundColor: '#fce7f3',
+                        padding: '0.75rem',
+                        borderRadius: '5px',
+                        marginBottom: '0.75rem',
+                        border: '1px solid #f9a8d4',
+                      }}
+                    >
+                      <p style={{ margin: 0, fontSize: '13px', color: '#831843' }}>
+                        🎥 Este hotspot abrirá un reproductor de video flotante (no navega)
+                      </p>
+                    </div>
+
+                    {/* Opciones: Subir o Enlace */}
+                    <div className="block mb-4">
+                      <strong className="block mb-2">📹 Tipo de Video</strong>
+                      <div className="flex gap-2">
+                        <label className="flex-1 flex items-center gap-2 p-3 border rounded cursor-pointer hover:bg-gray-50"
+                          style={{ borderColor: videoSourceType === 'upload' ? '#3b82f6' : '#d1d5db' }}>
+                          <input
+                            type="radio"
+                            name="videoType"
+                            checked={videoSourceType === 'upload'}
+                            onChange={() => {
+                              setVideoSourceType('upload');
+                              setNewHotspot(prev => ({ ...prev, content_video_url: '' }));
+                            }}
+                          />
+                          <span className="text-sm">📤 Subir (máx 60 seg)</span>
+                        </label>
+                        <label className="flex-1 flex items-center gap-2 p-3 border rounded cursor-pointer hover:bg-gray-50"
+                          style={{ borderColor: videoSourceType === 'embed' ? '#3b82f6' : '#d1d5db' }}>
+                          <input
+                            type="radio"
+                            name="videoType"
+                            checked={videoSourceType === 'embed'}
+                            onChange={() => {
+                              setVideoSourceType('embed');
+                              setNewHotspot(prev => ({ ...prev, content_video_url: '' }));
+                            }}
+                          />
+                          <span className="text-sm">🔗 YouTube/Vimeo</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Subir Video Corto */}
+                    {videoSourceType === 'upload' ? (
+                      <div className="block mb-4" key="upload-video">
+                        <strong className="block mb-2">📤 Subir Video Corto (Máx 60 seg)</strong>
+                        <input
+                          type="file"
+                          accept="video/mp4,video/webm"
+                          key="video-file-input"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+
+                            // Validar duración del video
+                            const video = document.createElement('video');
+                            video.preload = 'metadata';
+                            video.onloadedmetadata = async function() {
+                              window.URL.revokeObjectURL(video.src);
+                              const duration = video.duration;
+
+                              if (duration > 60) {
+                                alert(`⚠️ El video dura ${Math.round(duration)} segundos.\n\nPara videos mayores a 60 segundos, usa YouTube o Vimeo.`);
+                                e.target.value = '';
+                                return;
+                              }
+
+                              // Si pasa la validación, subir
+                              const url = await handleUploadMedia(file, 'video');
+                              if (url) {
+                                setNewHotspot(prev => ({
+                                  ...prev,
+                                  content_video_url: url
+                                }));
+                              }
+                              e.target.value = '';
+                            };
+                            video.src = URL.createObjectURL(file);
+                          }}
+                          disabled={uploadingMedia}
+                          className="input-field"
+                        />
+                        {uploadingMedia && uploadingMediaType === 'video' && (
+                          <p className="text-sm text-blue-600 mt-2">⏳ Subiendo video...</p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-1">
+                          Clips cortos (máx 60 seg). Formatos: MP4, WebM
+                        </p>
+                      </div>
+                    ) : (
+                      /* URL de YouTube/Vimeo */
+                      <div className="block mb-4" key="embed-video">
+                        <strong className="block mb-2">🔗 URL de YouTube o Vimeo</strong>
+                        <input
+                          type="url"
+                          value={newHotspot.content_video_url || ''}
+                          onChange={(e) =>
+                            setNewHotspot({ ...newHotspot, content_video_url: e.target.value })
+                          }
+                          className="input-field"
+                          placeholder="https://www.youtube.com/watch?v=... o https://vimeo.com/..."
+                          key="video-url-input"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Para videos largos (&gt;60 seg)
+                        </p>
+                      </div>
+                    )}
+
+                    {newHotspot.content_video_url && (
+                      <div className="block">
+                        <strong className="block mb-2">🎥 Video Agregado</strong>
+                        <div className="flex items-center gap-2 bg-gray-100 p-2 rounded">
+                          {newHotspot.content_video_url.includes('youtube') || newHotspot.content_video_url.includes('vimeo') ? (
+                            <span className="text-2xl">🔗</span>
+                          ) : (
+                            <video src={newHotspot.content_video_url} className="w-24 h-16 object-cover rounded" />
+                          )}
+                          <span className="flex-1 text-xs truncate">{newHotspot.content_video_url}</span>
+                          <button
+                            onClick={() => {
+                              setNewHotspot(prev => ({
+                                ...prev,
+                                content_video_url: ''
+                              }));
+                            }}
+                            className="text-red-600 text-sm px-2 py-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+
+                {/* Icono personalizado (para todos los tipos) */}
+                <label className="block">
+                  <strong className="block mb-2">🎨 Icono Personalizado (opcional)</strong>
+                  <input
+                    type="url"
+                    value={newHotspot.custom_icon_url || ''}
+                    onChange={(e) =>
+                      setNewHotspot({ ...newHotspot, custom_icon_url: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="https://ejemplo.com/icono.png"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Deja vacío para usar el icono predeterminado
+                  </p>
+                </label>
               </div>
+
               <div className="flex gap-3 mt-6">
                 <button
-                  onClick={handleAddHotspot}
-                  disabled={uploadingImage || (createNewView && !newImageFile)}
+                  onClick={editingHotspot ? handleUpdateHotspot : handleAddHotspot}
+                  disabled={uploadingImage || (!editingHotspot && createNewView && !newImageFile)}
                   className="btn-success flex-1 py-3"
                 >
-                  {uploadingImage
-                    ? createNewView
-                      ? '🔄 Optimizando y subiendo...'
-                      : '⏳ Guardando...'
-                    : '✅ Crear Hotspot'}
+                  {editingHotspot ? (
+                    '💾 Guardar Cambios'
+                  ) : uploadingImage ? (
+                    createNewView ? '🔄 Optimizando y subiendo...' : '⏳ Guardando...'
+                  ) : (
+                    '✅ Crear Hotspot'
+                  )}
                 </button>
                 <button
                   onClick={() => {
                     setShowModal(false);
                     setNewImageFile(null);
                     setCreateNewView(false);
+                    setEditingHotspot(null);
+                    setVideoSourceType('upload');
                   }}
                   disabled={uploadingImage}
                   className="flex-1 py-3"

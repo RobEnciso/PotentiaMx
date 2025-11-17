@@ -51,6 +51,20 @@ export default function TerrenoClientPage({ id }: { id: string }) {
             pitch: h.position_pitch,
             imageIndex: h.panorama_index,
             targetImageIndex: h.target_panorama_index,
+            // ✅ Campos multimedia
+            type: h.hotspot_type || 'navigation',
+            content_text: h.content_text,
+            content_images: h.content_images,
+            content_video_url: h.content_video_url,
+            content_video_thumbnail: h.content_video_thumbnail,
+            audio_ambient_url: h.audio_ambient_url,
+            audio_ambient_volume: h.audio_ambient_volume,
+            audio_ambient_loop: h.audio_ambient_loop,
+            audio_narration_url: h.audio_narration_url,
+            audio_narration_volume: h.audio_narration_volume,
+            audio_autoplay: h.audio_autoplay,
+            custom_icon_url: h.custom_icon_url,
+            icon_size: h.icon_size,
           }));
 
           setHotspots(transformedHotspots);

@@ -219,9 +219,14 @@ export default function PhotoSphereViewer({
   const [showTransitionLoader, setShowTransitionLoader] = useState(false);
   const [showCopyTooltip, setShowCopyTooltip] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [activeMediaModal, setActiveMediaModal] = useState(null); // { type, data }
   const hideControlsTimeoutRef = useRef(null);
   const transitionLoaderTimeoutRef = useRef(null);
   const preloadedImagesRef = useRef(new Set());
+
+  // ✅ Referencias de audio por vista
+  const ambientAudioRef = useRef(null);
+  const narrationAudioRef = useRef(null);
 
   // Emails de administradores (mismo array que en dashboard)
   const ADMIN_EMAILS = [
@@ -282,6 +287,82 @@ export default function PhotoSphereViewer({
     });
   }, [images, isViewerReady, currentIndex]);
 
+  // ✅ Reproducir audio de fondo automáticamente al cambiar de vista
+  useEffect(() => {
+    if (!terreno || !isViewerReady) return;
+
+    // Extraer datos de audio
+    const ambientUrls = terreno.view_ambient_audio || [];
+    const ambientVolumes = terreno.view_ambient_volume || [];
+    const narrationUrls = terreno.view_narration_audio || [];
+    const narrationVolumes = terreno.view_narration_volume || [];
+    const autoplaySettings = terreno.view_audio_autoplay || [];
+
+    // Verificar si hay audio para la vista actual
+    const ambientUrl = ambientUrls[currentIndex];
+    const narrationUrl = narrationUrls[currentIndex];
+    const shouldAutoplay = autoplaySettings[currentIndex] !== false;
+
+    if (!shouldAutoplay) {
+      console.log(`🔇 Audio deshabilitado para vista ${currentIndex}`);
+      return;
+    }
+
+    // Detener y limpiar audios anteriores
+    if (ambientAudioRef.current) {
+      ambientAudioRef.current.pause();
+      ambientAudioRef.current.currentTime = 0;
+      ambientAudioRef.current = null;
+    }
+    if (narrationAudioRef.current) {
+      narrationAudioRef.current.pause();
+      narrationAudioRef.current.currentTime = 0;
+      narrationAudioRef.current = null;
+    }
+
+    // Reproducir audio ambiente (loop)
+    if (ambientUrl) {
+      const ambientAudio = new Audio(ambientUrl);
+      ambientAudio.loop = true;
+      ambientAudio.volume = ambientVolumes[currentIndex] || 0.3;
+
+      ambientAudio.play().then(() => {
+        console.log(`🎵 Audio ambiente reproducido: ${ambientUrl}`);
+      }).catch((error) => {
+        console.warn('⚠️ No se pudo reproducir audio ambiente (requiere interacción del usuario):', error);
+      });
+
+      ambientAudioRef.current = ambientAudio;
+    }
+
+    // Reproducir narración (una sola vez)
+    if (narrationUrl) {
+      const narrationAudio = new Audio(narrationUrl);
+      narrationAudio.loop = false;
+      narrationAudio.volume = narrationVolumes[currentIndex] || 0.7;
+
+      narrationAudio.play().then(() => {
+        console.log(`🗣️ Narración reproducida: ${narrationUrl}`);
+      }).catch((error) => {
+        console.warn('⚠️ No se pudo reproducir narración (requiere interacción del usuario):', error);
+      });
+
+      narrationAudioRef.current = narrationAudio;
+    }
+
+    // Cleanup al desmontar o cambiar de vista
+    return () => {
+      if (ambientAudioRef.current) {
+        ambientAudioRef.current.pause();
+        ambientAudioRef.current = null;
+      }
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.pause();
+        narrationAudioRef.current = null;
+      }
+    };
+  }, [currentIndex, terreno, isViewerReady]);
+
   // Declarar initializeViewer ANTES del useEffect que lo usa
   const initializeViewer = useCallback(
     async (imageUrl) => {
@@ -330,8 +411,18 @@ export default function PhotoSphereViewer({
           const hotspot = hotspots.find(
             (h) => String(h.id) === String(clickedMarker.id),
           );
-          if (hotspot && hotspot.targetImageIndex !== undefined) {
+
+          if (!hotspot) return;
+
+          const hotspotType = hotspot.type || 'navigation';
+
+          // Solo navegar si es tipo 'navigation' y tiene targetImageIndex
+          if (hotspotType === 'navigation' && hotspot.targetImageIndex !== undefined) {
             setCurrentIndex(hotspot.targetImageIndex);
+          } else if (hotspotType !== 'navigation') {
+            // Abrir modal con contenido multimedia
+            console.log(`Hotspot multimedia clickeado (${hotspotType}):`, hotspot);
+            setActiveMediaModal({ type: hotspotType, data: hotspot });
           }
         });
       } catch (err) {
@@ -446,12 +537,48 @@ export default function PhotoSphereViewer({
       (h) => h.imageIndex === currentIndex,
     );
 
+    // Iconos predeterminados por tipo
+    const defaultIcons = {
+      navigation: '🧭',
+      info: 'ℹ️',
+      image: '🖼️',
+      video: '🎥',
+      audio: '🔊',
+    };
+
     currentHotspots.forEach((hotspot) => {
+      const hotspotType = hotspot.type || 'navigation';
+      const icon = defaultIcons[hotspotType] || '📍';
+
+      // Tooltip diferente según tipo
+      let tooltip = '';
+      if (hotspotType === 'navigation') {
+        tooltip = `Ir a: ${hotspot.title}`;
+      } else if (hotspotType === 'info') {
+        tooltip = `Ver información: ${hotspot.title}`;
+      } else if (hotspotType === 'image') {
+        tooltip = `Ver galería: ${hotspot.title}`;
+      } else if (hotspotType === 'video') {
+        tooltip = `Reproducir video: ${hotspot.title}`;
+      } else if (hotspotType === 'audio') {
+        tooltip = `Reproducir audio: ${hotspot.title}`;
+      }
+
+      // Diferenciar estilo entre navegación y multimedia
+      let markerHtml;
+      if (hotspotType === 'navigation') {
+        // Marcador completo con etiqueta para navegación
+        markerHtml = `<div class="public-marker">${icon} <span>${hotspot.title}</span></div>`;
+      } else {
+        // Solo icono grande para multimedia (punto de interés fijo)
+        markerHtml = `<div class="multimedia-marker" title="${hotspot.title}">${icon}</div>`;
+      }
+
       markersPlugin.addMarker({
         id: String(hotspot.id),
         position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
-        html: `<div class="public-marker">📍 <span>${hotspot.title}</span></div>`,
-        tooltip: `Ir a: ${hotspot.title}`,
+        html: markerHtml,
+        tooltip: tooltip,
       });
     });
   }, [isViewerReady, hotspots, currentIndex, markersVisible]);
@@ -547,6 +674,32 @@ export default function PhotoSphereViewer({
       <style>{`
         ${getMarkerStyles()}
 
+        /* Estilos para hotspots multimedia (solo icono, sin etiqueta) */
+        .multimedia-marker {
+          background: rgba(255, 255, 255, 0.95);
+          color: #1d1d1f;
+          padding: 0;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          font-size: 24px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.3);
+          border: 2px solid rgba(0, 122, 255, 0.3);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(10px);
+          animation: fadeInMarker 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .multimedia-marker:hover {
+          transform: scale(1.2);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 122, 255, 0.2);
+          border-color: rgba(0, 122, 255, 0.6);
+          background: rgba(255, 255, 255, 1);
+        }
+
         @keyframes fadeInMarker {
           0% {
             opacity: 0;
@@ -641,6 +794,16 @@ export default function PhotoSphereViewer({
           @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes modalSlideIn {
+            from {
+              opacity: 0;
+              transform: scale(0.9) translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
           }
         `}</style>
 
@@ -1090,6 +1253,322 @@ export default function PhotoSphereViewer({
               </div>
             )}
           </>
+        )}
+
+        {/* Modals Multimedia */}
+        {activeMediaModal && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: activeMediaModal.type === 'video' ? 'transparent' : 'rgba(0, 0, 0, 0.85)',
+              backdropFilter: activeMediaModal.type === 'video' ? 'none' : 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10000,
+              padding: '1rem',
+              animation: 'fadeIn 0.2s ease-out',
+              pointerEvents: activeMediaModal.type === 'video' ? 'none' : 'auto',
+            }}
+            onClick={() => setActiveMediaModal(null)}
+          >
+            <div
+              style={{
+                backgroundColor: activeMediaModal.type === 'video' ? 'transparent' : 'white',
+                borderRadius: activeMediaModal.type === 'video' ? '16px' : '12px',
+                maxWidth: activeMediaModal.type === 'video' ? '700px' : '600px',
+                width: '100%',
+                maxHeight: activeMediaModal.type === 'video' ? 'auto' : '90vh',
+                overflow: 'visible',
+                boxShadow: activeMediaModal.type === 'video'
+                  ? '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(0, 0, 0, 0.3)'
+                  : '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                transform: 'scale(1)',
+                animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                pointerEvents: 'auto',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Info Modal */}
+              {activeMediaModal.type === 'info' && (
+                <div style={{ padding: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
+                      ℹ️ {activeMediaModal.data.title}
+                    </h2>
+                    <button
+                      onClick={() => setActiveMediaModal(null)}
+                      style={{
+                        background: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        fontSize: '18px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <p style={{ color: '#4b5563', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                    {activeMediaModal.data.content_text}
+                  </p>
+                </div>
+              )}
+
+              {/* Image Gallery Modal */}
+              {activeMediaModal.type === 'image' && (
+                <div style={{ padding: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
+                      🖼️ {activeMediaModal.data.title}
+                    </h2>
+                    <button
+                      onClick={() => setActiveMediaModal(null)}
+                      style={{
+                        background: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        fontSize: '18px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* Descripción de la galería */}
+                  {activeMediaModal.data.content_text && (
+                    <p style={{
+                      color: '#4b5563',
+                      lineHeight: '1.6',
+                      marginBottom: '1.5rem',
+                      whiteSpace: 'pre-wrap',
+                      fontSize: '0.95rem'
+                    }}>
+                      {activeMediaModal.data.content_text}
+                    </p>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                    {activeMediaModal.data.content_images?.map((url, index) => (
+                      <img
+                        key={index}
+                        src={url}
+                        alt={`Imagen ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => window.open(url, '_blank')}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Video Modal */}
+              {activeMediaModal.type === 'video' && (() => {
+                const videoUrl = activeMediaModal.data.content_video_url;
+                let embedUrl = videoUrl;
+                let isEmbed = false;
+
+                // Convertir YouTube a embed
+                if (videoUrl.includes('youtube.com/watch')) {
+                  const videoId = new URL(videoUrl).searchParams.get('v');
+                  embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                  isEmbed = true;
+                } else if (videoUrl.includes('youtu.be/')) {
+                  const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+                  embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                  isEmbed = true;
+                }
+                // Convertir Vimeo a embed
+                else if (videoUrl.includes('vimeo.com/')) {
+                  const videoId = videoUrl.split('vimeo.com/')[1].split('?')[0];
+                  embedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+                  isEmbed = true;
+                }
+
+                return (
+                  <div style={{ position: 'relative' }}>
+                    {/* Botón de cerrar flotante */}
+                    <button
+                      onClick={() => setActiveMediaModal(null)}
+                      style={{
+                        position: 'absolute',
+                        top: '-12px',
+                        right: '-12px',
+                        background: 'rgba(239, 68, 68, 0.95)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '36px',
+                        height: '36px',
+                        fontSize: '18px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        zIndex: 10,
+                        transition: 'all 0.2s ease',
+                        fontWeight: 'bold',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#dc2626';
+                        e.target.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(239, 68, 68, 0.95)';
+                        e.target.style.transform = 'scale(1)';
+                      }}
+                    >
+                      ✕
+                    </button>
+
+                    {/* Título flotante encima del video */}
+                    {activeMediaModal.data.title && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '-40px',
+                          left: '0',
+                          right: '0',
+                          textAlign: 'center',
+                          zIndex: 5,
+                        }}
+                      >
+                        <span
+                          style={{
+                            background: 'rgba(0, 0, 0, 0.8)',
+                            backdropFilter: 'blur(10px)',
+                            color: 'white',
+                            padding: '8px 20px',
+                            borderRadius: '20px',
+                            fontSize: '0.95rem',
+                            fontWeight: '500',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                            display: 'inline-block',
+                          }}
+                        >
+                          {activeMediaModal.data.title}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Video sin padding adicional */}
+                    {isEmbed ? (
+                      <iframe
+                        src={embedUrl}
+                        style={{
+                          width: '100%',
+                          height: '394px',
+                          borderRadius: '16px',
+                          border: 'none',
+                          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                        }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        controls
+                        autoPlay
+                        style={{
+                          width: '100%',
+                          maxHeight: '394px',
+                          borderRadius: '16px',
+                          backgroundColor: '#000',
+                          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                        }}
+                      >
+                        <source src={videoUrl} type="video/mp4" />
+                        Tu navegador no soporta el elemento de video.
+                      </video>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Audio Modal */}
+              {activeMediaModal.type === 'audio' && (
+                <div style={{ padding: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
+                      🔊 {activeMediaModal.data.title}
+                    </h2>
+                    <button
+                      onClick={() => setActiveMediaModal(null)}
+                      style={{
+                        background: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        fontSize: '18px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {activeMediaModal.data.audio_ambient_url && (
+                      <div>
+                        <h3 style={{ fontSize: '1rem', color: '#374151', marginBottom: '0.5rem' }}>
+                          🎵 Audio de Ambiente
+                        </h3>
+                        <audio
+                          controls
+                          loop
+                          autoPlay={activeMediaModal.data.audio_autoplay}
+                          style={{ width: '100%' }}
+                        >
+                          <source src={activeMediaModal.data.audio_ambient_url} type="audio/mpeg" />
+                          Tu navegador no soporta el elemento de audio.
+                        </audio>
+                      </div>
+                    )}
+                    {activeMediaModal.data.audio_narration_url && (
+                      <div>
+                        <h3 style={{ fontSize: '1rem', color: '#374151', marginBottom: '0.5rem' }}>
+                          🗣️ Narración
+                        </h3>
+                        <audio
+                          controls
+                          autoPlay={activeMediaModal.data.audio_autoplay}
+                          style={{ width: '100%' }}
+                        >
+                          <source src={activeMediaModal.data.audio_narration_url} type="audio/mpeg" />
+                          Tu navegador no soporta el elemento de audio.
+                        </audio>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {/* Modal de Formulario de Contacto */}
