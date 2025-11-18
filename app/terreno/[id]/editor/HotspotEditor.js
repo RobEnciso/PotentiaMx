@@ -261,8 +261,8 @@ export default function HotspotEditor({
           defaultZoomLvl: 50,
           // ✅ MOBILE TOUCH SENSITIVITY (como Google Maps)
           mousewheelSpeed: 2.0,
-          touchmoveTwoFingers: true,
           moveSpeed: 2.0, // ✅ 2x más rápido en móvil
+          // ❌ touchmoveTwoFingers: true - REMOVIDO (bloqueaba movimiento con 1 dedo)
         });
 
         viewerInstanceRef.current = viewer;
