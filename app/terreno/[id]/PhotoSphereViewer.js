@@ -331,29 +331,67 @@ export default function PhotoSphereViewer({
       ambientAudio.loop = true;
       ambientAudio.volume = 0; // Empezar en silencio
 
+      // ✅ Preparar audio para móvil (cargar sin reproducir)
+      ambientAudio.preload = 'auto';
+
       // Esperar 2s, luego reproducir con fade-in
       setTimeout(() => {
-        ambientAudio.play().then(() => {
-          console.log(`🎵 Audio ambiente reproducido con fade-in: ${ambientUrl}`);
+        // ✅ Intentar reproducir (puede fallar en móvil sin interacción)
+        const playPromise = ambientAudio.play();
 
-          // Fade-in gradual durante 1 segundo
-          const fadeSteps = 20; // 20 pasos
-          const fadeInterval = FADE_DURATION / fadeSteps; // 50ms por paso
-          const volumeStep = targetVolume / fadeSteps;
-          let currentStep = 0;
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            console.log(`🎵 Audio ambiente reproducido con fade-in: ${ambientUrl}`);
 
-          const fadeInInterval = setInterval(() => {
-            currentStep++;
-            ambientAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+            // Fade-in gradual durante 1 segundo
+            const fadeSteps = 20; // 20 pasos
+            const fadeInterval = FADE_DURATION / fadeSteps; // 50ms por paso
+            const volumeStep = targetVolume / fadeSteps;
+            let currentStep = 0;
 
-            if (currentStep >= fadeSteps) {
-              clearInterval(fadeInInterval);
-              console.log(`✅ Fade-in completado al ${(targetVolume * 100).toFixed(0)}%`);
-            }
-          }, fadeInterval);
-        }).catch((error) => {
-          console.warn('⚠️ No se pudo reproducir audio ambiente (requiere interacción del usuario):', error);
-        });
+            const fadeInInterval = setInterval(() => {
+              currentStep++;
+              ambientAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+              if (currentStep >= fadeSteps) {
+                clearInterval(fadeInInterval);
+                console.log(`✅ Fade-in completado al ${(targetVolume * 100).toFixed(0)}%`);
+              }
+            }, fadeInterval);
+          }).catch((error) => {
+            console.warn('⚠️ No se pudo reproducir audio ambiente automáticamente:', error);
+            console.log('💡 En móvil, el audio se reproducirá al tocar la pantalla');
+
+            // ✅ FALLBACK MÓVIL: Reproducir en el primer toque/click
+            const playOnInteraction = () => {
+              ambientAudio.play().then(() => {
+                console.log(`🎵 Audio iniciado tras interacción del usuario`);
+
+                // Fade-in después de la interacción
+                const fadeSteps = 20;
+                const fadeInterval = FADE_DURATION / fadeSteps;
+                const volumeStep = targetVolume / fadeSteps;
+                let currentStep = 0;
+
+                const fadeInInterval = setInterval(() => {
+                  currentStep++;
+                  ambientAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+                  if (currentStep >= fadeSteps) {
+                    clearInterval(fadeInInterval);
+                  }
+                }, fadeInterval);
+              });
+
+              // Remover listeners después del primer toque
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            };
+
+            document.addEventListener('touchstart', playOnInteraction, { once: true });
+            document.addEventListener('click', playOnInteraction, { once: true });
+          });
+        }
       }, AUDIO_DELAY);
 
       ambientAudioRef.current = ambientAudio;
@@ -366,29 +404,63 @@ export default function PhotoSphereViewer({
       narrationAudio.loop = false;
       narrationAudio.volume = 0; // Empezar en silencio
 
+      // ✅ Preparar audio para móvil
+      narrationAudio.preload = 'auto';
+
       // Esperar 2s, luego reproducir con fade-in
       setTimeout(() => {
-        narrationAudio.play().then(() => {
-          console.log(`🗣️ Narración reproducida con fade-in: ${narrationUrl}`);
+        const playPromise = narrationAudio.play();
 
-          // Fade-in gradual durante 1 segundo
-          const fadeSteps = 20;
-          const fadeInterval = FADE_DURATION / fadeSteps;
-          const volumeStep = targetVolume / fadeSteps;
-          let currentStep = 0;
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            console.log(`🗣️ Narración reproducida con fade-in: ${narrationUrl}`);
 
-          const fadeInInterval = setInterval(() => {
-            currentStep++;
-            narrationAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+            // Fade-in gradual durante 1 segundo
+            const fadeSteps = 20;
+            const fadeInterval = FADE_DURATION / fadeSteps;
+            const volumeStep = targetVolume / fadeSteps;
+            let currentStep = 0;
 
-            if (currentStep >= fadeSteps) {
-              clearInterval(fadeInInterval);
-              console.log(`✅ Fade-in narración completado al ${(targetVolume * 100).toFixed(0)}%`);
-            }
-          }, fadeInterval);
-        }).catch((error) => {
-          console.warn('⚠️ No se pudo reproducir narración (requiere interacción del usuario):', error);
-        });
+            const fadeInInterval = setInterval(() => {
+              currentStep++;
+              narrationAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+              if (currentStep >= fadeSteps) {
+                clearInterval(fadeInInterval);
+                console.log(`✅ Fade-in narración completado al ${(targetVolume * 100).toFixed(0)}%`);
+              }
+            }, fadeInterval);
+          }).catch((error) => {
+            console.warn('⚠️ No se pudo reproducir narración automáticamente:', error);
+
+            // ✅ FALLBACK MÓVIL: Reproducir en el primer toque
+            const playOnInteraction = () => {
+              narrationAudio.play().then(() => {
+                console.log(`🗣️ Narración iniciada tras interacción del usuario`);
+
+                const fadeSteps = 20;
+                const fadeInterval = FADE_DURATION / fadeSteps;
+                const volumeStep = targetVolume / fadeSteps;
+                let currentStep = 0;
+
+                const fadeInInterval = setInterval(() => {
+                  currentStep++;
+                  narrationAudio.volume = Math.min(volumeStep * currentStep, targetVolume);
+
+                  if (currentStep >= fadeSteps) {
+                    clearInterval(fadeInInterval);
+                  }
+                }, fadeInterval);
+              });
+
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            };
+
+            document.addEventListener('touchstart', playOnInteraction, { once: true });
+            document.addEventListener('click', playOnInteraction, { once: true });
+          });
+        }
       }, AUDIO_DELAY);
 
       narrationAudioRef.current = narrationAudio;
