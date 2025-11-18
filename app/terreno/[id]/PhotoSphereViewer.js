@@ -500,6 +500,11 @@ export default function PhotoSphereViewer({
           defaultZoomLvl: 50,
           mousewheel: true,
           mousemove: true,
+          // ✅ MOBILE TOUCH SENSITIVITY (como Google Maps)
+          mousewheelSpeed: 2.0, // Velocidad del zoom
+          touchmoveTwoFingers: true, // Permitir zoom con dos dedos
+          moveSpeed: 2.0, // ✅ CLAVE: Velocidad de movimiento (2x más rápido)
+          // moveInertia: true, // Inercia al soltar (suave como Google Maps)
         });
 
         viewerRef.current = viewer;

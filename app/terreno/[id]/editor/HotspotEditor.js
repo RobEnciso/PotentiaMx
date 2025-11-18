@@ -259,6 +259,10 @@ export default function HotspotEditor({
           plugins: [[MarkersPlugin, { markers: [] }]],
           navbar: false,
           defaultZoomLvl: 50,
+          // ✅ MOBILE TOUCH SENSITIVITY (como Google Maps)
+          mousewheelSpeed: 2.0,
+          touchmoveTwoFingers: true,
+          moveSpeed: 2.0, // ✅ 2x más rápido en móvil
         });
 
         viewerInstanceRef.current = viewer;
