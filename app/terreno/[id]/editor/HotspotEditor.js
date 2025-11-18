@@ -306,17 +306,15 @@ export default function HotspotEditor({
             custom_icon_url: '',
           });
 
-          // En móvil, el form ya está visible (bottom sheet)
-          // En desktop, abrir el modal
-          if (!isMobileDevice()) {
-            setPlacementMode(false);
-            placementModeRef.current = false;
-            setShowModal(true);
+          // ✅ FLUJO CORREGIDO: Desactivar placement mode y abrir modal
+          setPlacementMode(false);
+          placementModeRef.current = false;
+
+          // Abrir el modal correspondiente (mobile o desktop)
+          if (isMobileDevice()) {
+            setShowMobileForm(true); // ✅ Abrir bottom sheet AHORA
           } else {
-            // En móvil, solo desactivar el modo de colocación
-            // El bottom sheet ya está abierto
-            setPlacementMode(false);
-            placementModeRef.current = false;
+            setShowModal(true); // Abrir modal desktop
           }
         });
 
@@ -704,16 +702,11 @@ export default function HotspotEditor({
   };
 
   const handleNewHotspotClick = () => {
-    // En móvil, mostrar el bottom sheet directamente sin modo de colocación
-    // El usuario tocará la panorámica para colocar el hotspot
-    if (isMobile) {
-      setShowMobileForm(true);
-      setPlacementMode(true);
-      placementModeRef.current = true;
-    } else {
-      setPlacementMode(true);
-      placementModeRef.current = true;
-    }
+    // ✅ FLUJO CORRECTO: Primero seleccionar punto, DESPUÉS abrir modal
+    // Activar modo de colocación (NO abrir modal todavía)
+    setPlacementMode(true);
+    placementModeRef.current = true;
+    // El modal se abrirá DESPUÉS de que el usuario haga click en el panorama
   };
 
   // Handler específico para móvil: cuando se envía el formulario móvil
@@ -1036,22 +1029,26 @@ export default function HotspotEditor({
             <div
               style={{
                 position: 'absolute',
-                top: '20px',
+                top: isMobile ? '80px' : '20px', // ✅ Más abajo en móvil
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 1000,
                 backgroundColor: 'rgba(102, 126, 234, 0.95)',
                 color: '#fff',
-                padding: '15px 30px',
-                borderRadius: '10px',
+                padding: isMobile ? '16px 24px' : '15px 30px', // ✅ Más grande en móvil
+                borderRadius: isMobile ? '16px' : '10px',
                 fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '20px',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                maxWidth: isMobile ? '90%' : 'none', // ✅ No se salga en móvil
+                flexDirection: isMobile ? 'column' : 'row', // ✅ Vertical en móvil
               }}
             >
-              <span>📍 Haz clic donde quieres colocar el hotspot</span>
+              <span style={{ fontSize: isMobile ? '16px' : '14px', textAlign: 'center' }}>
+                📍 {isMobile ? 'Toca' : 'Haz clic'} donde quieres colocar el hotspot
+              </span>
               <button
                 onClick={() => {
                   setPlacementMode(false);
@@ -1061,20 +1058,38 @@ export default function HotspotEditor({
                   background: 'rgba(255, 255, 255, 0.2)',
                   border: '2px solid white',
                   color: 'white',
-                  padding: '6px 16px',
-                  borderRadius: '6px',
+                  padding: isMobile ? '12px 24px' : '6px 16px', // ✅ Más grande en móvil
+                  borderRadius: isMobile ? '12px' : '6px',
                   fontWeight: '600',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  fontSize: '13px',
+                  fontSize: isMobile ? '15px' : '13px',
+                  touchAction: 'manipulation', // ✅ Mejor respuesta táctil
+                  minHeight: isMobile ? '44px' : 'auto', // ✅ Touch target size
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                  e.target.style.transform = 'scale(1.05)';
+                  if (!isMobile) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                    e.target.style.transform = 'scale(1.05)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.transform = 'scale(1)';
+                  if (!isMobile) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'scale(1)';
+                  }
+                }}
+                onTouchStart={(e) => {
+                  if (isMobile) {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                    e.currentTarget.style.transform = 'scale(0.96)';
+                  }
+                }}
+                onTouchEnd={(e) => {
+                  if (isMobile) {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }
                 }}
               >
                 ✕ Cancelar (ESC)

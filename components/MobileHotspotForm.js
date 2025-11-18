@@ -50,6 +50,8 @@ export default function MobileHotspotForm({
             border: '2px solid #e5e7eb',
             outline: 'none',
             transition: 'border-color 0.2s',
+            background: 'white',
+            color: '#1f2937', // ✅ TEXTO OSCURO VISIBLE
           }}
           onFocus={(e) => {
             e.target.style.borderColor = '#667eea';
@@ -76,6 +78,7 @@ export default function MobileHotspotForm({
             border: '2px solid #e5e7eb',
             outline: 'none',
             background: 'white',
+            color: '#1f2937', // ✅ TEXTO OSCURO VISIBLE
           }}
         >
           <option value="navigation">🧭 Navegación (ir a otra vista)</option>
@@ -104,6 +107,7 @@ export default function MobileHotspotForm({
                 border: '2px solid #e5e7eb',
                 outline: 'none',
                 background: 'white',
+                color: '#1f2937', // ✅ TEXTO OSCURO VISIBLE
               }}
             >
               {viewNames.map((name, index) => (
@@ -169,6 +173,8 @@ export default function MobileHotspotForm({
               outline: 'none',
               resize: 'vertical',
               fontFamily: 'inherit',
+              background: 'white',
+              color: '#1f2937', // ✅ TEXTO OSCURO VISIBLE
             }}
             onFocus={(e) => {
               e.target.style.borderColor = '#667eea';
