@@ -186,19 +186,31 @@ export default function AddTerrain() {
     const file = e.target.files[0];
     if (!file) return;
 
-    setCompressionProgress('🔄 Optimizando imagen de portada...');
+    setCompressionProgress('🔄 Optimizando imagen de portada para redes sociales...');
 
-    // ✅ OPTIMIZADO: Mayor calidad para portadas atractivas
+    // 🌐 OPTIMIZADO PARA OPEN GRAPH (Facebook/WhatsApp/Twitter)
+    // Especificaciones recomendadas:
+    // - Dimensiones: 1200x630px (ratio 1.91:1)
+    // - Formato: JPG (mejor compatibilidad que WebP)
+    // - Tamaño: < 1MB para carga rápida
+    // - Calidad: 85% para balance calidad/tamaño
     const options = {
-      maxWidthOrHeight: 1920,
+      maxWidthOrHeight: 1200, // Ancho ideal para Open Graph
       useWebWorker: true,
-      fileType: 'image/webp',
-      initialQuality: 0.9, // 90% de calidad (antes 85%)
-      maxSizeMB: 2, // 2MB para portadas de alta calidad (antes 1MB)
+      fileType: 'image/jpeg', // ✅ JPG para mejor compatibilidad con redes sociales
+      initialQuality: 0.85, // 85% de calidad (balance perfecto)
+      maxSizeMB: 1, // ✅ Menos de 1MB para carga rápida en móviles
     };
 
     try {
+      console.log('📸 Optimizando portada para Open Graph...');
+      console.log(`Original: ${file.name}, ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
       const compressedFile = await imageCompression(file, options);
+
+      console.log(`✅ Optimizada: ${compressedFile.name}, ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+      console.log('📐 Formato: JPEG (compatible con Facebook/WhatsApp)');
+
       setCoverImage(compressedFile);
       setCompressionProgress('');
     } catch (error) {
@@ -241,8 +253,8 @@ export default function AddTerrain() {
       // Subir imagen de portada
       let coverImageUrl = null;
       if (coverImage) {
-        setUploadProgress('📤 Subiendo imagen de portada...');
-        const coverFilePath = `${user.id}/${uuidv4()}-cover.webp`;
+        setUploadProgress('📤 Subiendo imagen de portada optimizada para redes sociales...');
+        const coverFilePath = `${user.id}/${uuidv4()}-cover.jpg`; // ✅ JPG para Open Graph
 
         const { error: coverUploadError } = await supabase.storage
           .from('tours-panoramicos')
