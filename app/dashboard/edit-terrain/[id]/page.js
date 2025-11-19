@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter, useParams } from 'next/navigation';
+import slugify from 'slugify';
 import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
@@ -153,11 +154,34 @@ export default function EditTerrain() {
     setLoading(true);
 
     try {
+      // 🔍 Regenerar slug si el título cambió
+      let updatedSlug = null;
+
+      // Obtener el terreno actual para comparar el título
+      const { data: currentTerreno } = await supabase
+        .from('terrenos')
+        .select('title, slug')
+        .eq('id', terrenoId)
+        .single();
+
+      // Si el título cambió, regenerar el slug
+      if (currentTerreno && currentTerreno.title !== formData.title) {
+        updatedSlug = slugify(formData.title || 'propiedad', {
+          lower: true,
+          strict: true,
+          locale: 'es',
+          remove: /[*+~.()'"!:@]/g,
+        }) + '-' + terrenoId.substring(0, 8);
+
+        console.log('🏷️ Título cambió, slug actualizado:', updatedSlug);
+      }
+
       const { error } = await supabase
         .from('terrenos')
         .update({
           title: formData.title,
           description: formData.description,
+          ...(updatedSlug && { slug: updatedSlug }), // ✅ Actualizar slug solo si cambió el título
           property_type: formData.property_type, // Nuevo
           land_category: formData.land_category, // Nuevo
           available_for_contribution: formData.available_for_contribution, // Nuevo

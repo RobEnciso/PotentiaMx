@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import slugify from 'slugify';
 import imageCompression from 'browser-image-compression';
 import dynamic from 'next/dynamic';
 import {
@@ -286,10 +287,21 @@ export default function AddTerrain() {
       // Guardar en BD
       setUploadProgress('💾 Guardando tour en la base de datos...');
 
+      // 🔍 Generar slug SEO-friendly automáticamente
+      const generatedSlug = slugify(formData.title || 'propiedad', {
+        lower: true,
+        strict: true,
+        locale: 'es',
+        remove: /[*+~.()'"!:@]/g,
+      }) + '-' + uuidv4().substring(0, 8);
+
+      console.log('🏷️ Slug generado:', generatedSlug);
+
       const { error: dbError } = await supabase.from('terrenos').insert([
         {
           ...formData,
           user_id: user.id,
+          slug: generatedSlug, // ✅ Agregar slug automáticamente
           sale_price: parseFloat(formData.sale_price) || 0,
           total_square_meters: parseFloat(formData.total_square_meters) || 0,
           image_urls: imageUrls,
