@@ -754,12 +754,42 @@ export default function AddTerrain() {
               </h2>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <p className="text-sm text-blue-800">
-                💡 <strong>Recomendación:</strong> Sube una foto normal (no
-                360°) que se mostrará como miniatura en el dashboard. Si no
-                subes ninguna, se usará la primera imagen 360°.
-              </p>
+            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg p-5 mb-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🚀</span>
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold text-indigo-900 mb-3">
+                    Optimizado para Redes Sociales (WhatsApp/Facebook)
+                  </h3>
+                  <ul className="space-y-2 text-sm text-indigo-800">
+                    <li className="flex items-start gap-2">
+                      <span className="text-base">📏</span>
+                      <span>
+                        <strong>Tamaño Perfecto:</strong> 1200 x 630 px (Formato
+                        Horizontal / Paisaje)
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-base">⚖️</span>
+                      <span>
+                        <strong>Peso Ligero:</strong> Menos de 300KB para que la
+                        imagen cargue instantáneamente
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-base">🚫</span>
+                      <span>
+                        <strong>Evita:</strong> Fotos verticales o cuadradas (se
+                        verán pequeñas en el chat)
+                      </span>
+                    </li>
+                  </ul>
+                  <p className="text-xs text-indigo-600 mt-3 italic">
+                    💡 Si no subes portada, se usará la primera imagen 360° (puede
+                    no verse ideal en redes)
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="relative">
