@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabaseClient';
-import PhotoSphereViewer from '@/app/terreno/[id]/PhotoSphereViewer';
+import PhotoSphereViewer from '@/app/terreno/[slug]/PhotoSphereViewer';
 
 /**
  * PÁGINA EMBED - Para incrustar en sitios externos
