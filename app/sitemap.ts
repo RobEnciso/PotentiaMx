@@ -4,10 +4,10 @@ import { createClient } from '@/lib/supabaseClient';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createClient();
 
-  // Obtener todas las propiedades públicas activas
+  // 🔍 Obtener todas las propiedades públicas activas (con SLUG para SEO)
   const { data: terrenos } = await supabase
     .from('terrenos')
-    .select('id, updated_at')
+    .select('slug, updated_at')
     .eq('is_marketplace_listing', true)
     .eq('status', 'active');
 
@@ -27,13 +27,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // URLs dinámicas (cada propiedad)
-  const propertyUrls = (terrenos || []).map((terreno) => ({
-    url: `https://potentiamx.com/terreno/${terreno.id}`,
-    lastModified: new Date(terreno.updated_at || new Date()),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  // 🎯 URLs dinámicas SEO-friendly (cada propiedad usa SLUG)
+  const propertyUrls = (terrenos || [])
+    .filter((terreno) => terreno.slug) // Solo incluir si tiene slug
+    .map((terreno) => ({
+      url: `https://potentiamx.com/terreno/${terreno.slug}`,
+      lastModified: new Date(terreno.updated_at || new Date()),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
 
   return [...staticUrls, ...propertyUrls];
 }

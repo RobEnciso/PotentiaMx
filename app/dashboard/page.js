@@ -240,14 +240,14 @@ export default function Dashboard() {
     try {
       const { data: demoTours } = await supabase
         .from('terrenos')
-        .select('id')
+        .select('id, slug')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: true })
         .limit(1);
 
       if (demoTours && demoTours.length > 0) {
         // Redirigir al tour demo personal (editable)
-        router.push(`/terreno/${demoTours[0].id}`);
+        router.push(`/terreno/${demoTours[0].slug}`);
       } else {
         // Si no hay tour demo (error), solo cerrar modal
         // El usuario verá su dashboard
@@ -1338,7 +1338,7 @@ export default function Dashboard() {
                           {/* Acciones */}
                           <div className="flex flex-col gap-2">
                             <Link
-                              href={`/terreno/${terreno.id}`}
+                              href={`/terreno/${terreno.slug}`}
                               target="_blank"
                               className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg transition-colors"
                             >
@@ -1530,7 +1530,7 @@ export default function Dashboard() {
                         (terreno.cover_image_url ||
                           terreno.image_urls.length > 0) && (
                           <Link
-                            href={`/terreno/${terreno.id}`}
+                            href={`/terreno/${terreno.slug}`}
                             className="block"
                           >
                             <div className="relative w-full h-48 bg-slate-100 cursor-pointer group">
@@ -1624,7 +1624,7 @@ export default function Dashboard() {
                               Editar
                             </Link>
                             <Link
-                              href={`/terreno/${terreno.id}/editor`}
+                              href={`/terreno/${terreno.slug}/editor`}
                               data-tutorial={
                                 index === 0 ? 'hotspots-button' : undefined
                               }
@@ -1638,7 +1638,7 @@ export default function Dashboard() {
                           {/* Acciones Secundarias */}
                           <div className="grid grid-cols-2 gap-2">
                             <Link
-                              href={`/terreno/${terreno.id}`}
+                              href={`/terreno/${terreno.slug}`}
                               data-tutorial={
                                 index === 0 ? 'view-button' : undefined
                               }

@@ -22,6 +22,7 @@ export default function PropertyCard(props) {
   } = props;
   const {
     id,
+    slug,
     title,
     sale_price,
     total_square_meters,
@@ -36,7 +37,7 @@ export default function PropertyCard(props) {
   const priceFormatted = formatPrice(sale_price);
 
   return (
-    <Link href={`/terreno/${id}`}>
+    <Link href={`/terreno/${slug || id}`}>
       <div
         className={`group cursor-pointer transition-all duration-200 ${
           isHovered

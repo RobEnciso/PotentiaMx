@@ -13,6 +13,7 @@ export default function EditorPage() {
 
   const params = useParams();
   const router = useRouter();
+  const [terrainId, setTerrainId] = useState(null); // ✅ Nuevo estado para guardar el ID
   const [terrain, setTerrain] = useState(null);
   const [hotspots, setHotspots] = useState([]);
   const [viewNames, setViewNames] = useState([]);
@@ -130,11 +131,43 @@ export default function EditorPage() {
     [supabase, router],
   );
 
+  // ✅ Nuevo useEffect para convertir slug a ID
   useEffect(() => {
-    if (params.id) {
-      loadData(params.id);
+    const getTerrainIdFromSlug = async () => {
+      if (params.slug) {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from('terrenos')
+            .select('id')
+            .eq('slug', params.slug)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            setTerrainId(data.id);
+          } else {
+            setError('Terreno no encontrado');
+            setTimeout(() => router.push('/dashboard'), 2000);
+          }
+        } catch (err) {
+          console.error('Error obteniendo ID del terreno:', err);
+          setError('Error al cargar el terreno');
+          setTimeout(() => router.push('/dashboard'), 2000);
+        }
+      }
+    };
+
+    getTerrainIdFromSlug();
+  }, [params.slug, supabase, router]);
+
+  // Cargar datos cuando tengamos el terrainId
+  useEffect(() => {
+    if (terrainId) {
+      loadData(terrainId);
     }
-  }, [params.id, loadData]);
+  }, [terrainId, loadData]);
 
   const handleUploadNewImage = async (imageFile) => {
     try {
@@ -191,7 +224,7 @@ export default function EditorPage() {
       const { error: updateError } = await supabase
         .from('terrenos')
         .update({ image_urls: updatedImageUrls })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (updateError) throw updateError;
 
@@ -349,7 +382,7 @@ export default function EditorPage() {
       const { error: updateError } = await supabase
         .from('terrenos')
         .update({ image_urls: updatedImageUrls })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (updateError) throw updateError;
 
@@ -386,7 +419,7 @@ export default function EditorPage() {
       const { error: rpcError } = await supabase.rpc(
         'update_hotspots_for_terrain',
         {
-          terrain_id_to_update: params.id,
+          terrain_id_to_update: terrainId,
           hotspots_data: hotspotsToInsert,
         },
       );
@@ -432,7 +465,7 @@ export default function EditorPage() {
       const { error: updateError } = await supabase
         .from('terrenos')
         .update({ view_names: updatedViewNames })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (updateError) {
         console.error('Error al guardar nombre de vista:', updateError);
@@ -465,7 +498,7 @@ export default function EditorPage() {
       const { error: styleError } = await supabase
         .from('terrenos')
         .update({ marker_style: markerStyle })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (styleError) {
         console.error('Error al guardar estilo:', styleError);
@@ -522,7 +555,7 @@ export default function EditorPage() {
           view_narration_volume: newNarrationVolume,
           view_audio_autoplay: newAutoplay,
         })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (updateError) {
         console.error('Error al guardar audio de vista:', updateError);
@@ -593,7 +626,7 @@ export default function EditorPage() {
       const { data: rpcData, error: rpcError } = await supabase.rpc(
         'update_hotspots_for_terrain',
         {
-          terrain_id_to_update: params.id,
+          terrain_id_to_update: terrainId,
           hotspots_data: hotspotsToInsert,
         },
       );
@@ -610,7 +643,7 @@ export default function EditorPage() {
       const { error: styleError } = await supabase
         .from('terrenos')
         .update({ marker_style: markerStyle })
-        .eq('id', params.id);
+        .eq('id', terrainId);
 
       if (styleError) {
         console.error('❌ Error al guardar estilo:', styleError);
@@ -627,7 +660,7 @@ export default function EditorPage() {
       const { data: hotspotsData, error: hotspotsError } = await supabase
         .from('hotspots')
         .select('*')
-        .eq('terreno_id', params.id);
+        .eq('terreno_id', terrainId);
 
       console.log('📊 Hotspots recargados:', { count: hotspotsData?.length, error: hotspotsError });
 
@@ -700,7 +733,7 @@ export default function EditorPage() {
 
   return (
     <HotspotEditor
-      terrainId={params.id}
+      terrainId={terrainId}
       imageUrls={imageUrls}
       existingHotspots={hotspots}
       viewNames={viewNames}

@@ -20,6 +20,7 @@ const PropertyMap = dynamic(() => import('@/components/PropertyMap'), {
 
 interface Terreno {
   id: string;
+  slug: string;
   title: string;
   description?: string;
   cover_image_url?: string;

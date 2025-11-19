@@ -6,16 +6,16 @@ import TerrenoClientPage from './TerrenoClientPage';
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const supabase = createClient();
-  const { id } = await params;
+  const { slug } = await params;
 
-  // Obtener datos del terreno
+  // 🔍 Obtener datos del terreno usando el SLUG (SEO-friendly)
   const { data: terreno } = await supabase
     .from('terrenos')
     .select('*')
-    .eq('id', id)
+    .eq('slug', slug)
     .single();
 
   // Si no existe, metadata genérica
@@ -106,7 +106,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://potentiamx.com/terreno/${id}`,
+      url: `https://potentiamx.com/terreno/${slug}`,
       siteName: 'PotentiaMX',
       images: terreno.cover_image_url
         ? [
@@ -173,8 +173,36 @@ export async function generateMetadata({
 export default async function TerrenoPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  return <TerrenoClientPage id={id} />;
+  const supabase = createClient();
+  const { slug } = await params;
+
+  // 🔍 Obtener el ID del terreno usando el slug para pasarlo al componente cliente
+  const { data: terreno } = await supabase
+    .from('terrenos')
+    .select('id, slug')
+    .eq('slug', slug)
+    .single();
+
+  if (!terreno) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+        <div className="text-center text-white">
+          <h1 className="text-4xl font-bold mb-4">Propiedad no encontrada</h1>
+          <p className="text-slate-400 mb-6">
+            La propiedad que buscas no existe o ha sido eliminada.
+          </p>
+          <a
+            href="/propiedades"
+            className="inline-block px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors"
+          >
+            Ver todas las propiedades
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return <TerrenoClientPage id={terreno.id} />;
 }
