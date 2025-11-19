@@ -94,12 +94,13 @@ export default function PropertyMap(props) {
         marker.on('click', (e) => {
           console.log(
             'Click en marcador (evento Leaflet):',
-            property.id,
+            property.slug || property.id,
             property.title,
           );
           L.DomEvent.stopPropagation(e);
-          console.log('Navegando a:', `/terreno/${property.id}`);
-          window.location.href = `/terreno/${property.id}`;
+          const targetUrl = `/terreno/${property.slug || property.id}`;
+          console.log('Navegando a:', targetUrl);
+          window.location.href = targetUrl;
         });
 
         // También agregar evento al elemento DOM directamente (plan B)
@@ -111,11 +112,11 @@ export default function PropertyMap(props) {
               priceDiv.addEventListener('click', (e) => {
                 console.log(
                   'Click en marcador (evento DOM):',
-                  property.id,
+                  property.slug || property.id,
                   property.title,
                 );
                 e.stopPropagation();
-                window.location.href = `/terreno/${property.id}`;
+                window.location.href = `/terreno/${property.slug || property.id}`;
               });
             }
           }
@@ -215,9 +216,9 @@ export default function PropertyMap(props) {
 
         // Agregar evento click
         marker.on('click', (e) => {
-          console.log('Click en marcador:', property.id, property.title);
+          console.log('Click en marcador:', property.slug || property.id, property.title);
           L.DomEvent.stopPropagation(e);
-          window.location.href = `/terreno/${property.id}`;
+          window.location.href = `/terreno/${property.slug || property.id}`;
         });
 
         // También agregar evento DOM
@@ -227,9 +228,9 @@ export default function PropertyMap(props) {
             const priceDiv = markerElement.querySelector('.price-marker');
             if (priceDiv) {
               priceDiv.addEventListener('click', (e) => {
-                console.log('Click DOM:', property.id);
+                console.log('Click DOM:', property.slug || property.id);
                 e.stopPropagation();
-                window.location.href = `/terreno/${property.id}`;
+                window.location.href = `/terreno/${property.slug || property.id}`;
               });
             }
           }
