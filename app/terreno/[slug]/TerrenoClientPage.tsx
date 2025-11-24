@@ -1,19 +1,43 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import PhotoSphereViewer from './PhotoSphereViewer';
 import type { User } from '@supabase/supabase-js';
+import { useTourAnalytics } from '@/hooks/useTourAnalytics';
 
 // ✅ CORRECCIÓN CLAVE: Creamos el cliente UNA SOLA VEZ aquí fuera.
 const supabase = createClient();
 
 export default function TerrenoClientPage({ id }: { id: string }) {
+  // ✅ ORDEN CRÍTICO: Todos los hooks useState PRIMERO
   const [terrain, setTerrain] = useState<any>(null);
   const [hotspots, setHotspots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
+
+  // ✅ Preparar datos para analytics (siempre, incluso si terrain es null)
+  // 🔒 CRÍTICO: useMemo evita crear nuevo array en cada render
+  const validImageUrls = useMemo(
+    () => (terrain?.image_urls || []).filter((url: string) => url),
+    [terrain?.image_urls]
+  );
+
+  // ✅ Hook de analytics DESPUÉS de todos los useState, ANTES de useEffect
+  const analytics = useTourAnalytics({
+    tourId: terrain?.id || '',
+    tourTitle: terrain?.title || '',
+    currentSceneIndex,
+    totalScenes: validImageUrls.length || 0,
+  });
+
+  // ✅ Handler para cambio de escena (actualiza estado, no remonta viewer)
+  // CRÍTICO: useCallback evita re-renders innecesarios del hijo
+  const handleSceneChange = useCallback((index: number) => {
+    setCurrentSceneIndex(index);
+  }, []);
 
   // ✅ OPTIMIZADO: Cargar todo en paralelo en un solo useEffect
   useEffect(() => {
@@ -73,6 +97,7 @@ export default function TerrenoClientPage({ id }: { id: string }) {
     loadAllData();
   }, [id]);
 
+  // ✅ Estados de carga y error
   if (loading) {
     return (
       <div
@@ -107,8 +132,6 @@ export default function TerrenoClientPage({ id }: { id: string }) {
     );
   }
 
-  const validImageUrls = (terrain?.image_urls || []).filter((url: string) => url);
-
   if (validImageUrls.length === 0) {
     return (
       <div
@@ -132,6 +155,8 @@ export default function TerrenoClientPage({ id }: { id: string }) {
       terreno={terrain}
       hotspots={hotspots}
       currentUser={currentUser}
+      onSceneChange={handleSceneChange}
+      analytics={analytics}
     />
   );
 }

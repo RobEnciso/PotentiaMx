@@ -1612,26 +1612,33 @@ export default function Dashboard() {
                         {/* Actions - Reorganizadas para mejor UX */}
                         <div className="space-y-2">
                           {/* Acciones Principales - Más grandes y destacadas */}
-                          <div className="grid grid-cols-2 gap-2">
+                          <div className="grid grid-cols-3 gap-2">
                             <Link
                               href={`/dashboard/edit-terrain/${terreno.id}`}
                               data-tutorial={
                                 index === 0 ? 'edit-button' : undefined
                               }
-                              className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                              className="inline-flex items-center justify-center gap-1 px-3 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
                             >
                               <Edit className="w-4 h-4" />
-                              Editar
+                              <span className="hidden xl:inline">Editar</span>
                             </Link>
                             <Link
                               href={`/terreno/${terreno.slug}/editor`}
                               data-tutorial={
                                 index === 0 ? 'hotspots-button' : undefined
                               }
-                              className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                              className="inline-flex items-center justify-center gap-1 px-3 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
                             >
                               <Target className="w-4 h-4" />
-                              Hotspots
+                              <span className="hidden xl:inline">Hotspots</span>
+                            </Link>
+                            <Link
+                              href={`/dashboard/analytics/${terreno.slug}`}
+                              className="inline-flex items-center justify-center gap-1 px-3 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                            >
+                              <BarChart3 className="w-4 h-4" />
+                              <span className="hidden xl:inline">Analytics</span>
                             </Link>
                           </div>
 

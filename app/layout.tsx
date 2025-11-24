@@ -3,6 +3,7 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import 'leaflet/dist/leaflet.css';
 import CookieConsent from '@/components/CookieConsent';
+import { PostHogProvider } from './providers/PostHogProvider';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -64,8 +65,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${montserrat.variable} font-sans antialiased`}>
-        {children}
-        <CookieConsent />
+        <PostHogProvider>
+          {children}
+          <CookieConsent />
+        </PostHogProvider>
       </body>
     </html>
   );

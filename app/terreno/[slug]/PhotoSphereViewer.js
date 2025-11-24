@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Viewer } from '@photo-sphere-viewer/core';
@@ -8,12 +10,14 @@ import ContactFormModal from '@/components/ContactFormModal';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
 
-export default function PhotoSphereViewer({
+function PhotoSphereViewer({
   images,
   terreno,
   hotspots,
   currentUser,
   isEmbedMode = false,
+  onSceneChange,
+  analytics,
 }) {
   // Obtener estilo de marcador desde terreno (default: 'apple')
   const markerStyle = terreno?.marker_style || 'apple';
@@ -203,8 +207,11 @@ export default function PhotoSphereViewer({
   };
 
   const containerRef = useRef(null);
+    const isMountedRef = useRef(false); // Flag para evitar doble inicialización
   const viewerRef = useRef(null);
   const markersPluginRef = useRef(null);
+  // ✅ NUEVO: Ref para hotspots (evita recrear initializeViewer cuando cambian)
+  const hotspotsRef = useRef(hotspots);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -224,9 +231,17 @@ export default function PhotoSphereViewer({
   const transitionLoaderTimeoutRef = useRef(null);
   const preloadedImagesRef = useRef(new Set());
 
+  // ✅ LOCK de transición: Evita race conditions entre useEffect y setPanorama
+  const isTransitioningRef = useRef(false);
+
   // ✅ Referencias de audio por vista
   const ambientAudioRef = useRef(null);
   const narrationAudioRef = useRef(null);
+
+  // ✅ Actualizar hotspotsRef cuando cambian los hotspots (sin recrear initializeViewer)
+  useEffect(() => {
+    hotspotsRef.current = hotspots;
+  }, [hotspots]);
 
   // Emails de administradores (mismo array que en dashboard)
   const ADMIN_EMAILS = [
@@ -257,6 +272,7 @@ export default function PhotoSphereViewer({
       navigator.clipboard.writeText(window.location.href);
       setShowCopyTooltip(true);
       setTimeout(() => setShowCopyTooltip(false), 2000);
+      analytics?.trackShare();
     }
   };
 
@@ -479,88 +495,16 @@ export default function PhotoSphereViewer({
     };
   }, [currentIndex, terreno, isViewerReady]);
 
-  // Declarar initializeViewer ANTES del useEffect que lo usa
-  const initializeViewer = useCallback(
-    async (imageUrl) => {
-      if (!containerRef.current) {
-        console.error('PhotoSphereViewer: No hay contenedor disponible');
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const viewer = new Viewer({
-          container: containerRef.current,
-          panorama: imageUrl,
-          loadingImg: null,
-          plugins: [[MarkersPlugin, {}]],
-          navbar: false,
-          defaultZoomLvl: 50,
-          mousewheel: true,
-          mousemove: true,
-          // ✅ MOBILE TOUCH SENSITIVITY (como Google Maps)
-          mousewheelSpeed: 2.0, // Velocidad del zoom
-          moveSpeed: 2.0, // ✅ CLAVE: Velocidad de movimiento (2x más rápido)
-          // ❌ touchmoveTwoFingers: true - REMOVIDO (bloqueaba movimiento con 1 dedo)
-        });
-
-        viewerRef.current = viewer;
-        markersPluginRef.current = viewer.getPlugin(MarkersPlugin);
-
-        viewer.addEventListener('ready', () => {
-          setLoading(false);
-          setIsViewerReady(true);
-          setIsInitialized(true);
-          setLoadedPanoramaIndex(0);
-          setTimeout(() => {
-            setMarkersVisible(true);
-          }, 300);
-        });
-
-        viewer.addEventListener('panorama-load-error', (e) => {
-          console.error('PhotoSphereViewer: Error al cargar panorama:', e);
-          setError('Error al cargar la imagen: ' + e.error);
-          setLoading(false);
-        });
-
-        markersPluginRef.current.addEventListener('select-marker', (e) => {
-          const clickedMarker = e.marker;
-          if (!clickedMarker) return;
-          const hotspot = hotspots.find(
-            (h) => String(h.id) === String(clickedMarker.id),
-          );
-
-          if (!hotspot) return;
-
-          const hotspotType = hotspot.type || 'navigation';
-
-          // Solo navegar si es tipo 'navigation' y tiene targetImageIndex
-          if (hotspotType === 'navigation' && hotspot.targetImageIndex !== undefined) {
-            setCurrentIndex(hotspot.targetImageIndex);
-          } else if (hotspotType !== 'navigation') {
-            // Abrir modal con contenido multimedia
-            console.log(`Hotspot multimedia clickeado (${hotspotType}):`, hotspot);
-            setActiveMediaModal({ type: hotspotType, data: hotspot });
-          }
-        });
-      } catch (err) {
-        console.error('PhotoSphereViewer: Error al inicializar el visor:', err);
-        setError('Error al inicializar el visor: ' + err.message);
-        setLoading(false);
-      }
-    },
-    [hotspots],
-  );
-
+  // ========================================================================
+  // ✅ EFECTO A (MOUNT) - Solo se ejecuta UNA VEZ al montar
+  // ========================================================================
   useEffect(() => {
-    if (
-      !containerRef.current ||
-      !images ||
-      images.length === 0 ||
-      viewerRef.current
-    ) {
+    // 🔒 GUARD DEFINITIVO: Prevenir doble inicialización
+    if (isMountedRef.current || viewerRef.current) {
+      return;
+    }
+
+    if (!containerRef.current || !images || images.length === 0) {
       return;
     }
 
@@ -573,34 +517,129 @@ export default function PhotoSphereViewer({
       return;
     }
 
-    const timer = setTimeout(() => {
-      initializeViewer(validImages[0]);
-    }, 100);
+    // A. Limpieza inicial del DOM
+    containerRef.current.innerHTML = '';
 
-    return () => {
-      clearTimeout(timer);
-      if (viewerRef.current) {
-        viewerRef.current.destroy();
-        viewerRef.current = null;
+    // B. Crear instancia del viewer UNA SOLA VEZ
+    setLoading(true);
+    setError(null);
+
+    const viewer = new Viewer({
+      container: containerRef.current,
+      panorama: validImages[0], // ✅ Imagen inicial (índice 0)
+      loadingImg: null,
+      plugins: [[MarkersPlugin, {}]],
+      navbar: false,
+      defaultZoomLvl: 50,
+      mousewheel: true,
+      mousemove: true,
+      moveSpeed: 2.0,
+    });
+
+    // C. Guardar referencias
+    viewerRef.current = viewer;
+    markersPluginRef.current = viewer.getPlugin(MarkersPlugin);
+    isMountedRef.current = true; // Marcar como montado
+
+    // D. Event listener 'ready'
+    viewer.addEventListener('ready', () => {
+      setLoading(false);
+      setIsViewerReady(true);
+      setIsInitialized(true);
+      setLoadedPanoramaIndex(0);
+      setTimeout(() => {
+        setMarkersVisible(true);
+      }, 300);
+    });
+
+    // E. Event listener 'panorama-load-error'
+    viewer.addEventListener('panorama-load-error', (e) => {
+      console.error('❌ [MOUNT] Error al cargar panorama:', e);
+      setError('Error al cargar la imagen: ' + e.error);
+      setLoading(false);
+    });
+
+    // F. Event listener 'select-marker' (clicks en hotspots)
+    markersPluginRef.current.addEventListener('select-marker', (e) => {
+      const clickedMarker = e.marker;
+      if (!clickedMarker) return;
+
+      const currentHotspots = hotspotsRef.current || [];
+      const hotspot = currentHotspots.find(
+        (h) => String(h.id) === String(clickedMarker.id),
+      );
+
+      if (!hotspot) return;
+
+      const hotspotType = hotspot.type || 'navigation';
+
+      // Track hotspot click
+      if (analytics?.trackHotspotClick) {
+        analytics.trackHotspotClick(
+          String(hotspot.id),
+          hotspot.title || 'Sin título',
+          hotspotType
+        );
       }
-    };
-  }, [images, initializeViewer]);
 
+      // Solo navegar si es tipo 'navigation' y tiene targetImageIndex
+      if (hotspotType === 'navigation' && hotspot.targetImageIndex !== undefined) {
+        setCurrentIndex(hotspot.targetImageIndex);
+      } else if (hotspotType !== 'navigation') {
+        setActiveMediaModal({ type: hotspotType, data: hotspot });
+      }
+    });
+
+    // G. Cleanup (NO resetear flag - mantener viewer protegido)
+    return () => {
+      // ⚠️ CRÍTICO: NO resetear isMountedRef.current
+      // Si lo reseteamos, React StrictMode puede remontar y crear viewer duplicado
+      // El flag debe permanecer en true para proteger el viewer existente
+    };
+  }, []); // ✅ Array vacío = Solo se ejecuta UNA VEZ al montar el componente
+
+  // ========================================================================
+  // ✅ EFECTO B (UPDATE) - Se ejecuta cuando cambia currentIndex
+  // ========================================================================
   useEffect(() => {
     const viewer = viewerRef.current;
-    if (!isViewerReady || !viewer || !images || !isInitialized) return;
+    const markersPlugin = markersPluginRef.current;
+
+    // Validaciones: Solo ejecutar si el viewer está listo
+    // 🛡️ GUARD CRÍTICO: Si el viewer no existe, abortar inmediatamente
+    if (!viewerRef.current) {
+      return;
+    }
+
+    if (!viewer || !markersPlugin || !isViewerReady || !images) {
+      return;
+    }
 
     const validImages = images.filter(
       (url) => url && typeof url === 'string' && url.trim() !== '',
     );
-    if (validImages.length === 0) return;
 
-    if (currentIndex < 0 || currentIndex >= validImages.length) return;
-    if (currentIndex === loadedPanoramaIndex) return;
+    if (validImages.length === 0 || currentIndex < 0 || currentIndex >= validImages.length) {
+      return;
+    }
 
+    // ✅ LOCK: Prevenir transiciones concurrentes
+    if (isTransitioningRef.current) {
+      return;
+    }
+
+    // Si ya estamos en la escena correcta, solo actualizar markers
+    if (currentIndex === loadedPanoramaIndex) {
+      updateMarkersForCurrentScene();
+      return;
+    }
+
+    // Activar lock
+    isTransitioningRef.current = true;
     setIsTransitioning(true);
     setMarkersVisible(false);
 
+    // Mostrar loader si la carga tarda más de 800ms
     if (transitionLoaderTimeoutRef.current) {
       clearTimeout(transitionLoaderTimeoutRef.current);
     }
@@ -608,7 +647,7 @@ export default function PhotoSphereViewer({
       setShowTransitionLoader(true);
     }, 800);
 
-    // ✅ OPTIMIZADO: Transición directa sin zoom innecesario
+    // PASO 1: Cambiar panorama
     viewer
       .setPanorama(validImages[currentIndex], {
         transition: 400,
@@ -616,6 +655,8 @@ export default function PhotoSphereViewer({
         zoom: viewer.getZoomLevel(),
       })
       .then(() => {
+        // Desbloquear y actualizar estado
+        isTransitioningRef.current = false;
         setLoadedPanoramaIndex(currentIndex);
         setIsTransitioning(false);
         setShowTransitionLoader(false);
@@ -624,84 +665,139 @@ export default function PhotoSphereViewer({
           clearTimeout(transitionLoaderTimeoutRef.current);
         }
 
+        // PASO 2: Actualizar markers multimedia
+        updateMarkersForCurrentScene();
+
         setTimeout(() => {
           setMarkersVisible(true);
         }, 200);
+
+        // Analytics (Fire & Forget)
+        try {
+          if (onSceneChange) {
+            onSceneChange(currentIndex);
+          }
+        } catch (analyticsError) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('[Analytics] Error:', analyticsError);
+          }
+        }
       })
       .catch((err) => {
-        console.error('PhotoSphereViewer: Error al cambiar imagen:', err);
-        setError('No se pudo cargar la imagen de la vista: ' + err.message);
-        setIsTransitioning(false);
-        setShowTransitionLoader(false);
-        setMarkersVisible(true);
+        console.warn(`⚠️ [UPDATE] Error al cargar imagen:`, err.message);
 
-        if (transitionLoaderTimeoutRef.current) {
-          clearTimeout(transitionLoaderTimeoutRef.current);
+        // Mantener loader visible durante retry
+        if (!showTransitionLoader) {
+          setShowTransitionLoader(true);
         }
+
+        // Retry después de 500ms
+        setTimeout(() => {
+          if (!viewer) {
+            console.error('❌ [UPDATE] Viewer no disponible en retry');
+            isTransitioningRef.current = false;
+            return;
+          }
+
+          viewer
+            .setPanorama(validImages[currentIndex], {
+              transition: 200,
+              showLoader: false,
+              zoom: viewer.getZoomLevel(),
+            })
+            .then(() => {
+              isTransitioningRef.current = false;
+              setLoadedPanoramaIndex(currentIndex);
+              setIsTransitioning(false);
+              setShowTransitionLoader(false);
+
+              updateMarkersForCurrentScene();
+
+              setTimeout(() => setMarkersVisible(true), 200);
+
+              try {
+                if (onSceneChange) onSceneChange(currentIndex);
+              } catch (e) {
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn('[Analytics] Error en retry:', e);
+                }
+              }
+            })
+            .catch((retryErr) => {
+              console.error('❌ [UPDATE] Retry falló:', retryErr.message);
+              isTransitioningRef.current = false;
+              setIsTransitioning(false);
+              setShowTransitionLoader(false);
+              setMarkersVisible(true);
+              setError('Error de conexión. Por favor, recarga la página.');
+            });
+        }, 500);
       });
-  }, [currentIndex, images, isViewerReady, isInitialized, loadedPanoramaIndex]);
 
-  useEffect(() => {
-    if (!isViewerReady || !markersPluginRef.current) {
-      return;
-    }
+    // ✅ FUNCIÓN AUXILIAR: Actualizar markers para la escena actual
+    function updateMarkersForCurrentScene() {
+      const markersPlugin = markersPluginRef.current;
+      if (!markersPlugin) return;
 
-    const markersPlugin = markersPluginRef.current;
-    markersPlugin.clearMarkers();
+      // Limpiar markers anteriores
+      markersPlugin.clearMarkers();
 
-    if (!markersVisible || hotspots.length === 0) {
-      return;
-    }
-
-    const currentHotspots = hotspots.filter(
-      (h) => h.imageIndex === currentIndex,
-    );
-
-    // Iconos predeterminados por tipo
-    const defaultIcons = {
-      navigation: '🧭',
-      info: 'ℹ️',
-      image: '🖼️',
-      video: '🎥',
-      audio: '🔊',
-    };
-
-    currentHotspots.forEach((hotspot) => {
-      const hotspotType = hotspot.type || 'navigation';
-      const icon = defaultIcons[hotspotType] || '📍';
-
-      // Tooltip diferente según tipo
-      let tooltip = '';
-      if (hotspotType === 'navigation') {
-        tooltip = `Ir a: ${hotspot.title}`;
-      } else if (hotspotType === 'info') {
-        tooltip = `Ver información: ${hotspot.title}`;
-      } else if (hotspotType === 'image') {
-        tooltip = `Ver galería: ${hotspot.title}`;
-      } else if (hotspotType === 'video') {
-        tooltip = `Reproducir video: ${hotspot.title}`;
-      } else if (hotspotType === 'audio') {
-        tooltip = `Reproducir audio: ${hotspot.title}`;
+      // ⚠️ Solo verificar hotspots, NO markersVisible (se maneja con CSS opacity)
+      if (!hotspots || hotspots.length === 0) {
+        return;
       }
 
-      // Diferenciar estilo entre navegación y multimedia
-      let markerHtml;
-      if (hotspotType === 'navigation') {
-        // Marcador completo con etiqueta para navegación
-        markerHtml = `<div class="public-marker">${icon} <span>${hotspot.title}</span></div>`;
-      } else {
-        // Solo icono grande para multimedia (punto de interés fijo)
-        markerHtml = `<div class="multimedia-marker" title="${hotspot.title}">${icon}</div>`;
-      }
+      // Filtrar hotspots de la escena actual
+      const currentHotspots = hotspots.filter(
+        (h) => h.imageIndex === currentIndex,
+      );
 
-      markersPlugin.addMarker({
-        id: String(hotspot.id),
-        position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
-        html: markerHtml,
-        tooltip: tooltip,
+      // Iconos predeterminados por tipo
+      const defaultIcons = {
+        navigation: '🧭',
+        info: 'ℹ️',
+        image: '🖼️',
+        video: '🎥',
+        audio: '🔊',
+      };
+
+      currentHotspots.forEach((hotspot) => {
+        const hotspotType = hotspot.type || 'navigation';
+        const icon = defaultIcons[hotspotType] || '📍';
+
+        // Tooltip diferente según tipo
+        let tooltip = '';
+        if (hotspotType === 'navigation') {
+          tooltip = `Ir a: ${hotspot.title}`;
+        } else if (hotspotType === 'info') {
+          tooltip = `Ver información: ${hotspot.title}`;
+        } else if (hotspotType === 'image') {
+          tooltip = `Ver galería: ${hotspot.title}`;
+        } else if (hotspotType === 'video') {
+          tooltip = `Reproducir video: ${hotspot.title}`;
+        } else if (hotspotType === 'audio') {
+          tooltip = `Reproducir audio: ${hotspot.title}`;
+        }
+
+        // Diferenciar estilo entre navegación y multimedia
+        let markerHtml;
+        if (hotspotType === 'navigation') {
+          // Marcador completo con etiqueta para navegación
+          markerHtml = `<div class="public-marker">${icon} <span>${hotspot.title}</span></div>`;
+        } else {
+          // Solo icono grande para multimedia (punto de interés fijo)
+          markerHtml = `<div class="multimedia-marker" title="${hotspot.title}">${icon}</div>`;
+        }
+
+        markersPlugin.addMarker({
+          id: String(hotspot.id),
+          position: { yaw: hotspot.yaw, pitch: hotspot.pitch },
+          html: markerHtml,
+          tooltip: tooltip,
+        });
       });
-    });
-  }, [isViewerReady, hotspots, currentIndex, markersVisible]);
+    }
+  }, [currentIndex, isViewerReady, hotspots, images]); // ✅ Depende de currentIndex, isViewerReady, hotspots e images
 
   // Auto-hide de controles estilo YouTube (instantáneo)
   const showControls = useCallback(() => {
@@ -845,7 +941,13 @@ export default function PhotoSphereViewer({
           background: 'black',
         }}
       >
-        <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+        <div
+          ref={containerRef}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
 
         {loading && (
           <div
@@ -983,7 +1085,11 @@ export default function PhotoSphereViewer({
         {/* Botón de Información - Oculto en modo embed */}
         {!isEmbedMode && (
           <button
-            onClick={() => setShowInfo(!showInfo)}
+            onClick={() => {
+              const newState = !showInfo;
+              setShowInfo(newState);
+              if (newState) analytics?.trackInfoView();
+            }}
             className={`info-button ${!controlsVisible ? 'hidden' : ''}`}
             title="Información del terreno"
             style={{ right: '16px' }}
@@ -1143,6 +1249,7 @@ export default function PhotoSphereViewer({
                       href={`https://wa.me/${whatsappNumber}?text=Hola, me interesa la propiedad: ${encodeURIComponent(terreno?.title || '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => analytics?.trackContactClick('whatsapp')}
                       style={{
                         display: 'block',
                         padding: '12px 20px',
@@ -1168,7 +1275,10 @@ export default function PhotoSphereViewer({
                   {/* Botón de Formulario - Solo si contact_type es 'formal' o 'both' */}
                   {showEmailForm && (
                     <button
-                      onClick={() => setShowContactForm(true)}
+                      onClick={() => {
+                        analytics?.trackContactClick('email');
+                        setShowContactForm(true);
+                      }}
                       style={{
                         width: '100%',
                         padding: '12px 20px',
@@ -1255,6 +1365,7 @@ export default function PhotoSphereViewer({
                 href={`https://wa.me/${whatsappNumber}?text=Hola, me interesa la propiedad: ${encodeURIComponent(terreno?.title || '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => analytics?.trackContactClick('whatsapp')}
                 style={{
                   position: 'fixed',
                   bottom: '24px',
@@ -1292,7 +1403,10 @@ export default function PhotoSphereViewer({
             {/* Botón Flotante de Formulario - Solo si contact_type es 'formal' o 'both' */}
             {showEmailForm && (
               <button
-                onClick={() => setShowContactForm(true)}
+                onClick={() => {
+                  analytics?.trackContactClick('email');
+                  setShowContactForm(true);
+                }}
                 style={{
                   position: 'fixed',
                   bottom: '24px',
@@ -1702,4 +1816,6 @@ export default function PhotoSphereViewer({
       </div>
     </>
   );
-}
+};
+
+export default PhotoSphereViewer;
