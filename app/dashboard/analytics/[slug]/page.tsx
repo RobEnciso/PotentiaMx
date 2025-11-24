@@ -88,18 +88,25 @@ const PROPERTY_CONFIG = {
   },
 };
 
-// Generate mock data - Replace with real PostHog data later
-const generateMockData = () => {
-  const daysData = Array.from({ length: 30 }, (_, i) => ({
-    date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
-      .toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
-      .replace('.', ''),
-    views: Math.floor(Math.random() * 50) + 10,
-    uniqueVisitors: Math.floor(Math.random() * 30) + 5,
-  }));
-
-  return { daysData };
-};
+// Interface for analytics data from API
+interface AnalyticsData {
+  totalViews: number;
+  uniqueVisitors: number;
+  avgTimeSpent: string;
+  hotLeads: number;
+  conversions: number;
+  dailyViews: Array<{
+    date: string;
+    views: number;
+    uniqueVisitors: number;
+  }>;
+  sceneMetrics: Array<{
+    name: string;
+    views: number;
+    avgTime: number;
+    percentage: number;
+  }>;
+}
 
 interface KPICardProps {
   icon: React.ReactNode;
@@ -242,15 +249,17 @@ export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
   const [isLoading, setIsLoading] = useState(true);
   const [terrain, setTerrain] = useState<any>(null);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Simulated user plan - Change to true to unlock premium features
   const isPro = false;
 
   const supabase = useMemo(() => createClient(), []);
 
+  // Load terrain data
   useEffect(() => {
     const loadTerrain = async () => {
-      setIsLoading(true);
       try {
         const { data, error } = await supabase
           .from('terrenos')
@@ -262,35 +271,65 @@ export default function AnalyticsPage() {
         setTerrain(data);
       } catch (error) {
         console.error('Error loading terrain:', error);
-      } finally {
-        setTimeout(() => setIsLoading(false), 800);
+        setError('No se pudo cargar la propiedad');
       }
     };
 
     loadTerrain();
   }, [slug, supabase]);
 
+  // Load analytics data from API
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`/api/analytics/${slug}?timeRange=${timeRange}`);
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data: AnalyticsData = await response.json();
+        setAnalyticsData(data);
+      } catch (error) {
+        console.error('Error loading analytics:', error);
+        setError(
+          error instanceof Error ? error.message : 'Error al cargar los datos de analytics'
+        );
+        // Set default empty data on error
+        setAnalyticsData({
+          totalViews: 0,
+          uniqueVisitors: 0,
+          avgTimeSpent: '0:00',
+          hotLeads: 0,
+          conversions: 0,
+          dailyViews: [],
+          sceneMetrics: [],
+        });
+      } finally {
+        setTimeout(() => setIsLoading(false), 500);
+      }
+    };
+
+    if (slug) {
+      loadAnalytics();
+    }
+  }, [slug, timeRange]);
+
   // Get property type from terrain data (default to 'terreno')
   const propertyType: PropertyType = terrain?.property_type || 'terreno';
   const config = PROPERTY_CONFIG[propertyType];
 
-  const { daysData } = useMemo(() => generateMockData(), []);
-
-  // Calculate data based on time range
-  const filteredData = useMemo(() => {
-    if (timeRange === '7d') return daysData.slice(-7);
-    if (timeRange === '30d') return daysData;
-    return daysData;
-  }, [timeRange, daysData]);
-
-  const totalViews = useMemo(
-    () => filteredData.reduce((sum, day) => sum + day.views, 0),
-    [filteredData]
-  );
-
-  const avgTimeSpent = '2:34';
-  const hotLeads = 23;
-  const conversions = 8;
+  // Extract data from analytics response
+  const totalViews = analyticsData?.totalViews || 0;
+  const uniqueVisitors = analyticsData?.uniqueVisitors || 0;
+  const avgTimeSpent = analyticsData?.avgTimeSpent || '0:00';
+  const hotLeads = analyticsData?.hotLeads || 0;
+  const conversions = analyticsData?.conversions || 0;
+  const dailyViews = analyticsData?.dailyViews || [];
+  const sceneMetrics = analyticsData?.sceneMetrics || [];
 
   // Get property type label in Spanish
   const propertyTypeLabel = {
@@ -369,6 +408,24 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
+      {/* Error Message */}
+      {error && !isLoading && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="text-sm font-semibold text-yellow-800">
+                Problema al cargar analytics
+              </p>
+              <p className="text-xs text-yellow-700 mt-1">{error}</p>
+              <p className="text-xs text-yellow-600 mt-2">
+                Mostrando valores por defecto. Verifica tu configuración de PostHog en .env.local
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* KPI Cards */}
@@ -432,9 +489,16 @@ export default function AnalyticsPage() {
 
           {isLoading ? (
             <div className="h-80 animate-pulse bg-gray-100 rounded-lg"></div>
+          ) : dailyViews.length === 0 ? (
+            <div className="h-80 flex items-center justify-center text-gray-500">
+              <div className="text-center">
+                <p className="text-lg mb-2">📊 Sin datos disponibles</p>
+                <p className="text-sm">Aún no hay visitas registradas para este período</p>
+              </div>
+            </div>
           ) : (
             <ResponsiveContainer width="100%" height={320}>
-              <AreaChart data={filteredData}>
+              <AreaChart data={dailyViews}>
                 <defs>
                   <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
@@ -489,9 +553,16 @@ export default function AnalyticsPage() {
                   </div>
                 ))}
               </div>
+            ) : sceneMetrics.length === 0 ? (
+              <div className="py-12 text-center text-gray-500">
+                <p className="text-lg mb-2">🎬 Sin datos de escenas</p>
+                <p className="text-sm">
+                  Aún no hay suficientes datos para mostrar métricas por escena
+                </p>
+              </div>
             ) : (
               <div className="space-y-4">
-                {config.scenes.map((scene, index) => (
+                {sceneMetrics.map((scene, index) => (
                   <motion.div
                     key={scene.name}
                     initial={{ opacity: 0, x: -20 }}
@@ -520,9 +591,10 @@ export default function AnalyticsPage() {
                         )}
                       />
                     </div>
-                    {index === 0 && (
+                    {index === 0 && sceneMetrics.length > 0 && (
                       <p className="text-xs text-emerald-600 mt-2 font-medium">
-                        {config.topInsight}
+                        💡 Sugerencia: "{scene.name}" es tu escena más popular con{' '}
+                        {scene.views} vistas. Úsala en tus campañas de marketing.
                       </p>
                     )}
                   </motion.div>
