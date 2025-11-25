@@ -6,12 +6,13 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
-import { MapPlugin } from '@photo-sphere-viewer/map-plugin';
 import ContactFormModal from '@/components/ContactFormModal';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
-import '@photo-sphere-viewer/map-plugin/index.css';
-import 'leaflet/dist/leaflet.css';
+
+// ⚡ Import condicional de PlanPlugin (solo en cliente)
+// Usamos dynamic import dentro del componente para evitar errores de SSR
+let PlanPlugin = null;
 
 function PhotoSphereViewer({
   images,
@@ -523,9 +524,27 @@ function PhotoSphereViewer({
     // A. Limpieza inicial del DOM
     containerRef.current.innerHTML = '';
 
-    // B. Crear instancia del viewer UNA SOLA VEZ
+    // B. Marcar como montado INMEDIATAMENTE (antes de async)
+    // 🔒 CRÍTICO: Prevenir que React StrictMode cree segundo viewer
+    isMountedRef.current = true;
+
     setLoading(true);
     setError(null);
+
+    // ⚡ Cargar PlanPlugin dinámicamente (solo en cliente)
+    const initViewer = async () => {
+      // Cargar PlanPlugin si no está cargado
+      if (!PlanPlugin && typeof window !== 'undefined') {
+        try {
+          const planModule = await import('@photo-sphere-viewer/plan-plugin');
+          PlanPlugin = planModule.PlanPlugin;
+          // Cargar CSS dinámicamente
+          await import('@photo-sphere-viewer/plan-plugin/index.css');
+          await import('leaflet/dist/leaflet.css');
+        } catch (err) {
+          console.warn('⚠️ No se pudo cargar PlanPlugin:', err);
+        }
+      }
 
     const viewer = new Viewer({
       container: containerRef.current,
@@ -533,36 +552,44 @@ function PhotoSphereViewer({
       loadingImg: null,
       plugins: [
         [MarkersPlugin, {}],
-        [
-          MapPlugin,
-          {
-            // 🗺️ OpenStreetMap Configuration
-            imageUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            // Posición GPS del terreno (coordenadas de ejemplo - Ciudad de México)
-            center: {
-              latitude: terreno?.latitude || 19.432608,
-              longitude: terreno?.longitude || -99.133209,
+        // ⚡ Solo agregar PlanPlugin si está disponible (client-side only)
+        ...(PlanPlugin ? [
+          [
+            PlanPlugin,
+            {
+            // 🗺️ Coordenadas GPS del terreno [longitude, latitude]
+            coordinates: (() => {
+              const lat = terreno?.latitude || 19.432608;
+              const lng = terreno?.longitude || -99.133209;
+              // ⚡ IMPORTANTE: PlanPlugin usa [longitude, latitude] (orden inverso!)
+              return [lng, lat];
+            })(),
+            bearing: 0, // Rotación inicial del mapa
+            // Opciones visuales del minimapa
+            position: 'bottom left',
+            size: { width: '300px', height: '300px' }, // Tamaño del mapa
+            visibleOnLoad: true,
+            defaultZoom: 14,
+            // 🎯 Personalización del cono de dirección
+            spotStyle: {
+              size: 20, // Tamaño del punto central (más grande = más visible)
+              image: null, // null = usar cono por defecto
+              color: '#00ffff', // Color cian brillante (Tron style)
+              hoverColor: '#00ff00', // Verde al hacer hover
+              shadowColor: 'rgba(0, 255, 255, 0.5)', // Sombra con glow
+              shadowBlur: 15, // Difuminado de la sombra (efecto glow)
             },
-            // Opciones visuales
-            position: 'bottom left', // Ubicación: abajo a la izquierda
-            size: '200px', // Tamaño del mapa
-            static: false, // Permite interacción
-            overlayImage: null, // Sin overlay personalizado
-            pinImage: null, // Sin pin personalizado
-            pinSize: 30, // Tamaño del pin
-            rotation: '0deg', // ⚡ Rotación inicial del mapa (se sincroniza con la cámara)
-            defaultZoom: 14, // Zoom inicial del mapa
-            maxZoom: 18, // Zoom máximo
-            minZoom: 10, // Zoom mínimo
-            // Configuración de Leaflet para OpenStreetMap
-            configureLeaflet: (map) => {
-              // Agregar atribución de OpenStreetMap
-              map.attributionControl.setPrefix(
-                '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              );
-            },
+            // Configuración de tiles de OpenStreetMap
+            layers: [
+              {
+                name: 'OpenStreetMap',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                attribution: '© OpenStreetMap contributors',
+              },
+            ],
           },
-        ],
+          ]
+        ] : []), // Cierre del spread condicional de PlanPlugin
       ],
       navbar: false,
       defaultZoomLvl: 50,
@@ -571,10 +598,18 @@ function PhotoSphereViewer({
       moveSpeed: 2.0,
     });
 
-    // C. Guardar referencias
+    // C. Guardar referencias (flag ya está en true desde línea 529)
     viewerRef.current = viewer;
     markersPluginRef.current = viewer.getPlugin(MarkersPlugin);
-    isMountedRef.current = true; // Marcar como montado
+
+    // ✅ Configurar PlanPlugin si está disponible
+    if (PlanPlugin) {
+      try {
+        viewer.getPlugin(PlanPlugin);
+      } catch (err) {
+        console.error('❌ [PlanPlugin] Error al obtener plugin:', err);
+      }
+    }
 
     // D. Event listener 'ready'
     viewer.addEventListener('ready', () => {
@@ -585,6 +620,32 @@ function PhotoSphereViewer({
       setTimeout(() => {
         setMarkersVisible(true);
       }, 300);
+
+      // ⚡ Sincronizar bearing del mapa con la orientación de la cámara
+      if (PlanPlugin) {
+        try {
+          const planPlugin = viewer.getPlugin(PlanPlugin);
+          const updateMapBearing = () => {
+            const position = viewer.getPosition();
+            // Convertir yaw de radianes a grados
+            // yaw = 0 apunta al norte, positivo hacia el este
+            let bearingDegrees = (position.yaw * 180 / Math.PI);
+
+            // Normalizar a rango 0-360
+            bearingDegrees = ((bearingDegrees % 360) + 360) % 360;
+
+            planPlugin.setBearing(bearingDegrees);
+          };
+
+          // Actualizar bearing inicial
+          updateMapBearing();
+
+          // Actualizar bearing cuando el usuario gira la cámara
+          viewer.addEventListener('position-updated', updateMapBearing);
+        } catch (err) {
+          console.warn('⚠️ No se pudo sincronizar bearing del mapa:', err);
+        }
+      }
     });
 
     // E. Event listener 'panorama-load-error'
@@ -624,12 +685,26 @@ function PhotoSphereViewer({
         setActiveMediaModal({ type: hotspotType, data: hotspot });
       }
     });
+    }; // Fin de initViewer
 
-    // G. Cleanup (NO resetear flag - mantener viewer protegido)
+    // Llamar a la función async
+    initViewer();
+
+    // G. Cleanup
     return () => {
       // ⚠️ CRÍTICO: NO resetear isMountedRef.current
       // Si lo reseteamos, React StrictMode puede remontar y crear viewer duplicado
-      // El flag debe permanecer en true para proteger el viewer existente
+
+      // Solo destruir el viewer si realmente existe
+      if (viewerRef.current) {
+        try {
+          viewerRef.current.destroy();
+          viewerRef.current = null;
+          markersPluginRef.current = null;
+        } catch (err) {
+          console.warn('⚠️ Error al destruir viewer en cleanup:', err);
+        }
+      }
     };
   }, []); // ✅ Array vacío = Solo se ejecuta UNA VEZ al montar el componente
 
@@ -1032,6 +1107,24 @@ function PhotoSphereViewer({
         }
 
         .psv-loader-container { display: none !important; }
+
+        /* ✅ Estilos para PlanPlugin (minimapa GPS) */
+        .psv-plan {
+          z-index: 100 !important;
+          pointer-events: auto !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+        .psv-plan-container {
+          background: rgba(0, 0, 0, 0.7) !important;
+          border: 2px solid rgba(255, 255, 255, 0.3) !important;
+          border-radius: 8px !important;
+          overflow: hidden !important;
+        }
+        /* Asegurar que Leaflet sea visible */
+        .leaflet-container {
+          z-index: 1 !important;
+        }
       `}</style>
       <div
         style={{

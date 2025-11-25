@@ -19,6 +19,7 @@
     "@photo-sphere-viewer/gallery-plugin": "^5.14.0",
     "@photo-sphere-viewer/map-plugin": "^5.14.0",
     "@photo-sphere-viewer/markers-plugin": "^5.14.0",
+    "@photo-sphere-viewer/plan-plugin": "^5.14.0",
     "@react-email/render": "^1.4.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",
