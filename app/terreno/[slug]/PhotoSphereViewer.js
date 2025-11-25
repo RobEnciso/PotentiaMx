@@ -716,6 +716,52 @@ function PhotoSphereViewer({
 
           // Actualizar bearing cuando el usuario gira la cámara
           viewer.addEventListener('position-updated', updateMapBearing);
+
+          // 📱 FORZAR tamaño pequeño en móvil (estilo DJI)
+          const forceMobileMapSize = () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+              const planContainer = document.querySelector('.psv-plan-container');
+              const leafletContainer = document.querySelector('.psv-plan-container .leaflet-container');
+
+              if (planContainer) {
+                planContainer.style.width = '120px';
+                planContainer.style.height = '120px';
+                planContainer.style.minWidth = '120px';
+                planContainer.style.minHeight = '120px';
+                planContainer.style.maxWidth = '120px';
+                planContainer.style.maxHeight = '120px';
+                console.log('📱 Minimapa ajustado a tamaño móvil (120x120px)');
+              }
+
+              if (leafletContainer) {
+                leafletContainer.style.width = '120px';
+                leafletContainer.style.height = '120px';
+                leafletContainer.style.minWidth = '120px';
+                leafletContainer.style.minHeight = '120px';
+                leafletContainer.style.maxWidth = '120px';
+                leafletContainer.style.maxHeight = '120px';
+
+                // Forzar invalidate del mapa para que se redibuje
+                try {
+                  const leafletMap = leafletContainer._leaflet_map;
+                  if (leafletMap) {
+                    setTimeout(() => leafletMap.invalidateSize(), 100);
+                  }
+                } catch (e) {
+                  // Leaflet map no disponible aún
+                }
+              }
+            }
+          };
+
+          // Ejecutar inmediatamente y después de un delay
+          setTimeout(forceMobileMapSize, 100);
+          setTimeout(forceMobileMapSize, 500);
+          setTimeout(forceMobileMapSize, 1000);
+
+          // Ejecutar al redimensionar ventana
+          window.addEventListener('resize', forceMobileMapSize);
         } catch (err) {
           console.warn('⚠️ No se pudo sincronizar bearing del mapa:', err);
         }
@@ -1141,9 +1187,19 @@ function PhotoSphereViewer({
 
         /* 📱 MÓVIL: Minimapa estilo DJI (punto de referencia pequeño) */
         @media (max-width: 768px) {
-          .psv-plan-container {
+          /* Contenedor principal del mapa */
+          .psv-plan,
+          .psv-plan-container,
+          div[class*="psv-plan"] {
             width: 120px !important;
             height: 120px !important;
+            min-width: 120px !important;
+            min-height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+          }
+
+          .psv-plan-container {
             bottom: 80px !important;
             left: 12px !important;
             border-radius: 12px !important;
@@ -1151,14 +1207,36 @@ function PhotoSphereViewer({
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
           }
 
+          /* Forzar tamaño en el contenedor Leaflet */
+          .psv-plan-container .leaflet-container,
+          .psv-plan .leaflet-container {
+            width: 120px !important;
+            height: 120px !important;
+            min-width: 120px !important;
+            min-height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+          }
+
           /* Ocultar controles de zoom en móvil */
-          .psv-plan-container .leaflet-control-zoom {
+          .psv-plan-container .leaflet-control-zoom,
+          .psv-plan .leaflet-control-zoom {
             display: none !important;
           }
 
           /* Ocultar atribución en móvil */
-          .psv-plan-container .leaflet-control-attribution {
+          .psv-plan-container .leaflet-control-attribution,
+          .psv-plan .leaflet-control-attribution {
             display: none !important;
+          }
+
+          /* Forzar tamaño en todos los divs internos de Leaflet */
+          .psv-plan-container .leaflet-pane,
+          .psv-plan-container .leaflet-map-pane,
+          .psv-plan .leaflet-pane,
+          .psv-plan .leaflet-map-pane {
+            width: 120px !important;
+            height: 120px !important;
           }
         }
 
