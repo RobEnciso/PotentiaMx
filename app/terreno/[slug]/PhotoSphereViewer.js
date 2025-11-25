@@ -639,9 +639,9 @@ function PhotoSphereViewer({
               return [lng, lat];
             })(),
             bearing: 0, // Rotación inicial del mapa
-            // Opciones visuales del minimapa
+            // Opciones visuales del minimapa (responsive via CSS)
             position: 'bottom left',
-            size: { width: '300px', height: '300px' }, // Tamaño del mapa
+            size: { width: '300px', height: '300px' }, // Desktop (se sobreescribe en móvil con CSS)
             visibleOnLoad: true,
             defaultZoom: 14,
             // 🎯 Personalización del cono de dirección
@@ -1132,10 +1132,34 @@ function PhotoSphereViewer({
           border: 2px solid rgba(255, 255, 255, 0.3) !important;
           border-radius: 8px !important;
           overflow: hidden !important;
+          transition: all 0.3s ease !important;
         }
         /* Asegurar que Leaflet sea visible */
         .leaflet-container {
           z-index: 1 !important;
+        }
+
+        /* 📱 MÓVIL: Minimapa estilo DJI (punto de referencia pequeño) */
+        @media (max-width: 768px) {
+          .psv-plan-container {
+            width: 120px !important;
+            height: 120px !important;
+            bottom: 80px !important;
+            left: 12px !important;
+            border-radius: 12px !important;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+          }
+
+          /* Ocultar controles de zoom en móvil */
+          .psv-plan-container .leaflet-control-zoom {
+            display: none !important;
+          }
+
+          /* Ocultar atribución en móvil */
+          .psv-plan-container .leaflet-control-attribution {
+            display: none !important;
+          }
         }
 
         /* ✅ POLÍGONOS SVG - Visibilidad sin clipping */

@@ -1466,30 +1466,30 @@ export default function Dashboard() {
 
         {/* Actions Bar - Solo para usuarios NO admin */}
         {!isAdmin && (
-          <div className="flex items-center justify-between mb-8">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div className="flex-shrink-0">
               <h2 className="text-xl font-bold text-slate-900">
                 Mis Tours 360°
               </h2>
-              <p className="text-slate-600 mt-1">
+              <p className="text-slate-600 mt-1 text-sm sm:text-base">
                 Lienzos perfectos para tu próximo proyecto
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <Link
                 href="/servicios-captura"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-all text-sm sm:text-base whitespace-nowrap"
               >
-                <Target className="w-5 h-5 text-purple-500" />
-                Contratar Fotógrafo
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0" />
+                <span className="truncate">Contratar Fotógrafo</span>
               </Link>
               <Link
                 href="/dashboard/add-terrain"
                 data-tutorial="add-terrain-button"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base whitespace-nowrap"
               >
-                <Plus className="w-5 h-5" />
-                Crear Tour Manualmente
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="truncate">Crear Tour Manualmente</span>
               </Link>
             </div>
           </div>
