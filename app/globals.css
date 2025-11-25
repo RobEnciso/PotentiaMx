@@ -643,3 +643,19 @@ section[id] {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+/* ====================================
+   FIX PARA PHOTOSPHEREVIEWER Y LEAFLET
+   ==================================== */
+
+/* Fix crítico: Restaurar comportamiento normal de img/svg dentro de PhotoSphereViewer y Leaflet
+   El Preflight de Tailwind aplica { max-width: 100%; display: block; } a todas las imágenes,
+   lo cual rompe los iconos y controles de photo-sphere-viewer y leaflet. */
+.psv-container img,
+.psv-container svg,
+.leaflet-container img,
+.leaflet-container svg {
+  max-width: none !important;
+  display: inline-block !important;
+  height: auto !important;
+}
