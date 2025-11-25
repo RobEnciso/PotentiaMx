@@ -1475,14 +1475,23 @@ export default function Dashboard() {
                 Lienzos perfectos para tu próximo proyecto
               </p>
             </div>
-            <Link
-              href="/dashboard/add-terrain"
-              data-tutorial="add-terrain-button"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <Plus className="w-5 h-5" />
-              Crear Tour 360°
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/servicios-captura"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-all"
+              >
+                <Target className="w-5 h-5 text-purple-500" />
+                Contratar Fotógrafo
+              </Link>
+              <Link
+                href="/dashboard/add-terrain"
+                data-tutorial="add-terrain-button"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+                <Plus className="w-5 h-5" />
+                Crear Tour Manualmente
+              </Link>
+            </div>
           </div>
         )}
 
@@ -1492,18 +1501,28 @@ export default function Dashboard() {
             <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-slate-300">
               <div className="text-slate-400 text-6xl mb-4">📸</div>
               <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                No tienes tours creados
+                Aún no tienes tours virtuales
               </h3>
-              <p className="text-slate-500 mb-6">
-                Crea tu primer tour 360° y empieza a mostrar tus propiedades
+              <p className="text-slate-500 mb-8 max-w-md mx-auto">
+                Empieza a dar vida a tus propiedades. Puedes crear un tour tú mismo o dejar que nuestros expertos lo hagan por ti.
               </p>
-              <Link
-                href="/dashboard/add-terrain"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors"
-              >
-                <Plus className="w-5 h-5" />
-                Crear Primer Tour
-              </Link>
+              
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <Link
+                  href="/dashboard/add-terrain"
+                  className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors shadow-sm"
+                >
+                  <Plus className="w-5 h-5" />
+                  Crear Tour Manualmente
+                </Link>
+                <Link
+                  href="/servicios-captura"
+                  className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg transition-colors shadow-sm"
+                >
+                  <Target className="w-5 h-5" />
+                  Contratar Sesión Profesional
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -241,6 +241,18 @@ function PhotoSphereViewer({
   // ✅ Referencias de audio por vista
   const ambientAudioRef = useRef(null);
   const narrationAudioRef = useRef(null);
+  // ✏️ Polygon Drawing Tool - Estados
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [polygonPointCount, setPolygonPointCount] = useState(0);
+  const isDrawingRef = useRef(false);
+  const polygonPointsRef = useRef([]);
+
+
+  
+  // Sincronizar isDrawingRef con isDrawing
+  useEffect(() => {
+    isDrawingRef.current = isDrawing;
+  }, [isDrawing]);
 
   // ✅ Actualizar hotspotsRef cuando cambian los hotspots (sin recrear initializeViewer)
   useEffect(() => {
@@ -655,8 +667,77 @@ function PhotoSphereViewer({
       setLoading(false);
     });
 
+
+    // ✏️ Polygon Drawing Tool - Captura de clicks
+    viewer.addEventListener('click', (data) => {
+      console.log('🖱️ Click detectado:', { isDrawing: isDrawingRef.current, yaw: data.data.yaw, pitch: data.data.pitch });
+
+      if (isDrawingRef.current) {
+        // Formato correcto: yaw y pitch en radianes (ya vienen en radianes desde Photo Sphere Viewer)
+        const point = {
+          yaw: data.data.yaw + 'rad',
+          pitch: data.data.pitch + 'rad'
+        };
+        polygonPointsRef.current.push(point);
+        setPolygonPointCount(polygonPointsRef.current.length);
+
+        console.log(`📍 Punto ${polygonPointsRef.current.length} agregado:`, point);
+
+        // Mostrar puntos individuales como markers circulares
+        try {
+          markersPluginRef.current.addMarker({
+            id: `polygon-point-${polygonPointsRef.current.length}`,
+            position: { yaw: data.data.yaw, pitch: data.data.pitch },
+            html: `<div style="
+              width: 12px;
+              height: 12px;
+              background: #00ff00;
+              border: 2px solid #fff;
+              border-radius: 50%;
+              box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+              cursor: pointer;
+            "></div>`,
+            tooltip: `Punto ${polygonPointsRef.current.length}`,
+          });
+        } catch (e) {
+          console.warn('⚠️ Error agregando punto visual:', e);
+        }
+
+        // Actualizar polígono temporal si hay 3+ puntos
+        if (polygonPointsRef.current.length >= 3) {
+          try {
+            markersPluginRef.current.removeMarker('user-polygon');
+            markersPluginRef.current.addMarker({
+              id: 'user-polygon',
+              polygon: polygonPointsRef.current,
+              svgStyle: {
+                fill: 'rgba(0, 255, 0, 0.2)',
+                stroke: '#00ff00',
+                strokeWidth: '3px',
+                strokeDasharray: '10 5',
+                filter: 'drop-shadow(0 0 8px #00ff00)',
+              },
+              tooltip: `⏳ Dibujando... (${polygonPointsRef.current.length} puntos)`,
+            });
+            console.log('✅ Polígono temporal actualizado');
+          } catch (e) {
+            console.warn('⚠️ Error actualizando polígono temporal:', e);
+          }
+        }
+
+        // Prevenir que el click se propague a otros listeners
+        data.stopPropagation?.();
+      }
+    });
+
     // F. Event listener 'select-marker' (clicks en hotspots)
     markersPluginRef.current.addEventListener('select-marker', (e) => {
+      // ⚠️ Ignorar clicks en markers si estamos en modo dibujo
+      if (isDrawingRef.current) {
+        console.log('⚠️ Click en marker ignorado (modo dibujo activo)');
+        return;
+      }
+
       const clickedMarker = e.marker;
       if (!clickedMarker) return;
 
@@ -1126,7 +1207,177 @@ function PhotoSphereViewer({
           z-index: 1 !important;
         }
       `}</style>
-      <div
+              {/* ✏️ Polygon Drawing Tool - UI Overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            zIndex: 50,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(10px)',
+            padding: '12px',
+            borderRadius: '12px',
+            border: '1px solid rgba(0, 255, 255, 0.3)',
+          }}
+        >
+          {!isDrawing ? (
+            <button
+              onClick={() => {
+                setIsDrawing(true);
+                polygonPointsRef.current = [];
+                setPolygonPointCount(0);
+                console.log('✏️ Modo dibujo activado');
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #00ffff 0%, #00ff00 100%)',
+                color: '#000',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+            >
+              ✏️ Dibujar Límite
+            </button>
+          ) : (
+            <>
+              <div style={{
+                color: '#00ffff',
+                fontSize: '13px',
+                fontWeight: '600',
+                textAlign: 'center',
+                background: 'rgba(0, 255, 255, 0.1)',
+                padding: '8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(0, 255, 255, 0.3)',
+              }}>
+                🖱️ Click para agregar puntos
+                <div style={{
+                  marginTop: '4px',
+                  fontSize: '11px',
+                  color: polygonPointCount >= 3 ? '#00ff00' : '#ffaa00',
+                }}>
+                  {polygonPointCount === 0 && '(Mínimo 3 puntos)'}
+                  {polygonPointCount > 0 && polygonPointCount < 3 && `${polygonPointCount} de 3 puntos mínimos`}
+                  {polygonPointCount >= 3 && `✓ ${polygonPointCount} puntos`}
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  console.log('🎯 Polygon Points Final:', polygonPointsRef.current);
+                  console.log(`✅ Total de puntos: ${polygonPointsRef.current.length}`);
+
+                  setIsDrawing(false);
+
+                  // Limpiar markers temporales de puntos
+                  if (markersPluginRef.current) {
+                    try {
+                      // Eliminar puntos individuales
+                      polygonPointsRef.current.forEach((_, index) => {
+                        try {
+                          markersPluginRef.current.removeMarker(`polygon-point-${index + 1}`);
+                        } catch (e) {}
+                      });
+
+                      // Actualizar visualización final del polígono
+                      if (polygonPointsRef.current.length >= 3) {
+                        markersPluginRef.current.removeMarker('user-polygon');
+                        markersPluginRef.current.addMarker({
+                          id: 'user-polygon',
+                          polygon: polygonPointsRef.current,
+                          svgStyle: {
+                            fill: 'rgba(0, 255, 0, 0.25)',
+                            stroke: '#00ff00',
+                            strokeWidth: '4px',
+                            filter: 'drop-shadow(0 0 12px #00ff00)',
+                          },
+                          tooltip: {
+                            content: `✅ Límite Dibujado (${polygonPointsRef.current.length} puntos)`,
+                            position: 'bottom center',
+                          },
+                        });
+                        console.log('✅ Polígono guardado correctamente');
+                      } else {
+                        console.warn('⚠️ Se necesitan al menos 3 puntos para crear un polígono');
+                        alert('⚠️ Se necesitan al menos 3 puntos para crear un polígono');
+                      }
+                    } catch (e) {
+                      console.error('❌ Error guardando polígono:', e);
+                    }
+                  }
+                }}
+                style={{
+                  background: '#00ff00',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                💾 Guardar
+              </button>
+              <button
+                onClick={() => {
+                  console.log('❌ Cancelando dibujo...');
+
+                  setIsDrawing(false);
+
+                  // Limpiar todos los markers temporales
+                  if (markersPluginRef.current) {
+                    try {
+                      // Eliminar polígono temporal
+                      markersPluginRef.current.removeMarker('user-polygon');
+
+                      // Eliminar puntos individuales
+                      polygonPointsRef.current.forEach((_, index) => {
+                        try {
+                          markersPluginRef.current.removeMarker(`polygon-point-${index + 1}`);
+                        } catch (e) {}
+                      });
+
+                      console.log('✅ Markers temporales eliminados');
+                    } catch (e) {
+                      console.warn('⚠️ Error eliminando markers:', e);
+                    }
+                  }
+
+                  // Limpiar array de puntos
+                  polygonPointsRef.current = [];
+                  setPolygonPointCount(0);
+                }}
+                style={{
+                  background: '#ff0000',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                ❌ Cancelar
+              </button>
+            </>
+          )}
+        </div>
+
+<div
         style={{
           position: 'relative',
           width: '100vw',

@@ -91,6 +91,11 @@ export default function HotspotEditor({
   });
   const [uploadingViewAudio, setUploadingViewAudio] = useState(false);
   const [uploadingViewAudioType, setUploadingViewAudioType] = useState('');
+  // ✏️ Polygon Drawing Tool - Estados
+  const [isDrawingPolygon, setIsDrawingPolygon] = useState(false);
+  const isDrawingPolygonRef = useRef(false);
+  const polygonPointsRef = useRef([]);
+
 
   // Detectar si estamos en móvil (solo en cliente)
   useEffect(() => {
@@ -177,6 +182,12 @@ export default function HotspotEditor({
   useEffect(() => {
     hotspotsRef.current = hotspots;
   }, [hotspots]);
+
+  // Sincronizar isDrawingPolygonRef con isDrawingPolygon
+  useEffect(() => {
+    isDrawingPolygonRef.current = isDrawingPolygon;
+  }, [isDrawingPolygon]);
+
 
   // Validación inicial
   useEffect(() => {
@@ -279,8 +290,12 @@ export default function HotspotEditor({
           }
         });
 
-        viewer.addEventListener('click', (event) => {
+        
+                viewer.addEventListener('click', (event) => {
+          // Si estamos dibujando polígono, no interferir
+          if (isDrawingPolygonRef.current) return;
           if (!placementModeRef.current) return;
+          
 
           const { yaw, pitch } = event.data;
           setTempMarkerPosition({ yaw, pitch });
@@ -446,6 +461,82 @@ export default function HotspotEditor({
       viewerCanvas.style.cursor = placementMode ? 'crosshair' : 'grab';
     }
   }, [placementMode]);
+
+  // Actualizar cursor según modo de dibujo de polígono
+  useEffect(() => {
+    if (viewerRef.current) {
+      if (isDrawingPolygon) {
+        viewerRef.current.style.cursor = 'crosshair';
+      } else if (!placementMode) {
+        viewerRef.current.style.cursor = 'grab';
+      }
+    }
+    const viewerCanvas = viewerRef.current?.querySelector('canvas');
+    if (viewerCanvas) {
+      if (isDrawingPolygon) {
+        viewerCanvas.style.cursor = 'crosshair';
+      } else if (!placementMode) {
+        viewerCanvas.style.cursor = 'grab';
+      }
+    }
+  }, [isDrawingPolygon, placementMode]);
+
+  // Event listener para captura de clicks de polígono
+  useEffect(() => {
+    const viewer = viewerInstanceRef.current;
+    if (!viewer) return;
+
+    const handlePolygonClick = (event) => {
+      if (isDrawingPolygonRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const { yaw, pitch } = event.data;
+        const point = { yaw: yaw + 'rad', pitch: pitch + 'rad' };
+
+        // Actualizar ref directamente
+        polygonPointsRef.current = [...polygonPointsRef.current, point];
+        console.log('🎯 Punto agregado:', point, 'Total:', polygonPointsRef.current.length);
+
+        // Actualizar visualización
+        if (markersPluginRef.current && polygonPointsRef.current.length >= 3) {
+          try {
+            // Intentar remover el marker anterior (ignorar si no existe)
+            try {
+              markersPluginRef.current.removeMarker('drawing-polygon');
+            } catch (removeError) {
+              // Marker no existe, está bien - es el primer polígono
+            }
+
+            markersPluginRef.current.addMarker({
+              id: 'drawing-polygon',
+              polygon: polygonPointsRef.current,
+              svgStyle: {
+                fill: 'rgba(0, 255, 0, 0.2)',
+                stroke: '#00ff00',
+                strokeWidth: '3px',
+                filter: 'drop-shadow(0 0 8px #00ff00)',
+              },
+              tooltip: `⏳ Dibujando (${polygonPointsRef.current.length} pts)`,
+            });
+          } catch (e) {
+            console.warn('⚠️ Error al crear polígono:', e);
+          }
+        }
+
+        // Forzar re-render del contador
+        setIsDrawingPolygon(true);
+      }
+    };
+
+    viewer.addEventListener('click', handlePolygonClick);
+
+    return () => {
+      viewer.removeEventListener('click', handlePolygonClick);
+    };
+  }, [isDrawingPolygon]);
+
+
 
   // Cancelar modo de colocación con tecla ESC
   useEffect(() => {
@@ -936,7 +1027,41 @@ export default function HotspotEditor({
     return styles[markerStyle] || styles.apple;
   };
 
-  if (loadError) return <div>❌ Error: {loadError}</div>;
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
+        <div className="text-center p-8 bg-gray-800 rounded-2xl shadow-2xl max-w-lg mx-auto">
+          <svg className="mx-auto h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 className="mt-6 text-2xl font-extrabold text-white">No se pueden cargar las imágenes</h2>
+          <p className="mt-2 text-md text-gray-400">
+            {loadError}
+          </p>
+          <div className="mt-8 bg-purple-500 bg-opacity-10 p-6 rounded-lg border border-purple-400">
+             <h3 className="text-lg font-bold text-purple-200">¿No tienes fotos 360°?</h3>
+             <p className="mt-2 text-sm text-purple-300">
+               Deja que nuestro equipo de fotógrafos profesionales capture tu propiedad con la mejor calidad. Es rápido, fácil y asequible.
+             </p>
+             <a
+              href="/servicios-captura"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block w-full text-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+            >
+              Ver Servicios de Captura Profesional
+            </a>
+          </div>
+           <button
+            onClick={() => router.push('/dashboard')}
+            className="mt-8 inline-flex items-center px-6 py-3 border border-gray-600 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
+            Volver al Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -988,7 +1113,7 @@ export default function HotspotEditor({
       >
         {/* Visor 360° */}
         <div style={{ flex: 1, position: 'relative' }}>
-          {/* Botón de regreso al dashboard */}
+                    {/* Botón de regreso al dashboard */}
           <button
             onClick={handleBackToDashboard}
             disabled={isSaving}
@@ -1920,8 +2045,170 @@ export default function HotspotEditor({
             )}
           </div>
 
-          <button
-            onClick={handleSave}
+          
+          {/* ✏️ Panel de Dibujo de Límites */}
+          <div
+            style={{
+              padding: '16px',
+              background: 'rgba(0, 255, 255, 0.1)',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              border: '2px solid rgba(0, 255, 255, 0.3)',
+            }}
+          >
+            <h4
+              style={{
+                color: 'white',
+                fontSize: '15px',
+                fontWeight: '600',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              ✏️ Dibujar Límites del Terreno
+            </h4>
+            <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '12px' }}>
+              Dibuja polígonos para marcar los límites visuales del terreno en 360°
+            </p>
+
+            {!isDrawingPolygon ? (
+              <button
+                onClick={() => {
+                  setIsDrawingPolygon(true);
+                  polygonPointsRef.current = [];
+                  console.log('✏️ Modo dibujo activado - Click en el visor para agregar puntos');
+                }}
+                disabled={placementMode || isLoading || isSaving}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: placementMode || isLoading || isSaving
+                    ? 'rgba(156, 163, 175, 0.3)'
+                    : 'linear-gradient(135deg, #00ffff 0%, #00ff00 100%)',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  cursor: placementMode || isLoading || isSaving ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 4px 12px rgba(0, 255, 0, 0.3)',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (!placementMode && !isLoading && !isSaving) {
+                    e.target.style.transform = 'scale(1.02)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                ✏️ Iniciar Dibujo
+              </button>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div
+                  style={{
+                    background: 'rgba(0, 255, 255, 0.15)',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    border: '1px solid rgba(0, 255, 255, 0.4)',
+                  }}
+                >
+                  <div style={{ fontSize: '13px', color: '#00ffff', fontWeight: '600', marginBottom: '4px' }}>
+                    🖱️ Click en el visor para agregar puntos
+                  </div>
+                  <div style={{ fontSize: '20px', color: '#fff', fontWeight: '700' }}>
+                    {polygonPointsRef.current.length} puntos
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>
+                    Mínimo 3 puntos requeridos
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const points = [...polygonPointsRef.current];
+                    console.log('💾 Polígono guardado:', {
+                      terrainId,
+                      points,
+                      count: points.length,
+                      format: 'yaw/pitch en radianes',
+                    });
+                    alert(`✅ Polígono guardado con ${points.length} puntos.\nRevisa la consola para ver los datos.`);
+                    setIsDrawingPolygon(false);
+
+                    // Mantener visualización final
+                    if (markersPluginRef.current && points.length >= 3) {
+                      try {
+                        markersPluginRef.current.removeMarker('drawing-polygon');
+                        markersPluginRef.current.addMarker({
+                          id: 'saved-polygon',
+                          polygon: points,
+                          svgStyle: {
+                            fill: 'rgba(0, 255, 0, 0.25)',
+                            stroke: '#00ff00',
+                            strokeWidth: '4px',
+                            filter: 'drop-shadow(0 0 10px #00ff00)',
+                          },
+                          tooltip: '✅ Límite Guardado',
+                        });
+                      } catch (e) {}
+                    }
+                  }}
+                  disabled={polygonPointsRef.current.length < 3}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: polygonPointsRef.current.length < 3
+                      ? 'rgba(156, 163, 175, 0.3)'
+                      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: polygonPointsRef.current.length < 3 ? 'not-allowed' : 'pointer',
+                    opacity: polygonPointsRef.current.length < 3 ? 0.5 : 1,
+                  }}
+                >
+                  💾 Guardar Polígono {polygonPointsRef.current.length >= 3 ? '✓' : '(Min 3 pts)'}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsDrawingPolygon(false);
+                    polygonPointsRef.current = [];
+                    if (markersPluginRef.current) {
+                      try {
+                        markersPluginRef.current.removeMarker('drawing-polygon');
+                        markersPluginRef.current.removeMarker('saved-polygon');
+                      } catch (e) {}
+                    }
+                    console.log('❌ Dibujo cancelado');
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ❌ Cancelar
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button onClick={handleSave}
             disabled={isSaving || autoSaving || !hasUnsavedChanges}
             className={`btn-success w-full py-3 font-bold ${hasUnsavedChanges && !isSaving && !autoSaving ? 'btn-unsaved' : ''}`}
             style={{

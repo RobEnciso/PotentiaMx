@@ -253,12 +253,20 @@ export default function PropiedadesPage() {
                 <MapPin className="w-4 h-4" />
                 <span>{terrenosFiltrados.length} propiedades</span>
               </div>
-              <Link
-                href="/login"
-                className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors text-sm"
-              >
-                Publicar Propiedad
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/servicios-captura"
+                  className="px-4 py-2 bg-purple-100 text-purple-700 font-medium rounded-lg hover:bg-purple-200 transition-colors text-sm"
+                >
+                  Contratar Fotógrafo
+                </Link>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors text-sm"
+                >
+                  Publicar Propiedad
+                </Link>
+              </div>
             </div>
           </div>
         </div>
