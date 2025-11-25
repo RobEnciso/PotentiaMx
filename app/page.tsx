@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
 import SocialProofSection from '@/components/landing/SocialProofSection';
@@ -17,6 +18,10 @@ const ContactFormSection = dynamic(
   () => import('@/components/landing/ContactFormSection'),
   { ssr: true }
 );
+
+// ⚡ ISR Configuration - Rebuild page every 60 seconds
+// This allows Netlify to serve cached HTML instantly (TTFB < 100ms)
+export const revalidate = 60;
 
 export default function Home() {
   return (
