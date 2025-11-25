@@ -29,6 +29,13 @@ interface AnalyticsData {
     avgTime: number;
     percentage: number;
   }>;
+  // Trend data (comparison with previous period)
+  trends: {
+    viewsTrend: number | null;
+    avgTimeTrend: number | null;
+    hotLeadsTrend: number | null;
+    conversionsTrend: number | null;
+  };
 }
 
 /**
@@ -73,11 +80,21 @@ export async function GET(
 
     const tourId = terrain.id;
 
-    // Calculate date range
+    // Calculate date ranges for current and previous periods
     const now = new Date();
     const daysMap = { '7d': 7, '30d': 30, all: 365 };
     const days = daysMap[timeRange as keyof typeof daysMap] || 30;
-    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+    // Current period
+    const currentPeriodEnd = now;
+    const currentPeriodStart = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+    // Previous period (same duration, but before current period)
+    const previousPeriodEnd = new Date(currentPeriodStart.getTime() - 1); // 1ms before current start
+    const previousPeriodStart = new Date(previousPeriodEnd.getTime() - days * 24 * 60 * 60 * 1000);
+
+    // For backwards compatibility
+    const startDate = currentPeriodStart;
 
     // Base URL for PostHog API
     const baseUrl = posthogHost.replace(/\/$/, '');
@@ -174,18 +191,41 @@ export async function GET(
     const highInterest = highInterestData.results || [];
     const contactClicks = contactClicksData.results || [];
 
-    // Filter events by date range
-    const filterByDate = (events: PostHogEvent[]) =>
+    // Helper to filter events by date range
+    const filterByDateRange = (events: PostHogEvent[], start: Date, end: Date) =>
       events.filter((event) => {
         const eventDate = new Date(event.timestamp);
-        return eventDate >= startDate && eventDate <= now;
+        return eventDate >= start && eventDate <= end;
       });
 
-    const filteredPageviews = filterByDate(pageviews);
-    const filteredSceneViews = filterByDate(sceneViews);
-    const filteredSceneTimes = filterByDate(sceneTimes);
-    const filteredHighInterest = filterByDate(highInterest);
-    const filteredContactClicks = filterByDate(contactClicks);
+    // Filter events for CURRENT period
+    const filteredPageviews = filterByDateRange(pageviews, currentPeriodStart, currentPeriodEnd);
+    const filteredSceneViews = filterByDateRange(sceneViews, currentPeriodStart, currentPeriodEnd);
+    const filteredSceneTimes = filterByDateRange(sceneTimes, currentPeriodStart, currentPeriodEnd);
+    const filteredHighInterest = filterByDateRange(
+      highInterest,
+      currentPeriodStart,
+      currentPeriodEnd
+    );
+    const filteredContactClicks = filterByDateRange(
+      contactClicks,
+      currentPeriodStart,
+      currentPeriodEnd
+    );
+
+    // Filter events for PREVIOUS period (for trend calculation)
+    const previousPageviews = filterByDateRange(pageviews, previousPeriodStart, previousPeriodEnd);
+    const previousSceneTimes = filterByDateRange(sceneTimes, previousPeriodStart, previousPeriodEnd);
+    const previousHighInterest = filterByDateRange(
+      highInterest,
+      previousPeriodStart,
+      previousPeriodEnd
+    );
+    const previousContactClicks = filterByDateRange(
+      contactClicks,
+      previousPeriodStart,
+      previousPeriodEnd
+    );
 
     // Calculate total views
     const totalViews = filteredPageviews.length;
@@ -314,6 +354,48 @@ export async function GET(
       scene.percentage = Math.round((scene.views / maxViews) * 100);
     });
 
+    // ========================================
+    // CALCULATE TRENDS (vs Previous Period)
+    // ========================================
+
+    // Helper function to calculate percentage change
+    const calculateTrend = (current: number, previous: number): number | null => {
+      if (previous === 0) {
+        // If previous was 0 and current > 0, that's +100% growth
+        return current > 0 ? 100 : null;
+      }
+      return Math.round(((current - previous) / previous) * 100);
+    };
+
+    // 1. Views Trend
+    const previousTotalViews = previousPageviews.length;
+    const viewsTrend = calculateTrend(totalViews, previousTotalViews);
+
+    // 2. Average Time Trend
+    const previousTotalTimeSpent = previousSceneTimes.reduce(
+      (sum: number, event: PostHogEvent) =>
+        sum + (event.properties?.time_spent_seconds || 0),
+      0
+    );
+    const previousAvgTimeSeconds =
+      previousSceneTimes.length > 0
+        ? previousTotalTimeSpent / previousSceneTimes.length
+        : 0;
+    const avgTimeTrend = calculateTrend(avgTimeSeconds, previousAvgTimeSeconds);
+
+    // 3. Hot Leads Trend
+    const previousHotLeadsSet = new Set(
+      previousHighInterest.map(
+        (event: PostHogEvent) => event.person?.distinct_id || 'unknown'
+      )
+    );
+    const previousHotLeads = previousHotLeadsSet.size;
+    const hotLeadsTrend = calculateTrend(hotLeads, previousHotLeads);
+
+    // 4. Conversions Trend
+    const previousConversions = previousContactClicks.length;
+    const conversionsTrend = calculateTrend(conversions, previousConversions);
+
     // Prepare response
     const analyticsData: AnalyticsData = {
       totalViews,
@@ -323,6 +405,12 @@ export async function GET(
       conversions,
       dailyViews,
       sceneMetrics: sceneMetrics.slice(0, 6), // Top 6 scenes
+      trends: {
+        viewsTrend,
+        avgTimeTrend,
+        hotLeadsTrend,
+        conversionsTrend,
+      },
     };
 
     console.log('✅ Analytics data fetched successfully:', {

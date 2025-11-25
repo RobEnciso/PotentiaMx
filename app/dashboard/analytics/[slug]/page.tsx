@@ -106,6 +106,12 @@ interface AnalyticsData {
     avgTime: number;
     percentage: number;
   }>;
+  trends: {
+    viewsTrend: number | null;
+    avgTimeTrend: number | null;
+    hotLeadsTrend: number | null;
+    conversionsTrend: number | null;
+  };
 }
 
 interface KPICardProps {
@@ -113,7 +119,7 @@ interface KPICardProps {
   label: string;
   value: number | string;
   suffix?: string;
-  trend?: number;
+  trend?: number | null;
   trendLabel?: string;
   color: string;
   isLoading?: boolean;
@@ -193,17 +199,19 @@ function KPICard({
         {suffix && <span className="text-2xl text-gray-500 ml-1">{suffix}</span>}
       </motion.div>
 
-      {trend !== undefined && (
+      {trend !== undefined && trend !== null && (
         <div className="flex items-center gap-1">
           {trend > 0 ? (
             <TrendingUp className="w-4 h-4 text-emerald-500" />
-          ) : (
+          ) : trend < 0 ? (
             <TrendingDown className="w-4 h-4 text-red-500" />
+          ) : (
+            <span className="w-4 h-4 text-gray-400">—</span>
           )}
           <span
             className={cn(
               'text-sm font-semibold',
-              trend > 0 ? 'text-emerald-600' : 'text-red-600'
+              trend > 0 ? 'text-emerald-600' : trend < 0 ? 'text-red-600' : 'text-gray-600'
             )}
           >
             {trend > 0 ? '+' : ''}
@@ -307,6 +315,12 @@ export default function AnalyticsPage() {
           conversions: 0,
           dailyViews: [],
           sceneMetrics: [],
+          trends: {
+            viewsTrend: null,
+            avgTimeTrend: null,
+            hotLeadsTrend: null,
+            conversionsTrend: null,
+          },
         });
       } finally {
         setTimeout(() => setIsLoading(false), 500);
@@ -331,12 +345,25 @@ export default function AnalyticsPage() {
   const dailyViews = analyticsData?.dailyViews || [];
   const sceneMetrics = analyticsData?.sceneMetrics || [];
 
+  // Extract trend data (real comparison with previous period)
+  const viewsTrend = analyticsData?.trends?.viewsTrend ?? null;
+  const avgTimeTrend = analyticsData?.trends?.avgTimeTrend ?? null;
+  const hotLeadsTrend = analyticsData?.trends?.hotLeadsTrend ?? null;
+  const conversionsTrend = analyticsData?.trends?.conversionsTrend ?? null;
+
   // Get property type label in Spanish
   const propertyTypeLabel = {
     terreno: 'Terreno',
     casa: 'Casa',
     departamento: 'Departamento',
   }[propertyType];
+
+  // Get trend label based on time range
+  const trendLabel = {
+    '7d': 'vs 7 días anteriores',
+    '30d': 'vs 30 días anteriores',
+    all: 'vs periodo anterior',
+  }[timeRange];
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
@@ -434,8 +461,8 @@ export default function AnalyticsPage() {
             icon={<Eye className="w-6 h-6 text-blue-600" />}
             label="Visitas Virtuales"
             value={totalViews}
-            trend={12}
-            trendLabel="vs semana pasada"
+            trend={viewsTrend}
+            trendLabel={trendLabel}
             color="bg-blue-50"
             isLoading={isLoading}
           />
@@ -445,8 +472,8 @@ export default function AnalyticsPage() {
             label="Tiempo Promedio de Enamoramiento"
             value={avgTimeSpent}
             suffix="min"
-            trend={8}
-            trendLabel="vs semana pasada"
+            trend={avgTimeTrend}
+            trendLabel={trendLabel}
             color="bg-purple-50"
             isLoading={isLoading}
           />
@@ -457,8 +484,8 @@ export default function AnalyticsPage() {
             }
             label={config.hotLeadsLabel}
             value={hotLeads}
-            trend={-5}
-            trendLabel="vs semana pasada"
+            trend={hotLeadsTrend}
+            trendLabel={trendLabel}
             color={config.hotLeadsColor}
             isLoading={isLoading}
             isBlurred={!isPro}
@@ -468,8 +495,8 @@ export default function AnalyticsPage() {
             icon={<MessageCircle className="w-6 h-6 text-emerald-600" />}
             label="Intención de Compra"
             value={conversions}
-            trend={25}
-            trendLabel="vs semana pasada"
+            trend={conversionsTrend}
+            trendLabel={trendLabel}
             color="bg-emerald-50"
             isLoading={isLoading}
           />
