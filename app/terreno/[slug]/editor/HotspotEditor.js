@@ -11,6 +11,11 @@ import { isMobileDevice } from '@/lib/deviceDetection';
 import MobileBottomBar from '@/components/MobileBottomBar';
 import MobileBottomSheet from '@/components/MobileBottomSheet';
 import MobileHotspotForm from '@/components/MobileHotspotForm';
+import {
+  getPolygonsByPanorama,
+  createPolygon,
+  deletePolygonsByPanorama,
+} from '@/lib/polygonsService';
 
 export default function HotspotEditor({
   terrainId,
@@ -93,6 +98,7 @@ export default function HotspotEditor({
   const [uploadingViewAudioType, setUploadingViewAudioType] = useState('');
   // ✏️ Polygon Drawing Tool - Estados
   const [isDrawingPolygon, setIsDrawingPolygon] = useState(false);
+  const [polygonPointCount, setPolygonPointCount] = useState(0); // ✅ Contador para re-renders
   const isDrawingPolygonRef = useRef(false);
   const polygonPointsRef = useRef([]);
 
@@ -510,6 +516,7 @@ export default function HotspotEditor({
         // Actualizar ref directamente
         polygonPointsRef.current = [...polygonPointsRef.current, point];
         const pointIndex = polygonPointsRef.current.length;
+        setPolygonPointCount(pointIndex); // ✅ Actualizar estado para re-render
         console.log(`🎯 Punto ${pointIndex} agregado:`, point, 'Total:', pointIndex);
 
         if (!markersPluginRef.current) {
@@ -793,6 +800,73 @@ export default function HotspotEditor({
       setTimeout(() => updateMarkers(), 200);
     }
   }, [isViewerReady, hotspots.length, updateMarkers]);
+
+  // ✅ Cargar polígonos guardados al cambiar de vista
+  useEffect(() => {
+    async function loadPolygons() {
+      if (!markersPluginRef.current || !terrainId) return;
+
+      console.log(`📐 Cargando polígonos para vista ${currentImageIndex}`);
+
+      // Limpiar polígonos anteriores (de la vista anterior)
+      try {
+        const currentMarkers = markersPluginRef.current.getMarkers();
+        currentMarkers.forEach((marker) => {
+          if (marker.id && marker.id.toString().startsWith('saved-polygon-')) {
+            markersPluginRef.current.removeMarker(marker.id);
+          }
+        });
+      } catch (e) {
+        console.warn('Error limpiando polígonos anteriores:', e);
+      }
+
+      // Cargar polígonos de la vista actual desde BD
+      const { data, error } = await getPolygonsByPanorama(terrainId, currentImageIndex);
+
+      if (error) {
+        console.error('Error cargando polígonos:', error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log(`ℹ️ No hay polígonos guardados en vista ${currentImageIndex}`);
+        return;
+      }
+
+      // Renderizar cada polígono guardado
+      data.forEach((polygon) => {
+        try {
+          markersPluginRef.current.addMarker({
+            id: `saved-polygon-${polygon.id}`,
+            polygon: polygon.points,
+            svgStyle: {
+              fill: `${polygon.color}${Math.floor(polygon.fill_opacity * 255).toString(16).padStart(2, '0')}`,
+              stroke: polygon.color,
+              strokeWidth: `${polygon.stroke_width}px`,
+              filter: `drop-shadow(0 0 15px ${polygon.color})`,
+              strokeLinejoin: 'round',
+              strokeLinecap: 'round',
+            },
+            tooltip: {
+              content: polygon.name || `Polígono ${polygon.id}`,
+              position: 'bottom center',
+            },
+            listOnly: false,
+            visible: polygon.visible,
+          });
+          console.log(`✅ Polígono ${polygon.id} renderizado:`, polygon.name);
+        } catch (renderError) {
+          console.error(`Error renderizando polígono ${polygon.id}:`, renderError);
+        }
+      });
+
+      console.log(`✅ ${data.length} polígono(s) cargado(s) en vista ${currentImageIndex}`);
+    }
+
+    if (isViewerReady) {
+      loadPolygons();
+    }
+  }, [isViewerReady, currentImageIndex, terrainId]);
 
   const handleDeleteHotspot = (hotspotId) => {
     if (confirm('¿Estás seguro de que quieres eliminar este hotspot?')) {
@@ -2201,6 +2275,7 @@ export default function HotspotEditor({
 
                   setIsDrawingPolygon(true);
                   polygonPointsRef.current = [];
+                  setPolygonPointCount(0); // ✅ Resetear contador
 
                   console.log('✏️ Modo dibujo activado - Click en el visor para agregar puntos');
                   console.log('isDrawingPolygonRef.current:', isDrawingPolygonRef.current);
@@ -2247,7 +2322,7 @@ export default function HotspotEditor({
                     🖱️ Click en el visor para agregar puntos
                   </div>
                   <div style={{ fontSize: '20px', color: '#fff', fontWeight: '700' }}>
-                    {polygonPointsRef.current.length} puntos
+                    {polygonPointCount} puntos
                   </div>
                   <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>
                     Mínimo 3 puntos requeridos
@@ -2255,16 +2330,40 @@ export default function HotspotEditor({
                 </div>
 
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     const points = [...polygonPointsRef.current];
-                    console.log('💾 Polígono guardado:', {
+
+                    if (points.length < 3) {
+                      alert('⚠️ Se necesitan al menos 3 puntos para guardar el polígono');
+                      return;
+                    }
+
+                    console.log('💾 Guardando polígono en BD:', {
                       terrainId,
-                      points,
-                      count: points.length,
-                      format: 'yaw/pitch en radianes',
+                      panoramaIndex: currentImageIndex,
+                      pointsCount: points.length,
                     });
-                    alert(`✅ Polígono guardado con ${points.length} puntos.\nRevisa la consola para ver los datos.`);
+
+                    // Guardar en base de datos
+                    const { data, error } = await createPolygon({
+                      terrenoId: terrainId,
+                      panoramaIndex: currentImageIndex,
+                      points: points,
+                      name: `Límite Vista ${currentImageIndex + 1}`,
+                      color: '#00ff00',
+                      fillOpacity: 0.3,
+                      strokeWidth: 5,
+                    });
+
+                    if (error) {
+                      console.error('❌ Error guardando polígono:', error);
+                      alert('❌ Error al guardar el polígono en la base de datos.\n' + error.message);
+                      return;
+                    }
+
+                    console.log('✅ Polígono guardado en BD con ID:', data.id);
                     setIsDrawingPolygon(false);
+                    setPolygonPointCount(0); // ✅ Resetear contador
 
                     // ✅ Limpiar puntos individuales temporales
                     if (markersPluginRef.current) {
@@ -2277,51 +2376,44 @@ export default function HotspotEditor({
                             // Punto no existe, ok
                           }
                         });
-                      } catch (e) {
-                        console.warn('Error limpiando puntos individuales:', e);
-                      }
-                    }
 
-                    // ✅ Mantener visualización final del polígono (SIN CLIPPING)
-                    if (markersPluginRef.current && points.length >= 3) {
-                      try {
                         // Remover polígono temporal
                         try {
                           markersPluginRef.current.removeMarker('drawing-polygon');
                         } catch (e) {}
 
-                        // Agregar polígono final con propiedades anti-clipping
+                        // Agregar polígono final guardado (con ID de BD)
                         markersPluginRef.current.addMarker({
-                          id: 'saved-polygon',
+                          id: `saved-polygon-${data.id}`,
                           polygon: points,
                           svgStyle: {
                             fill: 'rgba(0, 255, 0, 0.3)',
                             stroke: '#00ff00',
                             strokeWidth: '5px',
                             filter: 'drop-shadow(0 0 15px #00ff00)',
-                            strokeLinejoin: 'round', // ✅ Suavizar esquinas
+                            strokeLinejoin: 'round',
                             strokeLinecap: 'round',
                           },
                           tooltip: {
-                            content: `✅ Límite Guardado (${points.length} puntos)`,
+                            content: `✅ ${data.name} (${points.length} puntos)`,
                             position: 'bottom center',
                           },
-                          listOnly: false, // ✅ CRÍTICO: Renderizar en el visor
-                          visible: true, // ✅ Forzar visibilidad
-                          zIndex: 90, // ✅ Encima del canvas pero debajo de controles
+                          listOnly: false,
+                          visible: true,
                         });
-                        console.log('✅ Polígono final guardado con éxito (sin clipping)');
-                      } catch (saveError) {
-                        console.error('❌ Error guardando polígono final:', saveError);
-                        alert('Error al guardar el polígono: ' + saveError.message);
+
+                        console.log('✅ Polígono renderizado con ID:', data.id);
+                        alert(`✅ Polígono guardado exitosamente en la base de datos!\n\nID: ${data.id}\nPuntos: ${points.length}\nVista: ${currentImageIndex + 1}`);
+                      } catch (renderError) {
+                        console.error('❌ Error renderizando polígono:', renderError);
                       }
                     }
                   }}
-                  disabled={polygonPointsRef.current.length < 3}
+                  disabled={polygonPointCount < 3}
                   style={{
                     width: '100%',
                     padding: '12px',
-                    background: polygonPointsRef.current.length < 3
+                    background: polygonPointCount < 3
                       ? 'rgba(156, 163, 175, 0.3)'
                       : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                     color: 'white',
@@ -2329,11 +2421,11 @@ export default function HotspotEditor({
                     borderRadius: '8px',
                     fontSize: '14px',
                     fontWeight: '700',
-                    cursor: polygonPointsRef.current.length < 3 ? 'not-allowed' : 'pointer',
-                    opacity: polygonPointsRef.current.length < 3 ? 0.5 : 1,
+                    cursor: polygonPointCount < 3 ? 'not-allowed' : 'pointer',
+                    opacity: polygonPointCount < 3 ? 0.5 : 1,
                   }}
                 >
-                  💾 Guardar Polígono {polygonPointsRef.current.length >= 3 ? '✓' : '(Min 3 pts)'}
+                  💾 Guardar Polígono {polygonPointCount >= 3 ? '✓' : '(Min 3 pts)'}
                 </button>
 
                 <button
@@ -2342,6 +2434,7 @@ export default function HotspotEditor({
                     const currentPoints = polygonPointsRef.current.length;
 
                     setIsDrawingPolygon(false);
+                    setPolygonPointCount(0); // ✅ Resetear contador
 
                     // Limpiar TODOS los markers temporales
                     if (markersPluginRef.current) {

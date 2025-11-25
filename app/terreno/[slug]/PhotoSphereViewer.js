@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import ContactFormModal from '@/components/ContactFormModal';
+import { getPolygonsByPanorama } from '@/lib/polygonsService';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
 
@@ -500,6 +501,79 @@ function PhotoSphereViewer({
   }, [currentIndex, terreno, isViewerReady]);
 
   // ========================================================================
+  // ✅ CARGAR POLÍGONOS GUARDADOS AL CAMBIAR DE VISTA
+  // ========================================================================
+  useEffect(() => {
+    async function loadPolygons() {
+      if (!markersPluginRef.current || !terreno?.id || !isViewerReady) return;
+
+      console.log(`🔷 [Viewer Público] Cargando polígonos para vista ${currentIndex}...`);
+
+      // Limpiar polígonos anteriores
+      const currentMarkers = markersPluginRef.current.getMarkers();
+      currentMarkers.forEach((marker) => {
+        if (marker.id?.toString().startsWith('saved-polygon-')) {
+          markersPluginRef.current.removeMarker(marker.id);
+        }
+      });
+
+      // Cargar polígonos de la vista actual desde la BD
+      const { data, error } = await getPolygonsByPanorama(terreno.id, currentIndex);
+
+      if (error) {
+        console.error('❌ [Viewer Público] Error al cargar polígonos:', error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log(`📭 [Viewer Público] No hay polígonos guardados para vista ${currentIndex}`);
+        return;
+      }
+
+      console.log(`✅ [Viewer Público] ${data.length} polígonos cargados para vista ${currentIndex}`);
+
+      // Renderizar cada polígono
+      data.forEach((polygon) => {
+        try {
+          // Convertir fill_opacity a hex alpha (0.0-1.0 → 00-FF)
+          const alphaHex = Math.floor(polygon.fill_opacity * 255)
+            .toString(16)
+            .padStart(2, '0');
+
+          markersPluginRef.current.addMarker({
+            id: `saved-polygon-${polygon.id}`,
+            polygon: polygon.points,
+            svgStyle: {
+              fill: `${polygon.color}${alphaHex}`,
+              stroke: polygon.color,
+              strokeWidth: `${polygon.stroke_width}px`,
+              strokeDasharray: '10 5',
+              filter: `drop-shadow(0 0 8px ${polygon.color})`,
+            },
+            tooltip: polygon.name ? {
+              content: `🏗️ ${polygon.name}`,
+              position: 'bottom center',
+            } : undefined,
+            data: {
+              type: 'boundary',
+              description: polygon.description || 'Límite del terreno',
+              dbId: polygon.id,
+            },
+          });
+
+          console.log(`  ✓ Polígono renderizado: ${polygon.name || 'Sin nombre'} (ID: ${polygon.id})`);
+        } catch (renderError) {
+          console.error(`❌ Error al renderizar polígono ${polygon.id}:`, renderError);
+        }
+      });
+    }
+
+    if (isViewerReady) {
+      loadPolygons();
+    }
+  }, [isViewerReady, currentIndex, terreno?.id]);
+
+  // ========================================================================
   // ✅ EFECTO A (MOUNT) - Solo se ejecuta UNA VEZ al montar
   // ========================================================================
   useEffect(() => {
@@ -907,70 +981,8 @@ function PhotoSphereViewer({
         });
       });
 
-      // ⚡ OBJETIVO 2: Virtual Boundaries (Límites Visuales Estilo Tron/Neón)
-      // Dibujar polígono de prueba sobre la imagen 360
-      // TODO: En producción, estos puntos vendrían de la BD (terreno.boundary_points)
-
-      // Polígono de prueba - Forma irregular (cuadrado distorsionado)
-      const boundaryPolygon = [
-        { yaw: '0deg', pitch: '-10deg' },     // Punto superior izquierdo
-        { yaw: '90deg', pitch: '-10deg' },    // Punto superior derecho
-        { yaw: '90deg', pitch: '-30deg' },    // Punto inferior derecho
-        { yaw: '0deg', pitch: '-30deg' },     // Punto inferior izquierdo
-      ];
-
-      try {
-        markersPlugin.addMarker({
-          id: 'boundary-polygon',
-          polygon: boundaryPolygon,
-          svgStyle: {
-            fill: 'rgba(0, 255, 255, 0.15)',        // Relleno cian con transparencia
-            stroke: '#00ffff',                       // Borde cian brillante (Tron)
-            strokeWidth: '3px',                      // Grosor de línea
-            strokeDasharray: '10 5',                 // Línea punteada (efecto neón)
-            filter: 'drop-shadow(0 0 8px #00ffff)', // Glow effect
-          },
-          tooltip: {
-            content: '🏗️ Perímetro del Terreno',
-            position: 'bottom center',
-          },
-          data: {
-            type: 'boundary',
-            description: 'Límite visual del terreno',
-          },
-        });
-
-        // Segundo polígono de ejemplo - Área de construcción permitida (más pequeño)
-        const constructionArea = [
-          { yaw: '20deg', pitch: '-15deg' },
-          { yaw: '70deg', pitch: '-15deg' },
-          { yaw: '70deg', pitch: '-25deg' },
-          { yaw: '20deg', pitch: '-25deg' },
-        ];
-
-        markersPlugin.addMarker({
-          id: 'construction-area',
-          polygon: constructionArea,
-          svgStyle: {
-            fill: 'rgba(0, 255, 0, 0.1)',            // Relleno verde con transparencia
-            stroke: '#00ff00',                        // Borde verde brillante
-            strokeWidth: '2px',
-            strokeDasharray: '5 3',
-            filter: 'drop-shadow(0 0 6px #00ff00)',
-          },
-          tooltip: {
-            content: '✅ Área de Construcción',
-            position: 'bottom center',
-          },
-          data: {
-            type: 'construction-zone',
-            description: 'Zona permitida para construcción',
-          },
-        });
-      } catch (polygonError) {
-        console.warn('⚠️ Error al agregar polígonos:', polygonError);
-        // No bloquear la carga si falla el polígono
-      }
+      // ✅ Los polígonos guardados se cargan desde la BD mediante el useEffect separado
+      // Ver líneas 506-574: useEffect que carga polígonos con getPolygonsByPanorama()
     }
   }, [currentIndex, isViewerReady, hotspots, images]); // ✅ Depende de currentIndex, isViewerReady, hotspots e images
 
@@ -1124,6 +1136,26 @@ function PhotoSphereViewer({
         /* Asegurar que Leaflet sea visible */
         .leaflet-container {
           z-index: 1 !important;
+        }
+
+        /* ✅ POLÍGONOS SVG - Visibilidad sin clipping */
+        .psv-canvas-container {
+          overflow: visible !important;
+        }
+        .psv-markers-svg-container {
+          overflow: visible !important;
+          pointer-events: none !important;
+        }
+        .psv-markers-svg-container svg {
+          overflow: visible !important;
+          pointer-events: none !important;
+        }
+        .psv-markers-svg-container polygon {
+          pointer-events: auto !important;
+          vector-effect: non-scaling-stroke !important;
+        }
+        .psv-marker {
+          pointer-events: auto !important;
         }
       `}</style>
 
