@@ -6,9 +6,12 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+import { MapPlugin } from '@photo-sphere-viewer/map-plugin';
 import ContactFormModal from '@/components/ContactFormModal';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
+import '@photo-sphere-viewer/map-plugin/index.css';
+import 'leaflet/dist/leaflet.css';
 
 function PhotoSphereViewer({
   images,
@@ -528,7 +531,39 @@ function PhotoSphereViewer({
       container: containerRef.current,
       panorama: validImages[0], // ✅ Imagen inicial (índice 0)
       loadingImg: null,
-      plugins: [[MarkersPlugin, {}]],
+      plugins: [
+        [MarkersPlugin, {}],
+        [
+          MapPlugin,
+          {
+            // 🗺️ OpenStreetMap Configuration
+            imageUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            // Posición GPS del terreno (coordenadas de ejemplo - Ciudad de México)
+            center: {
+              latitude: terreno?.latitude || 19.432608,
+              longitude: terreno?.longitude || -99.133209,
+            },
+            // Opciones visuales
+            position: 'bottom left', // Ubicación: abajo a la izquierda
+            size: '200px', // Tamaño del mapa
+            static: false, // Permite interacción
+            overlayImage: null, // Sin overlay personalizado
+            pinImage: null, // Sin pin personalizado
+            pinSize: 30, // Tamaño del pin
+            rotation: '0deg', // ⚡ Rotación inicial del mapa (se sincroniza con la cámara)
+            defaultZoom: 14, // Zoom inicial del mapa
+            maxZoom: 18, // Zoom máximo
+            minZoom: 10, // Zoom mínimo
+            // Configuración de Leaflet para OpenStreetMap
+            configureLeaflet: (map) => {
+              // Agregar atribución de OpenStreetMap
+              map.attributionControl.setPrefix(
+                '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              );
+            },
+          },
+        ],
+      ],
       navbar: false,
       defaultZoomLvl: 50,
       mousewheel: true,
@@ -796,6 +831,71 @@ function PhotoSphereViewer({
           tooltip: tooltip,
         });
       });
+
+      // ⚡ OBJETIVO 2: Virtual Boundaries (Límites Visuales Estilo Tron/Neón)
+      // Dibujar polígono de prueba sobre la imagen 360
+      // TODO: En producción, estos puntos vendrían de la BD (terreno.boundary_points)
+
+      // Polígono de prueba - Forma irregular (cuadrado distorsionado)
+      const boundaryPolygon = [
+        { yaw: '0deg', pitch: '-10deg' },     // Punto superior izquierdo
+        { yaw: '90deg', pitch: '-10deg' },    // Punto superior derecho
+        { yaw: '90deg', pitch: '-30deg' },    // Punto inferior derecho
+        { yaw: '0deg', pitch: '-30deg' },     // Punto inferior izquierdo
+      ];
+
+      try {
+        markersPlugin.addMarker({
+          id: 'boundary-polygon',
+          polygon: boundaryPolygon,
+          svgStyle: {
+            fill: 'rgba(0, 255, 255, 0.15)',        // Relleno cian con transparencia
+            stroke: '#00ffff',                       // Borde cian brillante (Tron)
+            strokeWidth: '3px',                      // Grosor de línea
+            strokeDasharray: '10 5',                 // Línea punteada (efecto neón)
+            filter: 'drop-shadow(0 0 8px #00ffff)', // Glow effect
+          },
+          tooltip: {
+            content: '🏗️ Perímetro del Terreno',
+            position: 'bottom center',
+          },
+          data: {
+            type: 'boundary',
+            description: 'Límite visual del terreno',
+          },
+        });
+
+        // Segundo polígono de ejemplo - Área de construcción permitida (más pequeño)
+        const constructionArea = [
+          { yaw: '20deg', pitch: '-15deg' },
+          { yaw: '70deg', pitch: '-15deg' },
+          { yaw: '70deg', pitch: '-25deg' },
+          { yaw: '20deg', pitch: '-25deg' },
+        ];
+
+        markersPlugin.addMarker({
+          id: 'construction-area',
+          polygon: constructionArea,
+          svgStyle: {
+            fill: 'rgba(0, 255, 0, 0.1)',            // Relleno verde con transparencia
+            stroke: '#00ff00',                        // Borde verde brillante
+            strokeWidth: '2px',
+            strokeDasharray: '5 3',
+            filter: 'drop-shadow(0 0 6px #00ff00)',
+          },
+          tooltip: {
+            content: '✅ Área de Construcción',
+            position: 'bottom center',
+          },
+          data: {
+            type: 'construction-zone',
+            description: 'Zona permitida para construcción',
+          },
+        });
+      } catch (polygonError) {
+        console.warn('⚠️ Error al agregar polígonos:', polygonError);
+        // No bloquear la carga si falla el polígono
+      }
     }
   }, [currentIndex, isViewerReady, hotspots, images]); // ✅ Depende de currentIndex, isViewerReady, hotspots e images
 
