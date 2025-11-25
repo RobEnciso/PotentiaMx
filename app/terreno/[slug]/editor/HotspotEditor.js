@@ -185,6 +185,10 @@ export default function HotspotEditor({
 
   // Sincronizar isDrawingPolygonRef con isDrawingPolygon
   useEffect(() => {
+    console.log('🔄 Sincronizando ref de dibujo:', {
+      antes: isDrawingPolygonRef.current,
+      despues: isDrawingPolygon,
+    });
     isDrawingPolygonRef.current = isDrawingPolygon;
   }, [isDrawingPolygon]);
 
@@ -462,22 +466,25 @@ export default function HotspotEditor({
     }
   }, [placementMode]);
 
-  // Actualizar cursor según modo de dibujo de polígono
+  // ✅ Actualizar cursor según modo de dibujo de polígono (SOLO EN VIEWER)
   useEffect(() => {
-    if (viewerRef.current) {
-      if (isDrawingPolygon) {
-        viewerRef.current.style.cursor = 'crosshair';
-      } else if (!placementMode) {
-        viewerRef.current.style.cursor = 'grab';
-      }
-    }
-    const viewerCanvas = viewerRef.current?.querySelector('canvas');
-    if (viewerCanvas) {
-      if (isDrawingPolygon) {
-        viewerCanvas.style.cursor = 'crosshair';
-      } else if (!placementMode) {
-        viewerCanvas.style.cursor = 'grab';
-      }
+    if (!viewerRef.current) return;
+
+    const container = viewerRef.current;
+    const canvas = container.querySelector('canvas');
+
+    if (isDrawingPolygon) {
+      // 🎯 Cursor crosshair SOLO en container y canvas del viewer
+      container.style.setProperty('cursor', 'crosshair', 'important');
+      if (canvas) canvas.style.setProperty('cursor', 'crosshair', 'important');
+
+      console.log('🎯 Cursor cambiado a CROSSHAIR (modo dibujo activo)');
+    } else if (!placementMode) {
+      // Restaurar cursor normal
+      container.style.cursor = 'grab';
+      if (canvas) canvas.style.cursor = 'grab';
+
+      console.log('👆 Cursor restaurado a GRAB');
     }
   }, [isDrawingPolygon, placementMode]);
 
@@ -487,7 +494,13 @@ export default function HotspotEditor({
     if (!viewer) return;
 
     const handlePolygonClick = (event) => {
+      console.log('🖱️ CLICK EN VISOR detectado', {
+        isDrawingActive: isDrawingPolygonRef.current,
+        event: event.type,
+      });
+
       if (isDrawingPolygonRef.current) {
+        console.log('✅ Modo dibujo ACTIVO - Procesando click');
         event.preventDefault();
         event.stopPropagation();
 
@@ -496,31 +509,71 @@ export default function HotspotEditor({
 
         // Actualizar ref directamente
         polygonPointsRef.current = [...polygonPointsRef.current, point];
-        console.log('🎯 Punto agregado:', point, 'Total:', polygonPointsRef.current.length);
+        const pointIndex = polygonPointsRef.current.length;
+        console.log(`🎯 Punto ${pointIndex} agregado:`, point, 'Total:', pointIndex);
 
-        // Actualizar visualización
-        if (markersPluginRef.current && polygonPointsRef.current.length >= 3) {
+        if (!markersPluginRef.current) {
+          console.error('❌ MarkersPlugin no disponible');
+          return;
+        }
+
+        // ✅ PASO 1: Agregar punto individual VISIBLE (círculo verde brillante)
+        try {
+          markersPluginRef.current.addMarker({
+            id: `polygon-point-${pointIndex}`,
+            position: { yaw, pitch }, // Sin 'rad' para position
+            html: `<div style="
+              width: 14px;
+              height: 14px;
+              background: #00ff00;
+              border: 3px solid #ffffff;
+              border-radius: 50%;
+              box-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00, inset 0 0 5px #00ff00;
+              cursor: crosshair;
+              z-index: 1000;
+              position: relative;
+            "></div>`,
+            tooltip: {
+              content: `Punto ${pointIndex}`,
+              position: 'bottom center',
+            },
+          });
+          console.log(`✅ Punto visual ${pointIndex} agregado`);
+        } catch (pointError) {
+          console.error(`❌ Error agregando punto visual ${pointIndex}:`, pointError);
+        }
+
+        // ✅ PASO 2: Actualizar polígono temporal (solo si hay 3+ puntos)
+        if (polygonPointsRef.current.length >= 3) {
           try {
-            // Intentar remover el marker anterior (ignorar si no existe)
+            // Remover polígono anterior
             try {
               markersPluginRef.current.removeMarker('drawing-polygon');
-            } catch (removeError) {
-              // Marker no existe, está bien - es el primer polígono
+            } catch (e) {
+              // No existe, ok
             }
 
+            // Agregar polígono temporal con estilo neón
             markersPluginRef.current.addMarker({
               id: 'drawing-polygon',
               polygon: polygonPointsRef.current,
               svgStyle: {
-                fill: 'rgba(0, 255, 0, 0.2)',
+                fill: 'rgba(0, 255, 0, 0.25)',
                 stroke: '#00ff00',
-                strokeWidth: '3px',
-                filter: 'drop-shadow(0 0 8px #00ff00)',
+                strokeWidth: '4px',
+                strokeDasharray: '10 5',
+                filter: 'drop-shadow(0 0 12px #00ff00)',
               },
-              tooltip: `⏳ Dibujando (${polygonPointsRef.current.length} pts)`,
+              tooltip: {
+                content: `⏳ Dibujando (${pointIndex} puntos)`,
+                position: 'bottom center',
+              },
+              listOnly: false, // ✅ CRÍTICO: Asegurar que NO esté limitado a lista
+              zIndex: 85, // ✅ Debajo de puntos pero encima del canvas
             });
-          } catch (e) {
-            console.warn('⚠️ Error al crear polígono:', e);
+            console.log(`✅ Polígono temporal actualizado (${pointIndex} puntos)`);
+          } catch (polygonError) {
+            console.error('❌ Error al crear polígono temporal:', polygonError);
           }
         }
 
@@ -536,7 +589,40 @@ export default function HotspotEditor({
     };
   }, [isDrawingPolygon]);
 
+  // ✅ FORZAR VIEWBOX CORRECTO DEL SVG (FIX CLIPPING DEFINITIVO)
+  useEffect(() => {
+    if (!viewerRef.current) return;
 
+    const fixSVGViewBox = () => {
+      const svg = viewerRef.current?.querySelector('.psv-markers-svg-container svg');
+      if (svg) {
+        // Forzar viewBox a cubrir TODO el espacio equirectangular
+        // Photo Sphere Viewer usa coordenadas en radianes convertidas a grados
+        svg.setAttribute('viewBox', '-180 -90 360 180');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        svg.style.overflow = 'visible';
+        return true;
+      }
+      return false;
+    };
+
+    // Intentar fijar inmediatamente
+    if (fixSVGViewBox()) {
+      console.log('✅ ViewBox del SVG forzado: -180 -90 360 180 (sin clipping)');
+    }
+
+    // Mantener el fix activo mientras estemos dibujando
+    let intervalId = null;
+    if (isDrawingPolygon) {
+      intervalId = setInterval(() => {
+        fixSVGViewBox();
+      }, 300); // Cada 300ms
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isDrawingPolygon]);
 
   // Cancelar modo de colocación con tecla ESC
   useEffect(() => {
@@ -1106,6 +1192,35 @@ export default function HotspotEditor({
         }
         .btn-unsaved {
           animation: pulse-save 1.5s infinite;
+        }
+
+        /* ✅ POLÍGONOS SVG - Visibilidad sin bloquear sidebar */
+
+        /* Remover clipping visual del canvas */
+        .psv-canvas-container {
+          overflow: visible !important;
+        }
+
+        /* SVG debe ser visible pero NO bloquear clicks */
+        .psv-markers-svg-container {
+          overflow: visible !important;
+          pointer-events: none !important;
+        }
+
+        .psv-markers-svg-container svg {
+          overflow: visible !important;
+          pointer-events: none !important;
+        }
+
+        /* Solo polígonos capturan eventos */
+        .psv-markers-svg-container polygon {
+          pointer-events: auto !important;
+          vector-effect: non-scaling-stroke !important;
+        }
+
+        /* Markers HTML (puntos verdes) deben ser clickeables */
+        .psv-marker {
+          pointer-events: auto !important;
         }
       `}</style>
       <div
@@ -2076,9 +2191,19 @@ export default function HotspotEditor({
             {!isDrawingPolygon ? (
               <button
                 onClick={() => {
+                  console.log('🔘 BOTÓN CLICKEADO - Iniciando modo dibujo');
+                  console.log('Estado antes:', {
+                    isDrawingPolygon,
+                    placementMode,
+                    isLoading,
+                    isSaving,
+                  });
+
                   setIsDrawingPolygon(true);
                   polygonPointsRef.current = [];
+
                   console.log('✏️ Modo dibujo activado - Click en el visor para agregar puntos');
+                  console.log('isDrawingPolygonRef.current:', isDrawingPolygonRef.current);
                 }}
                 disabled={placementMode || isLoading || isSaving}
                 style={{
@@ -2141,22 +2266,55 @@ export default function HotspotEditor({
                     alert(`✅ Polígono guardado con ${points.length} puntos.\nRevisa la consola para ver los datos.`);
                     setIsDrawingPolygon(false);
 
-                    // Mantener visualización final
+                    // ✅ Limpiar puntos individuales temporales
+                    if (markersPluginRef.current) {
+                      try {
+                        // Eliminar puntos verdes individuales
+                        points.forEach((_, index) => {
+                          try {
+                            markersPluginRef.current.removeMarker(`polygon-point-${index + 1}`);
+                          } catch (e) {
+                            // Punto no existe, ok
+                          }
+                        });
+                      } catch (e) {
+                        console.warn('Error limpiando puntos individuales:', e);
+                      }
+                    }
+
+                    // ✅ Mantener visualización final del polígono (SIN CLIPPING)
                     if (markersPluginRef.current && points.length >= 3) {
                       try {
-                        markersPluginRef.current.removeMarker('drawing-polygon');
+                        // Remover polígono temporal
+                        try {
+                          markersPluginRef.current.removeMarker('drawing-polygon');
+                        } catch (e) {}
+
+                        // Agregar polígono final con propiedades anti-clipping
                         markersPluginRef.current.addMarker({
                           id: 'saved-polygon',
                           polygon: points,
                           svgStyle: {
-                            fill: 'rgba(0, 255, 0, 0.25)',
+                            fill: 'rgba(0, 255, 0, 0.3)',
                             stroke: '#00ff00',
-                            strokeWidth: '4px',
-                            filter: 'drop-shadow(0 0 10px #00ff00)',
+                            strokeWidth: '5px',
+                            filter: 'drop-shadow(0 0 15px #00ff00)',
+                            strokeLinejoin: 'round', // ✅ Suavizar esquinas
+                            strokeLinecap: 'round',
                           },
-                          tooltip: '✅ Límite Guardado',
+                          tooltip: {
+                            content: `✅ Límite Guardado (${points.length} puntos)`,
+                            position: 'bottom center',
+                          },
+                          listOnly: false, // ✅ CRÍTICO: Renderizar en el visor
+                          visible: true, // ✅ Forzar visibilidad
+                          zIndex: 90, // ✅ Encima del canvas pero debajo de controles
                         });
-                      } catch (e) {}
+                        console.log('✅ Polígono final guardado con éxito (sin clipping)');
+                      } catch (saveError) {
+                        console.error('❌ Error guardando polígono final:', saveError);
+                        alert('Error al guardar el polígono: ' + saveError.message);
+                      }
                     }
                   }}
                   disabled={polygonPointsRef.current.length < 3}
@@ -2180,15 +2338,40 @@ export default function HotspotEditor({
 
                 <button
                   onClick={() => {
+                    console.log('❌ Cancelando dibujo...');
+                    const currentPoints = polygonPointsRef.current.length;
+
                     setIsDrawingPolygon(false);
-                    polygonPointsRef.current = [];
+
+                    // Limpiar TODOS los markers temporales
                     if (markersPluginRef.current) {
                       try {
-                        markersPluginRef.current.removeMarker('drawing-polygon');
-                        markersPluginRef.current.removeMarker('saved-polygon');
-                      } catch (e) {}
+                        // Eliminar polígono temporal
+                        try {
+                          markersPluginRef.current.removeMarker('drawing-polygon');
+                        } catch (e) {}
+
+                        // Eliminar polígono guardado (si existe)
+                        try {
+                          markersPluginRef.current.removeMarker('saved-polygon');
+                        } catch (e) {}
+
+                        // Eliminar todos los puntos individuales
+                        for (let i = 1; i <= currentPoints; i++) {
+                          try {
+                            markersPluginRef.current.removeMarker(`polygon-point-${i}`);
+                          } catch (e) {}
+                        }
+
+                        console.log(`✅ Limpiados ${currentPoints} puntos y polígonos`);
+                      } catch (cleanupError) {
+                        console.error('Error en limpieza:', cleanupError);
+                      }
                     }
-                    console.log('❌ Dibujo cancelado');
+
+                    // Limpiar array
+                    polygonPointsRef.current = [];
+                    console.log('❌ Dibujo cancelado completamente');
                   }}
                   style={{
                     width: '100%',
