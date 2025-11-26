@@ -281,9 +281,16 @@ function PhotoSphereViewer({
     }
   };
 
-  // ✅ OPTIMIZADO: Pre-carga INTELIGENTE - Solo imágenes adyacentes
+  // ✅ OPTIMIZADO: Pre-carga INTELIGENTE - Solo imágenes adyacentes (SOLO EN DESKTOP)
   useEffect(() => {
     if (!images || !isViewerReady) return;
+
+    // 📱 Deshabilitar precarga en móvil para optimizar rendimiento
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+    if (isMobile) {
+      console.log('📱 Precarga de imágenes deshabilitada en móvil');
+      return;
+    }
 
     const imagesToPreload = [];
 
@@ -304,6 +311,7 @@ function PhotoSphereViewer({
       img.src = imageUrl;
       img.onload = () => {
         preloadedImagesRef.current.add(imageUrl);
+        console.log(`⚡ Precargada: ${imageUrl.substring(imageUrl.lastIndexOf('/') + 1)}`);
       };
     });
   }, [images, isViewerReady, currentIndex]);
@@ -532,6 +540,9 @@ function PhotoSphereViewer({
 
       console.log(`✅ [Viewer Público] ${data.length} polígonos cargados para vista ${currentIndex}`);
 
+      // 📱 Detectar móvil para deshabilitar efectos costosos
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+
       // Renderizar cada polígono
       data.forEach((polygon) => {
         try {
@@ -548,7 +559,8 @@ function PhotoSphereViewer({
               stroke: polygon.color,
               strokeWidth: `${polygon.stroke_width}px`,
               strokeDasharray: '10 5',
-              filter: `drop-shadow(0 0 8px ${polygon.color})`,
+              // 📱 Deshabilitar drop-shadow en móvil (muy costoso en rendimiento)
+              ...(isMobile ? {} : { filter: `drop-shadow(0 0 8px ${polygon.color})` }),
             },
             tooltip: polygon.name ? {
               content: `🏗️ ${polygon.name}`,
@@ -605,19 +617,24 @@ function PhotoSphereViewer({
     setLoading(true);
     setError(null);
 
-    // ⚡ Cargar PlanPlugin dinámicamente (solo en cliente)
+    // ⚡ Cargar PlanPlugin dinámicamente (solo en cliente Y solo en desktop)
     const initViewer = async () => {
-      // Cargar PlanPlugin si no está cargado
-      if (!PlanPlugin && typeof window !== 'undefined') {
+      // Cargar PlanPlugin SOLO en desktop (móvil es muy pesado y el radar es muy pequeño)
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+
+      if (!PlanPlugin && typeof window !== 'undefined' && !isMobile) {
         try {
           const planModule = await import('@photo-sphere-viewer/plan-plugin');
           PlanPlugin = planModule.PlanPlugin;
           // Cargar CSS dinámicamente
           await import('@photo-sphere-viewer/plan-plugin/index.css');
           await import('leaflet/dist/leaflet.css');
+          console.log('🗺️ PlanPlugin cargado (desktop only)');
         } catch (err) {
           console.warn('⚠️ No se pudo cargar PlanPlugin:', err);
         }
+      } else if (isMobile) {
+        console.log('📱 PlanPlugin deshabilitado en móvil (optimización de rendimiento)');
       }
 
     const viewer = new Viewer({
@@ -676,10 +693,10 @@ function PhotoSphereViewer({
         ] : []), // Cierre del spread condicional de PlanPlugin
       ],
       navbar: false,
-      defaultZoomLvl: 50,
+      defaultZoomLvl: isMobile ? 30 : 50, // 📱 Zoom reducido en móvil para carga más rápida
       mousewheel: true,
       mousemove: true,
-      moveSpeed: 2.0,
+      moveSpeed: isMobile ? 1.5 : 2.0, // 📱 Movimiento más lento en móvil
     });
 
     // C. Guardar referencias (flag ya está en true desde línea 529)
