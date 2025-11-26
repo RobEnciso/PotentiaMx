@@ -646,12 +646,15 @@ function PhotoSphereViewer({
             defaultZoom: 16, // Zoom más cercano para mejor referencia
             minZoom: 14,
             maxZoom: 18,
-            // 🎯 Cono de dirección pequeño y discreto
+            // 🎯 DARK RADAR: Indicador estilo DJI (Cyan Neón)
             spotStyle: {
-              size: 15, // Tamaño del cono (será pequeño por el zoom)
+              size: 8, // Punto más fino y discreto
               image: null, // null = usar cono por defecto
-              color: '#00ffff', // Color cian brillante
-              hoverColor: '#00ffff', // Sin cambio al hover
+              color: '#00f2ff', // Cyan neón brillante (resalta sobre negro)
+              hoverColor: '#ffffff', // Blanco puro al hover
+            },
+            coneStyle: {
+              color: 'rgba(255, 255, 255, 0.2)', // Cono blanco semi-transparente
             },
             // ✅ DESACTIVAR controles molestos
             buttons: {
@@ -660,12 +663,12 @@ function PhotoSphereViewer({
               reset: false, // Sin botón de reset
               compass: false, // Sin botón de compass (N)
             },
-            // Configuración de tiles de OpenStreetMap
+            // 🌑 DARK MATTER TILES: Mapa oscuro estilo tech/radar
             layers: [
               {
-                name: 'OpenStreetMap',
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attribution: '', // ✅ Sin atribución visible
+                name: 'CartoDB Dark Matter',
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                attribution: '', // Sin atribución visible en el radar
               },
             ],
           },
@@ -742,10 +745,13 @@ function PhotoSphereViewer({
               planContainer.style.maxHeight = size;
               planContainer.style.borderRadius = '50%';
               planContainer.style.overflow = 'hidden';
-              planContainer.style.background = 'rgba(0, 0, 0, 0.5)';
-              planContainer.style.border = '2px solid rgba(255, 255, 255, 0.8)';
-              planContainer.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.5)';
-              console.log(`🎯 Radar circular DJI activado (${size})`);
+
+              // 🌑 DARK RADAR: Fondo oscuro + borde cian + glow
+              planContainer.style.background = 'rgba(0, 0, 0, 0.7)';
+              planContainer.style.border = '2px solid rgba(0, 242, 255, 0.4)';
+              planContainer.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 242, 255, 0.1), 0 0 30px rgba(0, 242, 255, 0.15)';
+
+              console.log(`🌑 Dark Radar DJI activado (${size})`);
             }
 
             if (leafletContainer) {
@@ -1205,9 +1211,9 @@ function PhotoSphereViewer({
 
         .psv-loader-container { display: none !important; }
 
-        /* 🎯 RADAR TÁCTICO CIRCULAR - Estilo DJI / HUD Videojuego */
+        /* 🎯 DARK RADAR TÁCTICO - Estilo DJI / HUD Tech */
 
-        /* Contenedor del Mapa: Círculo Perfecto */
+        /* Contenedor del Mapa: Círculo Perfecto con Glow */
         .psv-plan,
         .psv-plan-container {
           width: 140px !important;
@@ -1218,11 +1224,20 @@ function PhotoSphereViewer({
           max-height: 140px !important;
           border-radius: 50% !important; /* ✅ CÍRCULO PERFECTO */
           overflow: hidden !important; /* ✅ CLAVE: Recorta lo que salga del círculo */
-          border: 2px solid rgba(255, 255, 255, 0.8) !important;
-          box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important;
-          bottom: 20px !important;
-          left: 20px !important;
-          background: rgba(0, 0, 0, 0.5) !important; /* Fondo oscuro radar */
+
+          /* Borde sutil con glow cian */
+          border: 2px solid rgba(0, 242, 255, 0.4) !important;
+
+          /* Sombra triple: externa negra + glow cian interno/externo */
+          box-shadow:
+            0 0 20px rgba(0, 0, 0, 0.8), /* Sombra negra exterior */
+            inset 0 0 20px rgba(0, 242, 255, 0.1), /* Glow cian interior */
+            0 0 30px rgba(0, 242, 255, 0.15) !important; /* Glow cian exterior */
+
+          /* ✅ Alineado con botón de contacto (simétr human en esquinas opuestas) */
+          bottom: 24px !important; /* Mismo bottom que botón de contacto */
+          left: 24px !important; /* Mismo margen que botón de contacto (pero izquierda) */
+          background: rgba(0, 0, 0, 0.7) !important; /* Fondo más oscuro para contraste */
           z-index: 100 !important;
           pointer-events: auto !important;
           opacity: 1 !important;
@@ -1265,7 +1280,7 @@ function PhotoSphereViewer({
           border-radius: 50% !important;
         }
 
-        /* 📱 MÓVIL: Aún más discreto (110px) */
+        /* 📱 MÓVIL: Radar compacto alineado */
         @media (max-width: 640px) {
           .psv-plan,
           .psv-plan-container {
@@ -1275,8 +1290,9 @@ function PhotoSphereViewer({
             min-height: 110px !important;
             max-width: 110px !important;
             max-height: 110px !important;
-            bottom: 80px !important; /* Subirlo para no chocar con botones inferiores */
-            left: 10px !important;
+            /* Alineado simétricamente con botón de contacto (mismo bottom) */
+            bottom: 24px !important; /* Mismo bottom que contacto y dots (centrados) */
+            left: 16px !important; /* Margen reducido en móvil */
           }
 
           .psv-plan-container .leaflet-container,
