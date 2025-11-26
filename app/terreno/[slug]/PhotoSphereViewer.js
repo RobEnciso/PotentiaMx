@@ -639,26 +639,33 @@ function PhotoSphereViewer({
               return [lng, lat];
             })(),
             bearing: 0, // Rotación inicial del mapa
-            // Opciones visuales del minimapa (responsive via CSS)
+            // 🎯 RADAR TÁCTICO CIRCULAR - Estilo DJI
             position: 'bottom left',
-            size: { width: '300px', height: '300px' }, // Desktop (se sobreescribe en móvil con CSS)
+            size: { width: '140px', height: '140px' }, // Tamaño pequeño circular
             visibleOnLoad: true,
-            defaultZoom: 14,
-            // 🎯 Personalización del cono de dirección
+            defaultZoom: 16, // Zoom más cercano para mejor referencia
+            minZoom: 14,
+            maxZoom: 18,
+            // 🎯 Cono de dirección pequeño y discreto
             spotStyle: {
-              size: 20, // Tamaño del punto central (más grande = más visible)
+              size: 15, // Tamaño del cono (será pequeño por el zoom)
               image: null, // null = usar cono por defecto
-              color: '#00ffff', // Color cian brillante (Tron style)
-              hoverColor: '#00ff00', // Verde al hacer hover
-              shadowColor: 'rgba(0, 255, 255, 0.5)', // Sombra con glow
-              shadowBlur: 15, // Difuminado de la sombra (efecto glow)
+              color: '#00ffff', // Color cian brillante
+              hoverColor: '#00ffff', // Sin cambio al hover
+            },
+            // ✅ DESACTIVAR controles molestos
+            buttons: {
+              maximize: false, // Sin botón de maximizar
+              close: false, // Sin botón de cerrar
+              reset: false, // Sin botón de reset
+              compass: false, // Sin botón de compass (N)
             },
             // Configuración de tiles de OpenStreetMap
             layers: [
               {
                 name: 'OpenStreetMap',
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attribution: '© OpenStreetMap contributors',
+                attribution: '', // ✅ Sin atribución visible
               },
             ],
           },
@@ -717,51 +724,83 @@ function PhotoSphereViewer({
           // Actualizar bearing cuando el usuario gira la cámara
           viewer.addEventListener('position-updated', updateMapBearing);
 
-          // 📱 FORZAR tamaño pequeño en móvil (estilo DJI)
-          const forceMobileMapSize = () => {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-              const planContainer = document.querySelector('.psv-plan-container');
-              const leafletContainer = document.querySelector('.psv-plan-container .leaflet-container');
+          // 🎯 FORZAR RADAR CIRCULAR estilo DJI
+          const forceCircularRadar = () => {
+            const isMobile = window.innerWidth <= 640;
+            const size = isMobile ? '110px' : '140px';
 
-              if (planContainer) {
-                planContainer.style.width = '120px';
-                planContainer.style.height = '120px';
-                planContainer.style.minWidth = '120px';
-                planContainer.style.minHeight = '120px';
-                planContainer.style.maxWidth = '120px';
-                planContainer.style.maxHeight = '120px';
-                console.log('📱 Minimapa ajustado a tamaño móvil (120x120px)');
-              }
+            const planContainer = document.querySelector('.psv-plan-container');
+            const leafletContainer = document.querySelector('.psv-plan-container .leaflet-container');
 
-              if (leafletContainer) {
-                leafletContainer.style.width = '120px';
-                leafletContainer.style.height = '120px';
-                leafletContainer.style.minWidth = '120px';
-                leafletContainer.style.minHeight = '120px';
-                leafletContainer.style.maxWidth = '120px';
-                leafletContainer.style.maxHeight = '120px';
+            if (planContainer) {
+              // Forzar tamaño circular
+              planContainer.style.width = size;
+              planContainer.style.height = size;
+              planContainer.style.minWidth = size;
+              planContainer.style.minHeight = size;
+              planContainer.style.maxWidth = size;
+              planContainer.style.maxHeight = size;
+              planContainer.style.borderRadius = '50%';
+              planContainer.style.overflow = 'hidden';
+              planContainer.style.background = 'rgba(0, 0, 0, 0.5)';
+              planContainer.style.border = '2px solid rgba(255, 255, 255, 0.8)';
+              planContainer.style.boxShadow = '0 0 15px rgba(0, 0, 0, 0.5)';
+              console.log(`🎯 Radar circular DJI activado (${size})`);
+            }
 
-                // Forzar invalidate del mapa para que se redibuje
-                try {
-                  const leafletMap = leafletContainer._leaflet_map;
-                  if (leafletMap) {
-                    setTimeout(() => leafletMap.invalidateSize(), 100);
-                  }
-                } catch (e) {
-                  // Leaflet map no disponible aún
+            if (leafletContainer) {
+              // Forzar contenedor Leaflet también circular
+              leafletContainer.style.width = size;
+              leafletContainer.style.height = size;
+              leafletContainer.style.minWidth = size;
+              leafletContainer.style.minHeight = size;
+              leafletContainer.style.maxWidth = size;
+              leafletContainer.style.maxHeight = size;
+              leafletContainer.style.borderRadius = '50%';
+              leafletContainer.style.overflow = 'hidden';
+
+              // Desactivar arrastre del mapa (estilo DJI estático)
+              try {
+                const leafletMap = leafletContainer._leaflet_map;
+                if (leafletMap) {
+                  // Desactivar interacciones de arrastre
+                  leafletMap.dragging.disable();
+                  leafletMap.touchZoom.disable();
+                  leafletMap.doubleClickZoom.disable();
+                  leafletMap.scrollWheelZoom.disable();
+                  leafletMap.boxZoom.disable();
+                  leafletMap.keyboard.disable();
+
+                  // Invalidar tamaño del mapa para redibujarlo
+                  setTimeout(() => leafletMap.invalidateSize(), 100);
+                  console.log('🔒 Interacciones del mapa desactivadas (estilo DJI)');
                 }
+              } catch (e) {
+                console.warn('⚠️ No se pudieron desactivar interacciones del mapa');
               }
             }
+
+            // Ocultar todos los controles molestos
+            const controls = document.querySelectorAll(
+              '.leaflet-control-zoom, .leaflet-control-attribution, .leaflet-control-container'
+            );
+            controls.forEach(control => {
+              control.style.display = 'none';
+              control.style.opacity = '0';
+              control.style.visibility = 'hidden';
+              control.style.pointerEvents = 'none';
+            });
           };
 
-          // Ejecutar inmediatamente y después de un delay
-          setTimeout(forceMobileMapSize, 100);
-          setTimeout(forceMobileMapSize, 500);
-          setTimeout(forceMobileMapSize, 1000);
+          // Ejecutar múltiples veces para asegurar que tome efecto
+          setTimeout(forceCircularRadar, 100);
+          setTimeout(forceCircularRadar, 300);
+          setTimeout(forceCircularRadar, 500);
+          setTimeout(forceCircularRadar, 1000);
+          setTimeout(forceCircularRadar, 2000);
 
           // Ejecutar al redimensionar ventana
-          window.addEventListener('resize', forceMobileMapSize);
+          window.addEventListener('resize', forceCircularRadar);
         } catch (err) {
           console.warn('⚠️ No se pudo sincronizar bearing del mapa:', err);
         }
@@ -1166,77 +1205,88 @@ function PhotoSphereViewer({
 
         .psv-loader-container { display: none !important; }
 
-        /* ✅ Estilos para PlanPlugin (minimapa GPS) */
-        .psv-plan {
+        /* 🎯 RADAR TÁCTICO CIRCULAR - Estilo DJI / HUD Videojuego */
+
+        /* Contenedor del Mapa: Círculo Perfecto */
+        .psv-plan,
+        .psv-plan-container {
+          width: 140px !important;
+          height: 140px !important;
+          min-width: 140px !important;
+          min-height: 140px !important;
+          max-width: 140px !important;
+          max-height: 140px !important;
+          border-radius: 50% !important; /* ✅ CÍRCULO PERFECTO */
+          overflow: hidden !important; /* ✅ CLAVE: Recorta lo que salga del círculo */
+          border: 2px solid rgba(255, 255, 255, 0.8) !important;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important;
+          bottom: 20px !important;
+          left: 20px !important;
+          background: rgba(0, 0, 0, 0.5) !important; /* Fondo oscuro radar */
           z-index: 100 !important;
           pointer-events: auto !important;
           opacity: 1 !important;
           visibility: visible !important;
-        }
-        .psv-plan-container {
-          background: rgba(0, 0, 0, 0.7) !important;
-          border: 2px solid rgba(255, 255, 255, 0.3) !important;
-          border-radius: 8px !important;
-          overflow: hidden !important;
           transition: all 0.3s ease !important;
         }
-        /* Asegurar que Leaflet sea visible */
-        .leaflet-container {
-          z-index: 1 !important;
+
+        /* Leaflet Container también debe ser circular */
+        .psv-plan-container .leaflet-container,
+        .psv-plan .leaflet-container {
+          width: 140px !important;
+          height: 140px !important;
+          border-radius: 50% !important;
+          overflow: hidden !important;
         }
 
-        /* 📱 MÓVIL: Minimapa estilo DJI (punto de referencia pequeño) */
-        @media (max-width: 768px) {
-          /* Contenedor principal del mapa */
+        /* ✅ OCULTAR todos los controles de Leaflet (Zoom, Compass 'N', Attribution) */
+        .psv-plan-container .leaflet-control-container,
+        .psv-plan .leaflet-control-container,
+        .psv-plan-container .leaflet-control-zoom,
+        .psv-plan .leaflet-control-zoom,
+        .psv-plan-container .leaflet-control-attribution,
+        .psv-plan .leaflet-control-attribution,
+        .leaflet-control-container,
+        .leaflet-control-zoom,
+        .leaflet-control-attribution {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+
+        /* Forzar tamaño en todos los divs internos de Leaflet */
+        .psv-plan-container .leaflet-pane,
+        .psv-plan-container .leaflet-map-pane,
+        .psv-plan .leaflet-pane,
+        .psv-plan .leaflet-map-pane {
+          width: 140px !important;
+          height: 140px !important;
+          border-radius: 50% !important;
+        }
+
+        /* 📱 MÓVIL: Aún más discreto (110px) */
+        @media (max-width: 640px) {
           .psv-plan,
-          .psv-plan-container,
-          div[class*="psv-plan"] {
-            width: 120px !important;
-            height: 120px !important;
-            min-width: 120px !important;
-            min-height: 120px !important;
-            max-width: 120px !important;
-            max-height: 120px !important;
-          }
-
           .psv-plan-container {
-            bottom: 80px !important;
-            left: 12px !important;
-            border-radius: 12px !important;
-            border: 2px solid rgba(255, 255, 255, 0.5) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+            width: 110px !important;
+            height: 110px !important;
+            min-width: 110px !important;
+            min-height: 110px !important;
+            max-width: 110px !important;
+            max-height: 110px !important;
+            bottom: 80px !important; /* Subirlo para no chocar con botones inferiores */
+            left: 10px !important;
           }
 
-          /* Forzar tamaño en el contenedor Leaflet */
           .psv-plan-container .leaflet-container,
-          .psv-plan .leaflet-container {
-            width: 120px !important;
-            height: 120px !important;
-            min-width: 120px !important;
-            min-height: 120px !important;
-            max-width: 120px !important;
-            max-height: 120px !important;
-          }
-
-          /* Ocultar controles de zoom en móvil */
-          .psv-plan-container .leaflet-control-zoom,
-          .psv-plan .leaflet-control-zoom {
-            display: none !important;
-          }
-
-          /* Ocultar atribución en móvil */
-          .psv-plan-container .leaflet-control-attribution,
-          .psv-plan .leaflet-control-attribution {
-            display: none !important;
-          }
-
-          /* Forzar tamaño en todos los divs internos de Leaflet */
+          .psv-plan .leaflet-container,
           .psv-plan-container .leaflet-pane,
           .psv-plan-container .leaflet-map-pane,
           .psv-plan .leaflet-pane,
           .psv-plan .leaflet-map-pane {
-            width: 120px !important;
-            height: 120px !important;
+            width: 110px !important;
+            height: 110px !important;
           }
         }
 
