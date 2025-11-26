@@ -21,7 +21,7 @@ export default function HeroSection() {
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
           La Plataforma Inmobiliaria
           <br />
-          <span className="text-teal-400">Definitiva</span> para Puerto Vallarta
+          <span className="text-teal-400">Definitiva</span> para México
         </h1>
 
         <p className="text-lg sm:text-xl md:text-2xl text-slate-200 mb-12 max-w-3xl mx-auto leading-relaxed">
@@ -30,16 +30,16 @@ export default function HeroSection() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8">
           <Link
             href="/propiedades"
-            className="group w-full sm:w-auto px-8 py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+            className="group w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-sm md:text-base rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
           >
             Explorar Propiedades
           </Link>
           <Link
             href="/signup"
-            className="group w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-white"
+            className="group w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-4 bg-white hover:bg-slate-50 text-slate-900 font-semibold text-sm md:text-base rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-white"
           >
             Publicar mi Propiedad
           </Link>
@@ -52,8 +52,8 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      {/* Scroll Indicator - Hidden on mobile to prevent overlap with social proof text */}
+      <div className="hidden md:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="w-6 h-10 border-2 border-white rounded-full flex items-start justify-center p-2">
           <div className="w-1 h-3 bg-white rounded-full animate-pulse" />
         </div>
