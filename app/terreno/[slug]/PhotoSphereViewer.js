@@ -8,6 +8,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import ContactFormModal from '@/components/ContactFormModal';
 import { getPolygonsByPanorama } from '@/lib/polygonsService';
+import { sanitizeHTML, sanitizeAttribute } from '@/lib/sanitize';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
 
@@ -1058,27 +1059,31 @@ function PhotoSphereViewer({
         const icon = defaultIcons[hotspotType] || '📍';
 
         // Tooltip diferente según tipo
+        // 🔒 SECURITY: sanitizeHTML prevents XSS attacks in tooltips
         let tooltip = '';
+        const safeTitle = sanitizeHTML(hotspot.title);
         if (hotspotType === 'navigation') {
-          tooltip = `Ir a: ${hotspot.title}`;
+          tooltip = `Ir a: ${safeTitle}`;
         } else if (hotspotType === 'info') {
-          tooltip = `Ver información: ${hotspot.title}`;
+          tooltip = `Ver información: ${safeTitle}`;
         } else if (hotspotType === 'image') {
-          tooltip = `Ver galería: ${hotspot.title}`;
+          tooltip = `Ver galería: ${safeTitle}`;
         } else if (hotspotType === 'video') {
-          tooltip = `Reproducir video: ${hotspot.title}`;
+          tooltip = `Reproducir video: ${safeTitle}`;
         } else if (hotspotType === 'audio') {
-          tooltip = `Reproducir audio: ${hotspot.title}`;
+          tooltip = `Reproducir audio: ${safeTitle}`;
         }
 
         // Diferenciar estilo entre navegación y multimedia
         let markerHtml;
         if (hotspotType === 'navigation') {
           // Marcador completo con etiqueta para navegación
-          markerHtml = `<div class="public-marker">${icon} <span>${hotspot.title}</span></div>`;
+          // 🔒 SECURITY: using already sanitized safeTitle
+          markerHtml = `<div class="public-marker">${icon} <span>${safeTitle}</span></div>`;
         } else {
           // Solo icono grande para multimedia (punto de interés fijo)
-          markerHtml = `<div class="multimedia-marker" title="${hotspot.title}">${icon}</div>`;
+          // 🔒 SECURITY: sanitizeAttribute prevents XSS attacks in HTML attributes
+          markerHtml = `<div class="multimedia-marker" title="${sanitizeAttribute(hotspot.title)}">${icon}</div>`;
         }
 
         markersPlugin.addMarker({
@@ -1940,7 +1945,7 @@ function PhotoSphereViewer({
                 <div style={{ padding: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
                     <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
-                      ℹ️ {activeMediaModal.data.title}
+                      ℹ️ {sanitizeHTML(activeMediaModal.data.title)}
                     </h2>
                     <button
                       onClick={() => setActiveMediaModal(null)}
@@ -1962,7 +1967,7 @@ function PhotoSphereViewer({
                     </button>
                   </div>
                   <p style={{ color: '#4b5563', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                    {activeMediaModal.data.content_text}
+                    {sanitizeHTML(activeMediaModal.data.content_text)}
                   </p>
                 </div>
               )}
@@ -1972,7 +1977,7 @@ function PhotoSphereViewer({
                 <div style={{ padding: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
                     <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
-                      🖼️ {activeMediaModal.data.title}
+                      🖼️ {sanitizeHTML(activeMediaModal.data.title)}
                     </h2>
                     <button
                       onClick={() => setActiveMediaModal(null)}
@@ -2003,7 +2008,7 @@ function PhotoSphereViewer({
                       whiteSpace: 'pre-wrap',
                       fontSize: '0.95rem'
                     }}>
-                      {activeMediaModal.data.content_text}
+                      {sanitizeHTML(activeMediaModal.data.content_text)}
                     </p>
                   )}
 
@@ -2156,7 +2161,7 @@ function PhotoSphereViewer({
                 <div style={{ padding: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
                     <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2937', fontWeight: 'bold' }}>
-                      🔊 {activeMediaModal.data.title}
+                      🔊 {sanitizeHTML(activeMediaModal.data.title)}
                     </h2>
                     <button
                       onClick={() => setActiveMediaModal(null)}

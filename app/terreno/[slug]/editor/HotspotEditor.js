@@ -16,6 +16,7 @@ import {
   createPolygon,
   deletePolygonsByPanorama,
 } from '@/lib/polygonsService';
+import { sanitizeHTML, sanitizeAttribute } from '@/lib/sanitize';
 
 export default function HotspotEditor({
   terrainId,
@@ -252,10 +253,12 @@ export default function HotspotEditor({
       let markerHtml;
       if (hotspotType === 'navigation') {
         // Marcador completo con etiqueta para navegación
-        markerHtml = `<div class="custom-marker clickable-marker">${icon} <span>${hotspot.title}</span></div>`;
+        // 🔒 SECURITY: sanitizeHTML prevents XSS attacks from user-generated titles
+        markerHtml = `<div class="custom-marker clickable-marker">${icon} <span>${sanitizeHTML(hotspot.title)}</span></div>`;
       } else {
         // Solo icono grande para multimedia (punto de interés fijo)
-        markerHtml = `<div class="multimedia-marker clickable-marker" title="${hotspot.title}">${icon}</div>`;
+        // 🔒 SECURITY: sanitizeAttribute prevents XSS attacks in HTML attributes
+        markerHtml = `<div class="multimedia-marker clickable-marker" title="${sanitizeAttribute(hotspot.title)}">${icon}</div>`;
       }
 
       markersPluginRef.current.addMarker({
