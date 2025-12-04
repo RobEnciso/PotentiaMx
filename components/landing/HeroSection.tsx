@@ -1,62 +1,65 @@
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 landscape:pt-32 md:pt-0">
-      {/* Background with overlay */}
-      <div
-        className="absolute inset-0 bg-[url('/hero-background.jpg')] bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(/hero-background.jpg)',
-        }}
-      >
-        {/* Fallback gradient if image doesn't exist */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-      </div>
+      {/* Subtle background gradient - Apple style */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-[var(--gray-50)] to-white" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--ocean)]/5 via-transparent to-[var(--coral)]/5" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
-          La Plataforma Inmobiliaria
+      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+        {/* Headline - Apple Typography (tracking negativo, muy grande) */}
+        <h1
+          className="font-bold text-[var(--gray-900)] mb-6 leading-[1.05] animate-[fadeInUp_0.6s_ease_0.1s_forwards] opacity-0"
+          style={{
+            fontSize: 'clamp(48px, 7vw, 80px)',
+            letterSpacing: '-0.03em'
+          }}
+        >
+          Tours Virtuales 360°
           <br />
-          <span className="text-teal-400">Definitiva</span> para México
+          <span
+            className="bg-clip-text text-transparent"
+            style={{
+              backgroundImage: 'var(--gradient-ocean)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
+          >
+            que Venden Propiedades Más Rápido
+          </span>
         </h1>
 
-        <p className="text-lg sm:text-xl md:text-2xl text-slate-200 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Fusionamos recorridos virtuales 360° con una potente estrategia SEO
-          para vender y encontrar propiedades más rápido.
+        {/* Subheadline - Apple style */}
+        <p
+          className="text-xl md:text-2xl text-[var(--gray-600)] mb-12 max-w-3xl mx-auto leading-relaxed font-normal animate-[fadeInUp_0.6s_ease_0.2s_forwards] opacity-0"
+          style={{ letterSpacing: '-0.01em' }}
+        >
+          La plataforma definitiva para crear recorridos virtuales inmersivos con SEO optimizado para destacar en México
         </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8">
-          <Link
-            href="/propiedades"
-            className="group w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-sm md:text-base rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-          >
-            Explorar Propiedades
-          </Link>
+        {/* CTA Buttons - Apple Style */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-[fadeInUp_0.6s_ease_0.3s_forwards] opacity-0">
           <Link
             href="/signup"
-            className="group w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-4 bg-white hover:bg-slate-50 text-slate-900 font-semibold text-sm md:text-base rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-white"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-white font-semibold text-base rounded-[var(--radius-xl)] transition-all duration-[var(--transition-base)] hover:-translate-y-0.5 shadow-[var(--shadow-ocean)] hover:shadow-[0_12px_32px_rgba(20,184,166,0.35)]"
+            style={{ background: 'var(--gradient-ocean)' }}
           >
-            Publicar mi Propiedad
+            Comenzar Gratis
+          </Link>
+          <Link
+            href="/propiedades"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-[var(--gray-800)] font-semibold text-base border-[1.5px] border-[var(--gray-200)] rounded-[var(--radius-xl)] transition-all duration-[var(--transition-base)] hover:bg-[var(--gray-50)] hover:border-[var(--gray-300)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]"
+          >
+            Ver Propiedades
           </Link>
         </div>
 
-        {/* Social Proof Line */}
-        <div className="flex items-center justify-center gap-2 text-slate-300 text-sm sm:text-base">
-          <Sparkles className="w-4 h-4 text-teal-400" />
-          <p>La herramienta preferida por los agentes líderes de la bahía</p>
-        </div>
-      </div>
-
-      {/* Scroll Indicator - Hidden on mobile to prevent overlap with social proof text */}
-      <div className="hidden md:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white rounded-full flex items-start justify-center p-2">
-          <div className="w-1 h-3 bg-white rounded-full animate-pulse" />
-        </div>
+        {/* Social Proof - Minimalista */}
+        <p className="text-sm text-[var(--gray-500)] font-medium animate-[fadeIn_0.6s_ease_0.4s_forwards] opacity-0">
+          Confiado por los agentes inmobiliarios líderes de México
+        </p>
       </div>
     </section>
   );
