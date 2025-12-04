@@ -24,37 +24,50 @@ export default function Navbar() {
   }, []);
 
   // Detectar si el usuario está autenticado
+  // OPTIMIZACIÓN: Lazy load auth check - no bloquear el render inicial
   useEffect(() => {
-    const checkAuth = async () => {
+    // Defer auth check para no bloquear la carga de la página
+    const timeoutId = setTimeout(() => {
+      const checkAuth = async () => {
+        try {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+          if (session?.user) {
+            setIsAuthenticated(true);
+            setUserEmail(session.user.email || '');
+          } else {
+            setIsAuthenticated(false);
+            setUserEmail('');
+          }
+        } catch (error) {
+          // Silently fail - auth status is not critical for initial render
+          console.error('Auth check failed:', error);
+        }
+      };
+
+      checkAuth();
+
+      // Suscribirse a cambios de autenticación
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        setIsAuthenticated(true);
-        setUserEmail(session.user.email || '');
-      } else {
-        setIsAuthenticated(false);
-        setUserEmail('');
-      }
-    };
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          setIsAuthenticated(true);
+          setUserEmail(session.user.email || '');
+        } else {
+          setIsAuthenticated(false);
+          setUserEmail('');
+        }
+      });
 
-    checkAuth();
-
-    // Suscribirse a cambios de autenticación
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setIsAuthenticated(true);
-        setUserEmail(session.user.email || '');
-      } else {
-        setIsAuthenticated(false);
-        setUserEmail('');
-      }
-    });
+      return () => {
+        subscription.unsubscribe();
+      };
+    }, 100); // Defer 100ms para permitir que el contenido crítico se renderice primero
 
     return () => {
-      subscription.unsubscribe();
+      clearTimeout(timeoutId);
     };
   }, [supabase]);
 

@@ -62,16 +62,22 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * OPTIMIZADO: Solo ejecutar middleware en rutas que requieren autenticación
-     * Excluir:
-     * - _next/static (archivos estáticos)
-     * - _next/image (optimización de imágenes)
-     * - favicon.ico
-     * - /terreno/[id] (vista pública del tour - no requiere auth)
-     * - api/*, .png, .jpg, .jpeg, .gif, .svg, .webp, .ico (recursos estáticos)
-     * - Archivos de Supabase Storage
+     * CRÍTICO PERFORMANCE: Solo ejecutar middleware en rutas que REQUIEREN autenticación
+     * La landing page (/) NO necesita middleware - excluirla mejora TTFB de 11s a <100ms
+     *
+     * Rutas que SÍ requieren middleware:
+     * - /dashboard/* (requiere autenticación)
+     * - /login y /signup (manejo de sesiones)
+     *
+     * Rutas excluidas (NO ejecutar middleware):
+     * - / (landing page - CRÍTICO para performance)
+     * - /propiedades (página pública)
+     * - /terreno/[id] (vista pública del tour)
+     * - /legal/* (páginas legales públicas)
+     * - _next/static, _next/image (archivos estáticos)
+     * - Archivos estáticos (.png, .jpg, .css, .js, etc.)
+     * - api/* (rutas API)
      */
-    '/((?!_next/static|_next/image|favicon.ico|terreno|api|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|css|js|woff|woff2|ttf|eot)$|supabase).*)',
     '/dashboard/:path*',
     '/login',
     '/signup',

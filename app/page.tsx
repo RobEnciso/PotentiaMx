@@ -2,21 +2,64 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
-import SocialProofSection from '@/components/landing/SocialProofSection';
-import ProblemSolutionSection from '@/components/landing/ProblemSolutionSection';
-import ProductTourSection from '@/components/landing/ProductTourSection';
-import TestimonialSection from '@/components/landing/TestimonialSection';
-import FinalCTASection from '@/components/landing/FinalCTASection';
 import Footer from '@/components/layout/Footer';
 
-// Lazy load client components that are below the fold
+// OPTIMIZACIÓN CRÍTICA: Lazy load TODOS los componentes below-the-fold
+// Esto reduce el bundle inicial y mejora LCP drásticamente
+const SocialProofSection = dynamic(
+  () => import('@/components/landing/SocialProofSection'),
+  {
+    ssr: true,
+    loading: () => <div className="h-48 bg-white" /> // Skeleton para evitar layout shift
+  }
+);
+
+const ProblemSolutionSection = dynamic(
+  () => import('@/components/landing/ProblemSolutionSection'),
+  {
+    ssr: true,
+    loading: () => <div className="h-96 bg-gradient-to-b from-white to-gray-50" />
+  }
+);
+
+const ProductTourSection = dynamic(
+  () => import('@/components/landing/ProductTourSection'),
+  {
+    ssr: true,
+    loading: () => <div className="h-screen bg-white" />
+  }
+);
+
 const PricingSection = dynamic(
   () => import('@/components/landing/PricingSection'),
-  { ssr: true }
+  {
+    ssr: true,
+    loading: () => <div className="h-screen bg-gradient-to-b from-white to-gray-50" />
+  }
 );
+
+const TestimonialSection = dynamic(
+  () => import('@/components/landing/TestimonialSection'),
+  {
+    ssr: true,
+    loading: () => <div className="h-96 bg-white" />
+  }
+);
+
 const ContactFormSection = dynamic(
   () => import('@/components/landing/ContactFormSection'),
-  { ssr: true }
+  {
+    ssr: true,
+    loading: () => <div className="h-screen bg-gradient-to-b from-white to-gray-50" />
+  }
+);
+
+const FinalCTASection = dynamic(
+  () => import('@/components/landing/FinalCTASection'),
+  {
+    ssr: true,
+    loading: () => <div className="h-96 bg-white" />
+  }
 );
 
 // ⚡ ISR Configuration - Rebuild page every 60 seconds
