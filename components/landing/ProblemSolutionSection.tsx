@@ -23,33 +23,49 @@ export default function ProblemSolutionSection() {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-white">
+    <section className="py-28 sm:py-32 bg-[var(--gray-50)]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
+        <div className="text-center mb-20 sm:mb-24">
+          <h2
+            className="font-bold text-[var(--gray-900)] mb-4"
+            style={{
+              fontSize: 'clamp(36px, 5vw, 56px)',
+              letterSpacing: '-0.025em',
+              lineHeight: '1.1'
+            }}
+          >
             El Proceso Inmobiliario,
             <br />
-            <span className="text-teal-500">sin las Complicaciones</span>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'var(--gradient-ocean)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
+              sin las Complicaciones
+            </span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {solutions.map((solution, index) => {
             const Icon = solution.icon;
             return (
               <div
                 key={index}
-                className="text-center group hover:transform hover:scale-105 transition-all duration-300"
+                className="text-center group transition-all duration-[var(--transition-base)]"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 mb-6 rounded-2xl bg-teal-50 text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition-all duration-300">
-                  <Icon className="w-8 h-8 sm:w-10 sm:h-10" strokeWidth={1.5} />
+                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-[var(--radius-xl)] bg-[var(--ocean)]/10 text-[var(--ocean)] group-hover:bg-[var(--ocean)] group-hover:text-white transition-all duration-[var(--transition-base)] group-hover:shadow-[var(--shadow-ocean)]">
+                  <Icon className="w-10 h-10" strokeWidth={1.5} />
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4">
+                <h3 className="text-2xl font-semibold text-[var(--gray-900)] mb-4" style={{ letterSpacing: '-0.02em' }}>
                   {solution.title}
                 </h3>
 
-                <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+                <p className="text-lg text-[var(--gray-600)] leading-relaxed">
                   {solution.description}
                 </p>
               </div>

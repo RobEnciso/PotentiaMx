@@ -2,40 +2,65 @@ import { Quote } from 'lucide-react';
 
 export default function TestimonialSection() {
   return (
-    <section className="py-20 sm:py-28 bg-white">
+    <section className="py-28 sm:py-32 bg-[var(--gray-50)]">
       <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Title */}
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
+        <div className="text-center mb-16 sm:mb-20">
+          <h2
+            className="font-bold text-[var(--gray-900)] mb-4"
+            style={{
+              fontSize: 'clamp(36px, 5vw, 56px)',
+              letterSpacing: '-0.025em',
+              lineHeight: '1.1'
+            }}
+          >
             Transformando el{' '}
-            <span className="text-teal-500">Mercado Inmobiliario</span>
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'var(--gradient-ocean)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
+              Mercado Inmobiliario
+            </span>
             <br />
             de Vallarta
           </h2>
         </div>
 
         {/* Testimonial Card */}
-        <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200">
+        <div className="relative bg-white rounded-[var(--radius-2xl)] p-10 sm:p-14 shadow-[var(--shadow-lg)] border border-[var(--gray-200)]">
           {/* Quote Icon */}
-          <div className="absolute top-8 right-8 opacity-10">
-            <Quote className="w-24 h-24 text-teal-500" />
+          <div className="absolute top-8 right-8 opacity-5">
+            <Quote className="w-24 h-24 text-[var(--ocean)]" />
           </div>
 
           <div className="relative z-10">
             {/* Avatar */}
-            <div className="flex justify-center mb-8">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+            <div className="flex justify-center mb-10">
+              <div
+                className="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-[var(--shadow-md)]"
+                style={{ background: 'var(--gradient-ocean)' }}
+              >
                 MG
               </div>
             </div>
 
             {/* Quote */}
-            <blockquote className="text-center mb-8">
-              <p className="text-xl sm:text-2xl lg:text-3xl font-medium text-slate-800 leading-relaxed mb-2">
+            <blockquote className="text-center mb-10">
+              <p
+                className="text-2xl sm:text-3xl font-semibold text-[var(--gray-900)] leading-relaxed mb-4"
+                style={{ letterSpacing: '-0.02em' }}
+              >
                 &quot;Esta plataforma revolucionó la forma en que presentamos
                 propiedades a nuestros clientes.&quot;
               </p>
-              <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+              <p
+                className="text-xl text-[var(--gray-600)] leading-relaxed"
+                style={{ letterSpacing: '-0.01em' }}
+              >
                 Cerramos ventas un 40% más rápido desde que implementamos los
                 tours virtuales 360°. Los compradores internacionales ahora
                 pueden explorar propiedades sin viajar.
@@ -44,8 +69,8 @@ export default function TestimonialSection() {
 
             {/* Author */}
             <div className="text-center">
-              <p className="text-lg font-bold text-slate-900">María González</p>
-              <p className="text-base text-slate-600">
+              <p className="text-lg font-semibold text-[var(--gray-900)]">María González</p>
+              <p className="text-base text-[var(--gray-600)]">
                 Directora de Ventas, Vallarta Premium Realty
               </p>
             </div>
@@ -53,17 +78,25 @@ export default function TestimonialSection() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12 sm:mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 mt-16 sm:mt-20">
           {[
             { value: '40%', label: 'Más rápido en ventas' },
             { value: '250+', label: 'Propiedades activas' },
             { value: '15K+', label: 'Visitas virtuales/mes' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <p className="text-3xl sm:text-4xl font-bold text-teal-500 mb-2">
+              <p
+                className="text-5xl font-bold mb-2 bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: 'var(--gradient-ocean)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  letterSpacing: '-0.03em'
+                }}
+              >
                 {stat.value}
               </p>
-              <p className="text-sm sm:text-base text-slate-600">
+              <p className="text-sm font-medium text-[var(--gray-600)] uppercase tracking-[0.05em]">
                 {stat.label}
               </p>
             </div>

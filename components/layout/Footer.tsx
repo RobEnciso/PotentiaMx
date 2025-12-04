@@ -50,8 +50,8 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-slate-900 text-slate-300">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+    <footer className="bg-[var(--gray-900)] text-[var(--gray-400)]">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 sm:py-20">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {/* Brand Column */}
@@ -65,10 +65,10 @@ export default function Footer() {
                 className="h-8 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm text-teal-400 font-semibold mb-4">
+            <p className="text-sm text-[var(--ocean)] font-semibold mb-4">
               Potencia tu propiedad
             </p>
-            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+            <p className="text-sm text-[var(--gray-500)] mb-6 leading-relaxed">
               La plataforma mexicana de tours virtuales 360° inmersivos que
               potencia tus ventas inmobiliarias.
             </p>
@@ -76,16 +76,16 @@ export default function Footer() {
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-start gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-teal-400 flex-shrink-0 mt-1" />
-                <span className="text-slate-400">
+                <MapPin className="w-4 h-4 text-[var(--ocean)] flex-shrink-0 mt-1" />
+                <span className="text-[var(--gray-500)]">
                   Puerto Vallarta, Jalisco, México
                 </span>
               </div>
               <div className="flex items-start gap-2 text-sm">
-                <Mail className="w-4 h-4 text-teal-400 flex-shrink-0 mt-1" />
+                <Mail className="w-4 h-4 text-[var(--ocean)] flex-shrink-0 mt-1" />
                 <a
                   href="mailto:hola@potentiamx.com"
-                  className="text-slate-400 hover:text-teal-400 transition-colors"
+                  className="text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                 >
                   hola@potentiamx.com
                 </a>
@@ -95,7 +95,7 @@ export default function Footer() {
 
           {/* Producto Column */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+            <h4 className="text-xs font-semibold text-white uppercase tracking-[0.05em] mb-4">
               Producto
             </h4>
             <ul className="space-y-3">
@@ -103,7 +103,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-slate-400 hover:text-teal-400 transition-colors"
+                    className="text-sm text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                   >
                     {item.name}
                   </Link>
@@ -114,7 +114,7 @@ export default function Footer() {
 
           {/* Empresa Column */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+            <h4 className="text-xs font-semibold text-white uppercase tracking-[0.05em] mb-4">
               Empresa
             </h4>
             <ul className="space-y-3">
@@ -122,7 +122,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-slate-400 hover:text-teal-400 transition-colors"
+                    className="text-sm text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                   >
                     {item.name}
                   </Link>
@@ -133,7 +133,7 @@ export default function Footer() {
 
           {/* Legal Column */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+            <h4 className="text-xs font-semibold text-white uppercase tracking-[0.05em] mb-4">
               Legal
             </h4>
             <ul className="space-y-3">
@@ -141,7 +141,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-slate-400 hover:text-teal-400 transition-colors"
+                    className="text-sm text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                   >
                     {item.name}
                   </Link>
@@ -152,18 +152,18 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-slate-800 pt-8">
+        <div className="border-t border-[var(--gray-800)] pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-              <p className="text-sm text-slate-500 text-center sm:text-left">
+              <p className="text-sm text-[var(--gray-600)] text-center sm:text-left">
                 © {currentYear} PotentiaMX. Todos los derechos reservados.
               </p>
               <button
                 onClick={handleCookieSettings}
-                className="text-xs text-slate-400 hover:text-teal-400 transition-colors underline"
+                className="text-xs text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)] underline"
               >
-                ⚙️ Configuración de Cookies
+                Configuración de Cookies
               </button>
             </div>
 
@@ -175,7 +175,7 @@ export default function Footer() {
                   <a
                     key={social.name}
                     href={social.href}
-                    className="text-slate-400 hover:text-teal-400 transition-colors"
+                    className="text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                     aria-label={social.name}
                   >
                     <Icon className="w-5 h-5" />
@@ -186,15 +186,15 @@ export default function Footer() {
           </div>
 
           {/* Legal & Security Badges */}
-          <div className="mt-6 flex flex-wrap justify-center items-center gap-4 text-xs text-slate-600">
+          <div className="mt-6 flex flex-wrap justify-center items-center gap-4 text-xs text-[var(--gray-600)]">
             <span className="flex items-center gap-1">
-              <span className="text-green-400">✓</span> Seguro SSL
+              <span className="text-[var(--palm)]">✓</span> Seguro SSL
             </span>
             <span className="flex items-center gap-1">
-              <span className="text-green-400">✓</span> LFPDPPP
+              <span className="text-[var(--palm)]">✓</span> LFPDPPP
             </span>
             <span className="flex items-center gap-1">
-              <span className="text-green-400">✓</span> Datos Protegidos
+              <span className="text-[var(--palm)]">✓</span> Datos Protegidos
             </span>
           </div>
         </div>

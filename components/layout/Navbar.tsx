@@ -103,12 +103,13 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white shadow-lg'
-          : 'bg-transparent'
+          ? 'bg-white/80 backdrop-blur-[24px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-black/[0.06]'
+          : 'bg-slate-900/95 backdrop-blur-[24px] border-b border-white/10'
       }`}
+      style={isScrolled ? { backdropFilter: 'var(--blur-lg)', WebkitBackdropFilter: 'var(--blur-lg)' } : { backdropFilter: 'var(--blur-lg)', WebkitBackdropFilter: 'var(--blur-lg)' }}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="flex items-center justify-between h-18 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -128,10 +129,10 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={`text-sm font-medium transition-colors ${
+                className={`text-sm font-medium transition-all duration-[var(--transition-fast)] ${
                   isScrolled
-                    ? 'text-slate-700 hover:text-teal-500'
-                    : 'text-white hover:text-teal-300'
+                    ? 'text-[var(--gray-600)] hover:text-[var(--gray-900)]'
+                    : 'text-white/90 hover:text-white'
                 }`}
               >
                 {item.name}
@@ -142,10 +143,10 @@ export default function Navbar() {
               <>
                 <Link
                   href="/dashboard"
-                  className={`inline-flex items-center gap-2 text-sm font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 text-sm font-medium transition-all duration-[var(--transition-fast)] ${
                     isScrolled
-                      ? 'text-slate-700 hover:text-teal-500'
-                      : 'text-white hover:text-teal-300'
+                      ? 'text-[var(--gray-600)] hover:text-[var(--gray-900)]'
+                      : 'text-white/90 hover:text-white'
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4" />
@@ -153,10 +154,10 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className={`inline-flex items-center gap-2 text-sm font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 text-sm font-medium transition-all duration-[var(--transition-fast)] ${
                     isScrolled
-                      ? 'text-slate-700 hover:text-red-500'
-                      : 'text-white hover:text-red-300'
+                      ? 'text-[var(--gray-600)] hover:text-[var(--coral)]'
+                      : 'text-white/90 hover:text-white/70'
                   }`}
                 >
                   <LogOut className="w-4 h-4" />
@@ -167,17 +168,18 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className={`text-sm font-medium transition-colors ${
+                  className={`text-sm font-medium transition-all duration-[var(--transition-fast)] ${
                     isScrolled
-                      ? 'text-slate-700 hover:text-teal-500'
-                      : 'text-white hover:text-teal-300'
+                      ? 'text-[var(--gray-600)] hover:text-[var(--gray-900)]'
+                      : 'text-white/90 hover:text-white'
                   }`}
                 >
                   Iniciar Sesión
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105"
+                  className={`px-7 py-3.5 text-white font-semibold text-sm rounded-[var(--radius-xl)] transition-all duration-[var(--transition-base)] hover:-translate-y-0.5 shadow-[var(--shadow-ocean)] hover:shadow-[0_12px_32px_rgba(20,184,166,0.35)]`}
+                  style={{ background: 'var(--gradient-ocean)' }}
                 >
                   Comenzar Gratis
                 </Link>
@@ -190,7 +192,7 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`md:hidden p-2 rounded-lg transition-colors ${
               isScrolled
-                ? 'text-slate-900 hover:bg-slate-100'
+                ? 'text-[var(--gray-900)] hover:bg-[var(--gray-100)]'
                 : 'text-white hover:bg-white/10'
             }`}
             aria-label="Toggle menu"
@@ -209,11 +211,11 @@ export default function Navbar() {
             <div className="flex flex-col gap-2">
               {/* Usuario autenticado */}
               {isAuthenticated && userEmail && (
-                <div className="px-4 py-3 bg-teal-50 rounded-lg mb-2 mx-2">
-                  <p className="text-xs text-slate-600 mb-1">
+                <div className="px-4 py-3 bg-[var(--ocean)]/10 rounded-lg mb-2 mx-2">
+                  <p className="text-xs text-[var(--gray-600)] mb-1">
                     Sesión iniciada como:
                   </p>
-                  <p className="text-sm font-semibold text-slate-900 truncate">
+                  <p className="text-sm font-semibold text-[var(--gray-900)] truncate">
                     {userEmail}
                   </p>
                 </div>
@@ -224,7 +226,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-teal-500 rounded-lg transition-colors"
+                  className="px-4 py-3 text-[var(--gray-700)] hover:bg-[var(--gray-50)] hover:text-[var(--ocean)] rounded-lg transition-colors"
                   onClick={(e) => handleNavClick(e, item.href)}
                 >
                   {item.name}
@@ -236,7 +238,8 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/dashboard"
-                    className="mx-2 mt-2 px-4 py-3 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="mx-2 mt-2 px-4 py-3 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    style={{ background: 'var(--gradient-ocean)' }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <LayoutDashboard className="w-4 h-4" />
@@ -244,7 +247,7 @@ export default function Navbar() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="mx-2 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="mx-2 px-4 py-3 bg-[var(--coral)]/10 hover:bg-[var(--coral)]/20 text-[var(--coral-dark)] font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     Cerrar Sesión
@@ -254,14 +257,15 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className="px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-teal-500 rounded-lg transition-colors"
+                    className="px-4 py-3 text-[var(--gray-700)] hover:bg-[var(--gray-50)] hover:text-[var(--ocean)] rounded-lg transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Iniciar Sesión
                   </Link>
                   <Link
                     href="/signup"
-                    className="mx-2 mt-2 px-4 py-3 bg-teal-500 hover:bg-teal-600 text-white font-medium text-center rounded-lg transition-colors"
+                    className="mx-2 mt-2 px-4 py-3 text-white font-medium text-center rounded-lg transition-colors"
+                    style={{ background: 'var(--gradient-ocean)' }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Comenzar Gratis
