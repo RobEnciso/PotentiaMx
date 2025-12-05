@@ -69,9 +69,11 @@ const FinalCTASection = dynamic(
 
 // ⚠️ END CRITICAL PERFORMANCE SECTION ⚠️
 
-// ⚡ ISR Configuration - Rebuild page every 60 seconds
-// This allows Netlify to serve cached HTML instantly (TTFB < 100ms)
-export const revalidate = 60;
+// ⚡ STATIC GENERATION - Build once at deploy time
+// Landing page has no dynamic content, so we generate it once and serve it instantly
+// This prevents ISR from rebuilding the page and making Supabase calls
+// CRITICAL: revalidate = false prevents Next.js from rebuilding the page periodically
+export const revalidate = false; // Never revalidate - serve static HTML forever
 
 export default function Home() {
   return (

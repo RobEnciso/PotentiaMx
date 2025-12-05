@@ -40,7 +40,25 @@ export const config = {
 
 ---
 
-### 2. Lazy Loading Components (app/page.tsx)
+### 2. Static Generation (app/page.tsx)
+
+**File**: `app/page.tsx`
+
+**What it does**: Forces the landing page to be completely static (built once at deploy time).
+
+**Why it's critical**: Prevents Next.js ISR (Incremental Static Regeneration) from rebuilding the page on every request after revalidation period. ISR was causing 27s TTFB because it triggered Supabase calls during page rebuild.
+
+**Protected config**:
+```typescript
+export const dynamic = 'force-static';
+export const revalidate = false; // Never revalidate
+```
+
+**⚠️ WARNING**: If you change this to `revalidate = 60` or remove `force-static`, the page will be rebuilt periodically, causing severe performance degradation.
+
+---
+
+### 3. Lazy Loading Components (app/page.tsx)
 
 **File**: `app/page.tsx`
 
@@ -63,7 +81,7 @@ export const config = {
 
 ---
 
-### 3. Deferred Auth Check (components/layout/Navbar.tsx)
+### 4. Deferred Auth Check (components/layout/Navbar.tsx)
 
 **File**: `components/layout/Navbar.tsx`
 
@@ -86,7 +104,7 @@ useEffect(() => {
 
 ---
 
-### 4. Next.js Configuration (next.config.ts)
+### 5. Next.js Configuration (next.config.ts)
 
 **File**: `next.config.ts`
 
