@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
 import Footer from '@/components/layout/Footer';
+import PotentiaSkeleton from '@/components/ui/PotentiaSkeleton';
 
 // ⚠️ CRITICAL PERFORMANCE - DO NOT REMOVE OR MODIFY THIS SECTION ⚠️
 // These dynamic imports reduce initial bundle by ~70% and improve LCP from 11s to <2.5s
@@ -14,6 +15,24 @@ const SocialProofSection = dynamic(
   {
     ssr: true, // Keep SSR for SEO
     loading: () => <div className="h-48 bg-white" aria-hidden="true" />,
+  }
+);
+
+const PropertiesSection = dynamic(
+  () => import('@/components/landing/PropertiesSection'),
+  {
+    ssr: true,
+    loading: () => (
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-4 animate-pulse" />
+            <div className="h-6 bg-gray-100 rounded w-128 mx-auto animate-pulse" />
+          </div>
+          <PotentiaSkeleton count={3} variant="card" />
+        </div>
+      </section>
+    ),
   }
 );
 
@@ -81,6 +100,7 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <SocialProofSection />
+      <PropertiesSection />
       <ProblemSolutionSection />
       <ProductTourSection />
       <PricingSection />
