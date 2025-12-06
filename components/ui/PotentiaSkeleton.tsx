@@ -39,7 +39,7 @@ export default function PotentiaSkeleton({
                     src="/logo-white.svg"
                     alt="Loading..."
                     fill
-                    className="object-contain brightness-0 opacity-[0.08] select-none pointer-events-none"
+                    className="object-contain brightness-0 opacity-20 select-none pointer-events-none"
                     priority
                   />
                 </div>
@@ -100,7 +100,7 @@ export default function PotentiaSkeleton({
                 src="/logo-white.svg"
                 alt="Loading..."
                 fill
-                className="object-contain brightness-0 opacity-[0.08] select-none pointer-events-none"
+                className="object-contain brightness-0 opacity-20 select-none pointer-events-none"
                 priority
               />
             </div>
