@@ -35,8 +35,10 @@ const nextConfig: NextConfig = {
   // Headers for better caching
   async headers() {
     return [
+      // ⚡ CRITICAL PERFORMANCE: Exclude root path to prevent TTFB blocking
+      // Apply security headers to all routes EXCEPT landing page
       {
-        source: '/:path*',
+        source: '/((?!^$).*)', // Matches all paths except root "/"
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
