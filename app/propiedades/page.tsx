@@ -344,22 +344,6 @@ export default function PropiedadesPage() {
                 onMarkerHover={setHoveredPropertyId}
                 hoveredPropertyId={hoveredPropertyId}
               />
-
-              {/* Overlay Info en el mapa (Desktop only) */}
-              <div className="hidden md:block absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-slate-200 max-w-xs">
-                <p className="text-sm text-slate-700">
-                  <strong className="text-teal-600">💡 Tip:</strong> Haz clic en
-                  un pin para ver el tour virtual 360° completo
-                </p>
-              </div>
-
-              {/* Counter badge */}
-              <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border border-slate-200">
-                <p className="text-sm font-semibold text-slate-900">
-                  {terrenosFiltrados.length}{' '}
-                  {terrenosFiltrados.length === 1 ? 'propiedad' : 'propiedades'}
-                </p>
-              </div>
             </div>
           </div>
         )}
