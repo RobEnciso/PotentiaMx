@@ -71,7 +71,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${montserrat.variable} ${inter.variable} font-sans antialiased`}>
+      <head>
+        {/* Preload critical LCP images to prevent Brave/mobile blocking */}
+        <link
+          rel="preload"
+          href="/logo-navbar-white.png"
+          as="image"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          href="/logo-navbar-black.png"
+          as="image"
+          fetchPriority="high"
+        />
+      </head>
+      <body
+        className={`${montserrat.variable} ${inter.variable} font-sans antialiased`}
+      >
         <PostHogProvider>
           {children}
           <CookieConsent />

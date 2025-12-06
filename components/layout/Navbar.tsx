@@ -123,19 +123,35 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between h-18 sm:h-20">
-          {/* Logo */}
+          {/* Logo - Optimized for LCP */}
           <Link href="/" className="flex items-center gap-2">
+            {/* Logo blanco (visible cuando navbar es oscuro) */}
             <Image
-              src={isScrolled ? "/logo-navbar-black.png" : "/logo-navbar-white.png"}
+              src="/logo-navbar-white.png"
               alt="PotentiaMX"
-              width={800}
-              height={200}
+              width={200}
+              height={50}
               priority
-              className="h-10 sm:h-12 w-auto object-contain"
+              fetchPriority="high"
+              className={`h-10 sm:h-12 w-auto object-contain transition-opacity duration-300 ${
+                isScrolled ? 'opacity-0 absolute' : 'opacity-100'
+              }`}
+            />
+            {/* Logo negro (visible cuando navbar es claro) */}
+            <Image
+              src="/logo-navbar-black.png"
+              alt="PotentiaMX"
+              width={200}
+              height={50}
+              priority
+              fetchPriority="high"
+              className={`h-10 sm:h-12 w-auto object-contain transition-opacity duration-300 ${
+                isScrolled ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - NO TOCAR */}
           <div className="hidden md:flex items-center gap-8">
             {navigation.map((item) => (
               <Link
@@ -217,78 +233,99 @@ export default function Navbar() {
             )}
           </button>
         </div>
+      </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 bg-white rounded-b-2xl shadow-xl">
-            <div className="flex flex-col gap-2">
-              {/* Usuario autenticado */}
-              {isAuthenticated && userEmail && (
-                <div className="px-4 py-3 bg-[var(--ocean)]/10 rounded-lg mb-2 mx-2">
-                  <p className="text-xs text-[var(--gray-600)] mb-1">
-                    Sesión iniciada como:
-                  </p>
-                  <p className="text-sm font-semibold text-[var(--gray-900)] truncate">
-                    {userEmail}
-                  </p>
-                </div>
-              )}
+      {/* ========================================
+          MENÚ MÓVIL FULL-SCREEN OVERLAY
+          ======================================== */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden bg-slate-900 h-screen w-screen flex flex-col">
+          {/* Header del menú (mantiene consistencia con navbar) */}
+          <div className="flex items-center justify-between h-18 sm:h-20 px-6 sm:px-8 border-b border-white/10 flex-shrink-0">
+            <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+              <Image
+                src="/logo-navbar-white.png"
+                alt="PotentiaMX"
+                width={200}
+                height={50}
+                priority
+                className="h-10 sm:h-12 w-auto object-contain"
+              />
+            </Link>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+              aria-label="Cerrar menú"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
 
-              {/* Enlaces de navegación */}
+          {/* Contenido centrado del menú */}
+          <div className="flex-1 flex flex-col items-center justify-center px-6 bg-slate-900">
+            {/* Usuario autenticado - Mostrar arriba */}
+            {isAuthenticated && userEmail && (
+              <div className="mb-8 px-6 py-4 bg-white/5 rounded-xl border border-white/10">
+                <p className="text-xs text-white/60 mb-1 text-center">
+                  Sesión iniciada como:
+                </p>
+                <p className="text-sm font-semibold text-white truncate max-w-[280px] text-center">
+                  {userEmail}
+                </p>
+              </div>
+            )}
+
+            {/* Enlaces de navegación principales - GRANDES Y CENTRADOS */}
+            <nav className="flex flex-col items-center space-y-8 mb-12">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="px-4 py-3 text-[var(--gray-700)] hover:bg-[var(--gray-50)] hover:text-[var(--ocean)] rounded-lg transition-colors"
-                  onClick={(e) => handleNavClick(e, item.href)}
+                  className="text-3xl font-bold text-white hover:text-teal-400 transition-colors duration-200"
+                  onClick={(e) => {
+                    handleNavClick(e, item.href);
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
                   {item.name}
                 </Link>
               ))}
+            </nav>
 
-              {/* Opciones según autenticación */}
+            {/* Acciones según autenticación (SIN botón "Comenzar Gratis") */}
+            <div className="flex flex-col items-center gap-4 w-full max-w-xs">
               {isAuthenticated ? (
                 <>
                   <Link
                     href="/dashboard"
-                    className="mx-2 mt-2 px-4 py-3 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full px-6 py-4 text-white font-semibold text-center rounded-xl transition-all duration-200 flex items-center justify-center gap-3 hover:scale-105"
                     style={{ background: 'var(--gradient-ocean)' }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <LayoutDashboard className="w-4 h-4" />
-                    Ir al Dashboard
+                    <LayoutDashboard className="w-5 h-5" />
+                    Dashboard
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="mx-2 px-4 py-3 bg-[var(--coral)]/10 hover:bg-[var(--coral)]/20 text-[var(--coral-dark)] font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-3 border border-white/20"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-5 h-5" />
                     Cerrar Sesión
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="px-4 py-3 text-[var(--gray-700)] hover:bg-[var(--gray-50)] hover:text-[var(--ocean)] rounded-lg transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Iniciar Sesión
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="mx-2 mt-2 px-4 py-3 text-white font-medium text-center rounded-lg transition-colors"
-                    style={{ background: 'var(--gradient-ocean)' }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Comenzar Gratis
-                  </Link>
-                </>
+                <Link
+                  href="/login"
+                  className="w-full px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold text-center rounded-xl transition-all duration-200 border border-white/20"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Iniciar Sesión
+                </Link>
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 }
