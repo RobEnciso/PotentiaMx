@@ -9,7 +9,10 @@
       "Bash(npm audit fix:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(dir \"C:\\Users\\Roberto\\landview-app-cms\\app\\terreno\\[id]\" /B)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []
