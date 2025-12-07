@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import PropertyCard from '@/components/PropertyCard';
+import PotentiaSkeleton from '@/components/ui/PotentiaSkeleton';
 import { MapPin, SlidersHorizontal } from 'lucide-react';
 
 // Importar mapa dinámicamente para evitar SSR issues
@@ -93,8 +94,28 @@ export default function PropiedadesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent mb-4"></div>
-          <p className="text-slate-600">Cargando propiedades...</p>
+          {/* Branded logo loading indicator */}
+          <div className="relative w-32 h-32 mx-auto mb-6 animate-pulse">
+            <Image
+              src="/logo-white.svg"
+              alt="Cargando..."
+              fill
+              className="object-contain brightness-0 opacity-20"
+              priority
+            />
+          </div>
+
+          {/* Loading text */}
+          <p className="text-slate-600 font-medium mb-4 animate-pulse">
+            Cargando propiedades...
+          </p>
+
+          {/* Animated dots */}
+          <div className="flex justify-center gap-1.5">
+            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
         </div>
       </div>
     );
