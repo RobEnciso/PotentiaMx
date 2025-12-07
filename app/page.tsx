@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
@@ -10,7 +10,7 @@ import PotentiaSkeleton from '@/components/ui/PotentiaSkeleton';
 // Removing these will cause SEVERE performance degradation
 
 // LAYER 1: Below-the-fold sections loaded lazily
-const SocialProofSection = dynamic(
+const SocialProofSection = dynamicImport(
   () => import('@/components/landing/SocialProofSection'),
   {
     ssr: true, // Keep SSR for SEO
@@ -18,7 +18,7 @@ const SocialProofSection = dynamic(
   }
 );
 
-const PropertiesSection = dynamic(
+const PropertiesSection = dynamicImport(
   () => import('@/components/landing/PropertiesSection'),
   {
     ssr: true,
@@ -36,7 +36,7 @@ const PropertiesSection = dynamic(
   }
 );
 
-const ProblemSolutionSection = dynamic(
+const ProblemSolutionSection = dynamicImport(
   () => import('@/components/landing/ProblemSolutionSection'),
   {
     ssr: true,
@@ -44,7 +44,7 @@ const ProblemSolutionSection = dynamic(
   }
 );
 
-const ProductTourSection = dynamic(
+const ProductTourSection = dynamicImport(
   () => import('@/components/landing/ProductTourSection'),
   {
     ssr: true,
@@ -53,7 +53,7 @@ const ProductTourSection = dynamic(
 );
 
 // LAYER 2: Interactive sections loaded with lower priority
-const PricingSection = dynamic(
+const PricingSection = dynamicImport(
   () => import('@/components/landing/PricingSection'),
   {
     ssr: true,
@@ -61,7 +61,7 @@ const PricingSection = dynamic(
   }
 );
 
-const TestimonialSection = dynamic(
+const TestimonialSection = dynamicImport(
   () => import('@/components/landing/TestimonialSection'),
   {
     ssr: true,
@@ -70,7 +70,7 @@ const TestimonialSection = dynamic(
 );
 
 // LAYER 3: Form and footer sections loaded last
-const ContactFormSection = dynamic(
+const ContactFormSection = dynamicImport(
   () => import('@/components/landing/ContactFormSection'),
   {
     ssr: true,
@@ -78,7 +78,7 @@ const ContactFormSection = dynamic(
   }
 );
 
-const FinalCTASection = dynamic(
+const FinalCTASection = dynamicImport(
   () => import('@/components/landing/FinalCTASection'),
   {
     ssr: true,
@@ -91,7 +91,8 @@ const FinalCTASection = dynamic(
 // ⚡ STATIC GENERATION - Build once at deploy time
 // Landing page has no dynamic content, so we generate it once and serve it instantly
 // This prevents ISR from rebuilding the page and making Supabase calls
-// CRITICAL: revalidate = false prevents Next.js from rebuilding the page periodically
+// CRITICAL: These two directives force static generation and prevent cold start issues
+export const dynamic = 'force-static'; // Force static HTML generation at build time
 export const revalidate = false; // Never revalidate - serve static HTML forever
 
 export default function Home() {
