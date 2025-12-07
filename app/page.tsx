@@ -10,31 +10,36 @@ import PotentiaSkeleton from '@/components/ui/PotentiaSkeleton';
 // Removing these will cause SEVERE performance degradation
 
 // LAYER 1: Below-the-fold sections loaded lazily
-const SocialProofSection = dynamicImport(
-  () => import('@/components/landing/SocialProofSection'),
-  {
-    ssr: true, // Keep SSR for SEO
-    loading: () => <div className="h-48 bg-white" aria-hidden="true" />,
-  }
-);
 
-const PropertiesSection = dynamicImport(
-  () => import('@/components/landing/PropertiesSection'),
-  {
-    ssr: true,
-    loading: () => (
-      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-4 animate-pulse" />
-            <div className="h-6 bg-gray-100 rounded w-128 mx-auto animate-pulse" />
-          </div>
-          <PotentiaSkeleton count={3} variant="card" />
-        </div>
-      </section>
-    ),
-  }
-);
+// TODO: SocialProofSection comentada temporalmente (muestra logos placeholder)
+// Descomentar cuando tengamos logos reales de partners
+// const SocialProofSection = dynamicImport(
+//   () => import('@/components/landing/SocialProofSection'),
+//   {
+//     ssr: true, // Keep SSR for SEO
+//     loading: () => <div className="h-48 bg-white" aria-hidden="true" />,
+//   }
+// );
+
+// TODO: PropertiesSection comentada temporalmente (muestra datos mock)
+// Descomentar cuando se implemente conexión a Supabase con is_featured
+// const PropertiesSection = dynamicImport(
+//   () => import('@/components/landing/PropertiesSection'),
+//   {
+//     ssr: true,
+//     loading: () => (
+//       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
+//         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+//           <div className="text-center mb-16">
+//             <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-4 animate-pulse" />
+//             <div className="h-6 bg-gray-100 rounded w-128 mx-auto animate-pulse" />
+//           </div>
+//           <PotentiaSkeleton count={3} variant="card" />
+//         </div>
+//       </section>
+//     ),
+//   }
+// );
 
 const ProblemSolutionSection = dynamicImport(
   () => import('@/components/landing/ProblemSolutionSection'),
@@ -100,8 +105,12 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <HeroSection />
-      <SocialProofSection />
-      <PropertiesSection />
+      {/* TODO: SocialProofSection deshabilitada temporalmente (muestra logos placeholder) */}
+      {/* Descomentar cuando tengamos logos reales de partners/colaboradores */}
+      {/* <SocialProofSection /> */}
+      {/* TODO: PropertiesSection deshabilitada temporalmente (muestra datos mock) */}
+      {/* Descomentar cuando se implemente conexión a Supabase con is_featured */}
+      {/* <PropertiesSection /> */}
       <ProblemSolutionSection />
       <ProductTourSection />
       <PricingSection />
