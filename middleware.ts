@@ -54,8 +54,34 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
+  const path = request.nextUrl.pathname;
+
+  // ⚡ CRITICAL ROUTING LOGIC: Prevent redirect loops and respect user navigation
+
+  // 1. User is authenticated and tries to access login/signup
+  //    → Redirect to dashboard (they're already logged in)
+  if (session && (path === '/login' || path === '/signup')) {
+    const redirectUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // 2. User is NOT authenticated and tries to access dashboard
+  //    → Redirect to login (authentication required)
+  if (!session && path.startsWith('/dashboard')) {
+    const redirectUrl = new URL('/login', request.url);
+    // Save the original URL to redirect back after login
+    redirectUrl.searchParams.set('redirectTo', path);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // 3. All other cases: Let user navigate freely
+  //    - Authenticated users can access public pages (/propiedades, /, etc.)
+  //    - Unauthenticated users can access public pages
+  //    - Authenticated users accessing dashboard → allowed
   return response;
 }
 
