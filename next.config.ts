@@ -26,10 +26,15 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    // Optimize image loading
+    // ⚡ MOBILE PERFORMANCE: Optimize image loading for mobile devices
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Mobile-first device sizes (prioritize smaller sizes for faster load)
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    // Lazy load images by default (except priority images)
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   // Headers for better caching

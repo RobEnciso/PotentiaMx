@@ -22,8 +22,9 @@ export default function CookieConsent() {
     // Verificar si el usuario ya dio consentimiento
     const consent = localStorage.getItem('cookieConsent');
     if (!consent) {
-      // Esperar 1 segundo antes de mostrar el banner para mejor UX
-      setTimeout(() => setShowBanner(true), 1000);
+      // ⚡ MOBILE PERFORMANCE: Delay banner until user has had time to see content
+      // Desktop: 2s is negligible, Mobile: prevents banner from blocking LCP/FCP
+      setTimeout(() => setShowBanner(true), 2000);
     } else {
       // Cargar preferencias guardadas
       try {

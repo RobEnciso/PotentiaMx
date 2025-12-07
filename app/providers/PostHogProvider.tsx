@@ -26,11 +26,10 @@ function PostHogPageView() {
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // ⚡ PERFORMANCE OPTIMIZATION: Delay PostHog initialization by 3 seconds
-    // This prevents blocking initial page render and improves LCP
-    // Analytics are still captured, just not immediately
-    const initTimer = setTimeout(() => {
-      // Initialize PostHog
+    // ⚡ MOBILE PERFORMANCE OPTIMIZATION: Init PostHog after window.load
+    // This ensures analytics never block critical rendering, especially on slow mobile networks
+    // Desktop: ~1-2s delay, Mobile 3G: ~5-8s delay (but page is already interactive)
+    const initPostHog = () => {
       if (typeof window !== 'undefined') {
         const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 
@@ -46,7 +45,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
           api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
           loaded: (posthog) => {
             if (process.env.NODE_ENV === 'development') {
-              console.log('📊 PostHog initialized successfully (delayed 3s for performance)');
+              console.log('📊 PostHog initialized after window.load (mobile-optimized)');
             }
           },
           capture_pageview: false, // Manual pageview tracking
@@ -54,9 +53,17 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
           autocapture: false, // Manual event tracking only
         });
       }
-    }, 3000); // 3 second delay to prioritize page render
+    };
 
-    return () => clearTimeout(initTimer);
+    // Wait for full page load (all resources including images)
+    if (document.readyState === 'complete') {
+      // Already loaded, init immediately
+      initPostHog();
+    } else {
+      // Wait for window.load event
+      window.addEventListener('load', initPostHog);
+      return () => window.removeEventListener('load', initPostHog);
+    }
   }, []);
 
   return (

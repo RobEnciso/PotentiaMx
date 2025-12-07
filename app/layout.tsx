@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Montserrat, Inter } from 'next/font/google';
 import './globals.css';
 import 'leaflet/dist/leaflet.css';
-import CookieConsent from '@/components/CookieConsent';
 import { PostHogProvider } from './providers/PostHogProvider';
+import CookieConsentWrapper from '@/components/CookieConsentWrapper';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -72,6 +72,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        {/* ⚡ MOBILE PERFORMANCE: DNS prefetch for Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         {/* Preload critical LCP images to prevent Brave/mobile blocking */}
         <link
           rel="preload"
@@ -85,13 +89,16 @@ export default function RootLayout({
           as="image"
           fetchPriority="high"
         />
+
+        {/* ⚡ MOBILE: Viewport optimization for better mobile rendering */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
       </head>
       <body
         className={`${montserrat.variable} ${inter.variable} font-sans antialiased`}
       >
         <PostHogProvider>
           {children}
-          <CookieConsent />
+          <CookieConsentWrapper />
         </PostHogProvider>
       </body>
     </html>
