@@ -1,6 +1,13 @@
 # Cache headers for Netlify
 # https://docs.netlify.com/routing/headers/
 
+# ⚡ CRITICAL PERFORMANCE: Aggressive cache for landing page HTML
+# This forces Netlify to serve from CDN instead of executing serverless function
+# Target: Eliminate 21.4s cold start
+/
+  Cache-Control: public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400
+  Netlify-CDN-Cache-Control: public, durable, s-maxage=31536000, immutable
+
 # Cache static assets for 1 year
 /terreno/*
   Cache-Control: public, max-age=31536000, immutable

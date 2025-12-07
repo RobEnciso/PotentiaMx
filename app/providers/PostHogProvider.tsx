@@ -26,30 +26,37 @@ function PostHogPageView() {
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Initialize PostHog
-    if (typeof window !== 'undefined') {
-      const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    // ⚡ PERFORMANCE OPTIMIZATION: Delay PostHog initialization by 3 seconds
+    // This prevents blocking initial page render and improves LCP
+    // Analytics are still captured, just not immediately
+    const initTimer = setTimeout(() => {
+      // Initialize PostHog
+      if (typeof window !== 'undefined') {
+        const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 
-      // Skip initialization if no key or in development without key
-      if (!posthogKey) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('📊 PostHog: No API key found, analytics disabled');
-        }
-        return;
-      }
-
-      posthog.init(posthogKey, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-        loaded: (posthog) => {
+        // Skip initialization if no key or in development without key
+        if (!posthogKey) {
           if (process.env.NODE_ENV === 'development') {
-            console.log('📊 PostHog initialized successfully');
+            console.log('📊 PostHog: No API key found, analytics disabled');
           }
-        },
-        capture_pageview: false, // Manual pageview tracking
-        capture_pageleave: true, // Track when users leave
-        autocapture: false, // Manual event tracking only
-      });
-    }
+          return;
+        }
+
+        posthog.init(posthogKey, {
+          api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
+          loaded: (posthog) => {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('📊 PostHog initialized successfully (delayed 3s for performance)');
+            }
+          },
+          capture_pageview: false, // Manual pageview tracking
+          capture_pageleave: true, // Track when users leave
+          autocapture: false, // Manual event tracking only
+        });
+      }
+    }, 3000); // 3 second delay to prioritize page render
+
+    return () => clearTimeout(initTimer);
   }, []);
 
   return (

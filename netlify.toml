@@ -84,6 +84,24 @@
 # CACHE OPTIMIZATION
 # ═══════════════════════════════════════════════════
 
+# ⚡ CRITICAL PERFORMANCE: Aggressive cache for landing page
+# This prevents cold starts by forcing Netlify CDN to serve from cache
+# Target: TTFB 21.4s → ~200ms (99% improvement)
+[[headers]]
+  for = "/"
+  [headers.values]
+    # Browser: Revalidate cada vez (para analytics frescos)
+    # CDN: Cachear por 1 año (evita cold starts)
+    Cache-Control = "public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400"
+    # Netlify-specific: Force CDN to cache aggressively
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=31536000, immutable"
+
+# Cache de datos de Next.js
+[[headers]]
+  for = "/_next/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+
 # Cache agresivo para assets estáticos
 [[headers]]
   for = "/_next/static/*"
