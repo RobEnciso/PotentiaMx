@@ -2,6 +2,36 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // ⚡ CRITICAL SAFEGUARD: Explicitly bypass middleware for landing page
+  // This prevents cold start issues (26s → <100ms) by avoiding Supabase connection
+  // NEVER remove this check - it's the last line of defense against TTFB regression
+  if (path === '/') {
+    return NextResponse.next();
+  }
+
+  // ⚡ Additional safeguards: Skip middleware for public routes and static assets
+  const publicRoutes = [
+    '/propiedades',
+    '/terreno',
+    '/servicios-captura',
+    '/legal',
+    '/api/analytics',
+    '/api/health',
+  ];
+
+  const isPublicRoute = publicRoutes.some(route => path.startsWith(route));
+  const isStaticAsset = path.startsWith('/_next') ||
+                        path.startsWith('/static') ||
+                        path.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|css|js|woff|woff2|ttf)$/);
+
+  if (isPublicRoute || isStaticAsset) {
+    return NextResponse.next();
+  }
+
+  // ⚡ From this point onwards, we're ONLY dealing with protected routes
+  // Routes that reach here: /dashboard/*, /login, /signup
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -58,8 +88,6 @@ export async function middleware(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const path = request.nextUrl.pathname;
-
   // ⚡ CRITICAL ROUTING LOGIC: Prevent redirect loops and respect user navigation
 
   // 1. User is authenticated and tries to access login/signup
@@ -79,30 +107,38 @@ export async function middleware(request: NextRequest) {
   }
 
   // 3. All other cases: Let user navigate freely
-  //    - Authenticated users can access public pages (/propiedades, /, etc.)
-  //    - Unauthenticated users can access public pages
+  //    - Authenticated users can access public pages
   //    - Authenticated users accessing dashboard → allowed
+  //    - Login/signup pages → allowed (for logout flow)
   return response;
 }
 
 export const config = {
   matcher: [
     /*
-     * CRÍTICO PERFORMANCE: Solo ejecutar middleware en rutas que REQUIEREN autenticación
-     * La landing page (/) NO necesita middleware - excluirla mejora TTFB de 11s a <100ms
+     * ⚡ WHITELIST APPROACH - Middleware ONLY runs on these specific routes
      *
-     * Rutas que SÍ requieren middleware:
-     * - /dashboard/* (requiere autenticación)
-     * - /login y /signup (manejo de sesiones)
+     * CRITICAL: The landing page (/) is NOT in this list - it will NEVER execute middleware
+     * This prevents Supabase cold starts from blocking the homepage (26s → <100ms TTFB)
      *
-     * Rutas excluidas (NO ejecutar middleware):
-     * - / (landing page - CRÍTICO para performance)
-     * - /propiedades (página pública)
-     * - /terreno/[id] (vista pública del tour)
-     * - /legal/* (páginas legales públicas)
-     * - _next/static, _next/image (archivos estáticos)
-     * - Archivos estáticos (.png, .jpg, .css, .js, etc.)
-     * - api/* (rutas API)
+     * Routes that REQUIRE middleware (authentication checks):
+     * - /dashboard/* (protected area - requires authentication)
+     * - /login (session management - redirect if already logged in)
+     * - /signup (session management - redirect if already logged in)
+     *
+     * Routes EXCLUDED from middleware (public pages):
+     * - / (landing page) ← CRITICAL FOR PERFORMANCE
+     * - /propiedades (public property listing)
+     * - /terreno/[id] (public virtual tour viewer)
+     * - /servicios-captura (public services page)
+     * - /legal/* (legal pages)
+     * - /api/analytics/* (public analytics endpoints)
+     * - /api/health (health check)
+     * - /_next/* (Next.js internals)
+     * - /static/* (static assets)
+     *
+     * ⚠️ WARNING: Adding routes to this matcher will impact TTFB performance
+     * Only add routes that absolutely need authentication checks
      */
     '/dashboard/:path*',
     '/login',
