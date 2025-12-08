@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { createClient } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -22,6 +22,33 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Log URL params to debug OAuth callback
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    console.log('🔐 [LOGIN_PAGE] URL Params:', Object.fromEntries(params));
+
+    // Check if we have OAuth error or code
+    const oauthError = params.get('error');
+    const oauthCode = params.get('code');
+
+    if (oauthError) {
+      console.error('❌ [LOGIN_PAGE] OAuth Error:', oauthError);
+      setError('Error de autenticación con Google: ' + oauthError);
+    }
+
+    if (oauthCode) {
+      console.log('✅ [LOGIN_PAGE] OAuth Code received, checking session...');
+      // Supabase should handle this automatically
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        console.log('🔐 [LOGIN_PAGE] Session after OAuth:', !!session);
+        if (session) {
+          console.log('✅ [LOGIN_PAGE] Session found, redirecting to dashboard');
+          router.push('/dashboard');
+        }
+      });
+    }
+  }, [supabase, router]);
 
   // Password Reset States
   const [showResetModal, setShowResetModal] = useState(false);
@@ -121,14 +148,20 @@ export default function LoginPage() {
 
   // ✅ Google OAuth
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    console.log('🔐 [GOOGLE_LOGIN] Iniciando OAuth con Google...');
+    console.log('🔐 [GOOGLE_LOGIN] Origin:', window.location.origin);
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/dashboard`,
       },
     });
 
+    console.log('🔐 [GOOGLE_LOGIN] Resultado:', { data, error });
+
     if (error) {
+      console.error('❌ [GOOGLE_LOGIN] Error:', error);
       setError('Error al conectar con Google: ' + error.message);
     }
   };

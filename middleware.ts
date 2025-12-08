@@ -84,26 +84,53 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // ⚡ CRITICAL: Check if this is an OAuth callback
+  // When Google/OAuth redirects back, there will be a 'code' parameter
+  // We allow the request through without checking session (client will handle it)
+  const code = request.nextUrl.searchParams.get('code');
+
+  // Only get session if we're not in an OAuth callback flow
+  // This prevents unnecessary Supabase calls during OAuth
+  let session = null;
+  if (!code) {
+    const {
+      data: { session: currentSession },
+    } = await supabase.auth.getSession();
+    session = currentSession;
+  }
+
+  console.log('🔐 [MIDDLEWARE]', {
+    path,
+    hasSession: !!session,
+    hasCode: !!code,
+    searchParams: Object.fromEntries(request.nextUrl.searchParams),
+  });
 
   // ⚡ CRITICAL ROUTING LOGIC: Prevent redirect loops and respect user navigation
 
   // 1. User is authenticated and tries to access login/signup
   //    → Redirect to dashboard (they're already logged in)
   if (session && (path === '/login' || path === '/signup')) {
+    console.log('✅ [MIDDLEWARE] User authenticated, redirecting to dashboard');
     const redirectUrl = new URL('/dashboard', request.url);
     return NextResponse.redirect(redirectUrl);
   }
 
   // 2. User is NOT authenticated and tries to access dashboard
   //    → Redirect to login (authentication required)
-  if (!session && path.startsWith('/dashboard')) {
+  //    BUT: Allow OAuth callback to proceed (when 'code' is present)
+  if (!session && path.startsWith('/dashboard') && !code) {
+    console.log('❌ [MIDDLEWARE] No session and no OAuth code, redirecting to login');
     const redirectUrl = new URL('/login', request.url);
     // Save the original URL to redirect back after login
     redirectUrl.searchParams.set('redirectTo', path);
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // 3. OAuth callback: Let it through, client will handle the code exchange
+  if (code && path.startsWith('/dashboard')) {
+    console.log('✅ [MIDDLEWARE] OAuth callback, allowing through for client-side exchange');
+    return response;
   }
 
   // 3. All other cases: Let user navigate freely

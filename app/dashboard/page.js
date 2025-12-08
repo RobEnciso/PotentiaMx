@@ -48,6 +48,18 @@ export default function Dashboard() {
   const [copySuccess, setCopySuccess] = useState(false);
   const router = useRouter();
 
+  // Handle OAuth callback - clean up URL after successful auth
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+
+    if (code) {
+      console.log('✅ [DASHBOARD] OAuth callback detected, cleaning up URL...');
+      // Supabase already handled the PKCE flow, just clean up the URL
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, []);
+
   // Estados para herramientas de admin
   const [isAdmin, setIsAdmin] = useState(false);
   const [storageData, setStorageData] = useState(null);
