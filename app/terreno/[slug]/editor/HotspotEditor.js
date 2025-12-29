@@ -15,6 +15,7 @@ import {
   getPolygonsByPanorama,
   createPolygon,
   deletePolygonsByPanorama,
+  deletePolygon,
 } from '@/lib/polygonsService';
 import { sanitizeHTML, sanitizeAttribute } from '@/lib/sanitize';
 
@@ -102,6 +103,10 @@ export default function HotspotEditor({
   const [polygonPointCount, setPolygonPointCount] = useState(0); // ✅ Contador para re-renders
   const isDrawingPolygonRef = useRef(false);
   const polygonPointsRef = useRef([]);
+
+  // 🗑️ Gestión de Polígonos - Estado para lista de polígonos en vista actual
+  const [currentViewPolygons, setCurrentViewPolygons] = useState([]);
+  const [deletingPolygonId, setDeletingPolygonId] = useState(null);
 
 
   // Detectar si estamos en móvil (solo en cliente)
@@ -861,8 +866,12 @@ export default function HotspotEditor({
 
       if (!data || data.length === 0) {
         console.log(`ℹ️ No hay polígonos guardados en vista ${currentImageIndex}`);
+        setCurrentViewPolygons([]); // ✅ Actualizar estado vacío
         return;
       }
+
+      // ✅ Actualizar estado con polígonos de la vista actual
+      setCurrentViewPolygons(data);
 
       // Renderizar cada polígono guardado
       data.forEach((polygon) => {
@@ -905,6 +914,48 @@ export default function HotspotEditor({
   const handleDeleteHotspot = (hotspotId) => {
     if (confirm('¿Estás seguro de que quieres eliminar este hotspot?')) {
       setHotspots((prev) => prev.filter((h) => h.id !== hotspotId));
+    }
+  };
+
+  // 🗑️ Función para eliminar polígono
+  const handleDeletePolygon = async (polygonId, polygonName) => {
+    const confirmMessage = polygonName
+      ? `¿Estás seguro de que quieres eliminar el polígono "${polygonName}"?`
+      : '¿Estás seguro de que quieres eliminar este polígono?';
+
+    if (!confirm(confirmMessage)) return;
+
+    setDeletingPolygonId(polygonId);
+    console.log(`🗑️ Eliminando polígono ${polygonId}...`);
+
+    try {
+      const { error } = await deletePolygon(polygonId);
+
+      if (error) {
+        console.error('❌ Error al eliminar polígono:', error);
+        alert('Error al eliminar el polígono: ' + error.message);
+        return;
+      }
+
+      console.log('✅ Polígono eliminado de BD');
+
+      // Remover del estado local
+      setCurrentViewPolygons((prev) => prev.filter((p) => p.id !== polygonId));
+
+      // Remover del visor inmediatamente
+      if (markersPluginRef.current) {
+        try {
+          markersPluginRef.current.removeMarker(`saved-polygon-${polygonId}`);
+          console.log('✅ Polígono removido del visor');
+        } catch (e) {
+          console.warn('⚠️ Error removiendo marcador del visor:', e);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando polígono:', error);
+      alert('Error inesperado al eliminar el polígono');
+    } finally {
+      setDeletingPolygonId(null);
     }
   };
 
@@ -2514,6 +2565,92 @@ export default function HotspotEditor({
                 >
                   ❌ Cancelar
                 </button>
+              </div>
+            )}
+          </div>
+
+          {/* 📐 Panel de Gestión de Polígonos */}
+          <div
+            style={{
+              padding: '16px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              border: '2px solid rgba(59, 130, 246, 0.3)',
+            }}
+          >
+            <h4
+              style={{
+                color: 'white',
+                fontSize: '15px',
+                fontWeight: '600',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              📐 Polígonos en esta vista
+            </h4>
+
+            {currentViewPolygons.length === 0 ? (
+              <p style={{ fontSize: '12px', color: '#9ca3af', margin: 0 }}>
+                No hay polígonos dibujados en esta vista.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {currentViewPolygons.map((polygon) => (
+                  <div
+                    key={polygon.id}
+                    style={{
+                      background: 'rgba(31, 41, 55, 0.8)',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', color: 'white', fontWeight: '500', marginBottom: '4px' }}>
+                        {polygon.name || `Polígono ${polygon.id}`}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#9ca3af' }}>
+                        {polygon.points?.length || 0} puntos
+                        {polygon.description && ` • ${polygon.description}`}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleDeletePolygon(polygon.id, polygon.name)}
+                      disabled={deletingPolygonId === polygon.id}
+                      style={{
+                        background: deletingPolygonId === polygon.id ? '#6b7280' : '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        cursor: deletingPolygonId === polygon.id ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s ease',
+                        opacity: deletingPolygonId === polygon.id ? 0.6 : 1,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (deletingPolygonId !== polygon.id) {
+                          e.target.style.background = '#dc2626';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (deletingPolygonId !== polygon.id) {
+                          e.target.style.background = '#ef4444';
+                        }
+                      }}
+                    >
+                      {deletingPolygonId === polygon.id ? '⏳ Borrando...' : '🗑️ Eliminar'}
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
