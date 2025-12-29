@@ -1155,10 +1155,14 @@ function PhotoSphereViewer({
       clearTimeout(hideControlsTimeoutRef.current);
     }
 
-    // Ocultar después de 2 segundos de inactividad (más rápido, estilo YouTube)
+    // 📱 MÓVIL: 5 segundos para dar tiempo a tocar los controles
+    // 🖥️ DESKTOP: 2 segundos estilo YouTube
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+    const hideDelay = isMobile ? 5000 : 2000;
+
     hideControlsTimeoutRef.current = setTimeout(() => {
       setControlsVisible(false);
-    }, 2000);
+    }, hideDelay);
   }, []);
 
   // ✅ OPTIMIZADO: Consolidar gestión de controles en un solo useEffect
@@ -1172,9 +1176,9 @@ function PhotoSphereViewer({
     container.addEventListener('click', handleInteraction);
     container.addEventListener('touchstart', handleInteraction);
 
-    // Event listeners para elementos de control
+    // Event listeners para elementos de control (incluye navegadores de vistas)
     const controlElements = document.querySelectorAll(
-      '.viewer-controls, .nav-button, .info-button',
+      '.viewer-controls, .nav-button, .info-button, .dots-navigator, .thumbnail-navigator',
     );
 
     controlElements.forEach((element) => {
