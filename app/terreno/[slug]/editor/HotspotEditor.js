@@ -87,6 +87,7 @@ export default function HotspotEditor({
   // Estado para detección móvil
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileForm, setShowMobileForm] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(false); // ✨ UX Mobile: Toggle miniaturas
 
   // Estados para audio de fondo por vista
   const [viewAudioSettings, setViewAudioSettings] = useState({
@@ -1043,10 +1044,66 @@ export default function HotspotEditor({
 
   const handleNewHotspotClick = () => {
     // ✅ FLUJO CORRECTO: Primero seleccionar punto, DESPUÉS abrir modal
-    // Activar modo de colocación (NO abrir modal todavía)
-    setPlacementMode(true);
-    placementModeRef.current = true;
-    // El modal se abrirá DESPUÉS de que el usuario haga click en el panorama
+    if (isMobile) {
+      // 🎯 MÓVIL: Activar modo mira (no abrir modal todavía)
+      setPlacementMode(true);
+      placementModeRef.current = true;
+      // El usuario verá la mira y deberá tocar "📍 FIJAR AQUÍ"
+    } else {
+      // 🖥️ DESKTOP: Activar modo de colocación por click
+      setPlacementMode(true);
+      placementModeRef.current = true;
+      // El modal se abrirá DESPUÉS de que el usuario haga click en el panorama
+    }
+  };
+
+  // 🎯 NUEVA FUNCIÓN MÓVIL: Fijar posición central del visor
+  const handleFixCenterPosition = () => {
+    if (!viewerInstanceRef.current) {
+      console.error('❌ Viewer no disponible');
+      return;
+    }
+
+    try {
+      // Obtener posición actual del centro del visor
+      const position = viewerInstanceRef.current.getPosition();
+      const { yaw, pitch } = position;
+
+      console.log('🎯 Posición central capturada:', { yaw, pitch });
+
+      // Calcular siguiente vista (igual que antes)
+      const nextImageIndex =
+        currentImageIndexRef.current === imageUrls.length - 1
+          ? 0
+          : currentImageIndexRef.current + 1;
+
+      // Preparar nuevo hotspot con las coordenadas del centro
+      setNewHotspot({
+        title: '',
+        yaw,
+        pitch,
+        targetImageIndex: nextImageIndex,
+        type: 'navigation',
+        content_text: '',
+        content_images: [],
+        content_video_url: '',
+        audio_ambient_url: '',
+        audio_ambient_volume: 0.3,
+        audio_narration_url: '',
+        audio_narration_volume: 0.7,
+        audio_autoplay: false,
+        create_backlink: true,
+        custom_icon_url: '',
+      });
+
+      // Desactivar modo de colocación y abrir formulario
+      setPlacementMode(false);
+      placementModeRef.current = false;
+      setShowMobileForm(true);
+    } catch (error) {
+      console.error('❌ Error capturando posición central:', error);
+      alert('Error al obtener la posición. Intenta de nuevo.');
+    }
   };
 
   // Handler específico para móvil: cuando se envía el formulario móvil
@@ -1500,7 +1557,7 @@ export default function HotspotEditor({
             </div>
           )}
           <div ref={viewerRef} style={{ width: '100%', height: '100%' }} />
-          {imageUrls.length > 1 && (
+          {imageUrls.length > 1 && !isMobile && (
             <div className="viewer-controls">
               {imageUrls.map((imageUrl, index) => (
                 <div
@@ -3167,23 +3224,289 @@ export default function HotspotEditor({
         )}
       </div>
 
-      {/* Mobile UI Components */}
+      {/* ✨ MOBILE UI REFACTORIZADO - Híbrido Instagram/Precision */}
       {isMobile && (
         <>
-          {/* Bottom Bar para navegación móvil */}
-          <MobileBottomBar
-            currentView={currentImageIndex}
-            totalViews={imageUrls.length}
-            hotspotCount={hotspots.filter((h) => h.imageIndex === currentImageIndex).length}
-            hasUnsavedChanges={hasUnsavedChanges}
-            isSaving={isSaving}
-            onAddHotspot={handleNewHotspotClick}
-            onBack={handleBackToDashboard}
-            onSave={handleSave}
-            onViewChange={(index) => setCurrentImageIndex(index)}
-          />
+          {/* 📱 HEADER TRANSPARENTE CON GRADIENTE */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1000,
+              padding: '16px 20px',
+              background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              pointerEvents: placementMode ? 'none' : 'auto',
+            }}
+          >
+            <div style={{ color: 'white', fontSize: '15px', fontWeight: '600', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              {viewNames[currentImageIndex] || `Vista ${currentImageIndex + 1}`}
+              {hasUnsavedChanges && <span style={{ color: '#fbbf24', marginLeft: '8px' }}>●</span>}
+            </div>
+            <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              {currentImageIndex + 1} / {imageUrls.length}
+            </div>
+          </div>
 
-          {/* Bottom Sheet con formulario de hotspot */}
+          {/* 🎯 MIRA CENTRAL (solo visible en placement mode) */}
+          {placementMode && (
+            <div
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 999,
+                pointerEvents: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ position: 'relative', width: '60px', height: '60px' }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '0',
+                    right: '0',
+                    height: '2px',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    boxShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
+                  }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '0',
+                    bottom: '0',
+                    width: '2px',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    boxShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
+                  }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '3px solid rgba(255, 255, 255, 0.9)',
+                    background: 'rgba(102, 126, 234, 0.3)',
+                    boxShadow: '0 0 15px rgba(255,255,255,0.6), inset 0 0 8px rgba(102,126,234,0.4)',
+                  }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    border: '2px solid rgba(255, 255, 255, 0.4)',
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* 🖼️ TIRA DE MINIATURAS (toggle con botón) - ✅ CORREGIDO: Cierra automáticamente */}
+          {showThumbnails && imageUrls.length > 1 && (
+            <div
+              style={{
+                position: 'fixed',
+                top: '80px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 998,
+                display: 'flex',
+                gap: '8px',
+                padding: '12px 16px',
+                background: 'rgba(0, 0, 0, 0.7)',
+                backdropFilter: 'blur(12px) saturate(180%)',
+                borderRadius: '16px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                maxWidth: '90vw',
+                overflowX: 'auto',
+              }}
+            >
+              {imageUrls.map((url, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    console.log(`📸 Cambiando a vista ${index + 1}`);
+                    setCurrentImageIndex(index);
+                    setShowThumbnails(false); // ✅ CERRAR automáticamente
+                  }}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    border: currentImageIndex === index ? '3px solid #667eea' : '2px solid rgba(255,255,255,0.3)',
+                    boxShadow: currentImageIndex === index ? '0 0 12px rgba(102,126,234,0.6)' : 'none',
+                    transition: 'all 0.2s ease',
+                    flexShrink: 0,
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt={`Vista ${index + 1}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 🎮 DOCK FLOTANTE INFERIOR (Glassmorphism) */}
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1001,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 20px',
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              borderRadius: '24px',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+            }}
+          >
+            {/* Botón Izquierdo: Toggle Miniaturas */}
+            <button
+              onClick={() => setShowThumbnails(!showThumbnails)}
+              disabled={placementMode}
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: showThumbnails
+                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  : 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                fontSize: '20px',
+                cursor: placementMode ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: showThumbnails
+                  ? '0 4px 12px rgba(102,126,234,0.4)'
+                  : '0 2px 8px rgba(0,0,0,0.2)',
+                opacity: placementMode ? 0.5 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              🖼️
+            </button>
+
+            {/* Botón Central: FAB Agregar Hotspot / Fijar Posición */}
+            <button
+              onClick={placementMode ? handleFixCenterPosition : handleNewHotspotClick}
+              disabled={isLoading || isSaving}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: placementMode
+                  ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                fontSize: placementMode ? '24px' : '32px',
+                fontWeight: 'bold',
+                color: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: placementMode
+                  ? '0 8px 24px rgba(16,185,129,0.5)'
+                  : '0 8px 24px rgba(102,126,234,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                animation: placementMode ? 'pulse 1.5s infinite' : 'none',
+              }}
+            >
+              {placementMode ? '📍' : '+'}
+            </button>
+
+            {/* Botón Derecho: Guardar y Salir */}
+            <button
+              onClick={hasUnsavedChanges ? handleSave : handleBackToDashboard}
+              disabled={isSaving || autoSaving}
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: hasUnsavedChanges
+                  ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                  : 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                fontSize: '20px',
+                cursor: isSaving || autoSaving ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: hasUnsavedChanges
+                  ? '0 4px 12px rgba(245,158,11,0.4), 0 0 0 3px rgba(251,191,36,0.3)'
+                  : '0 2px 8px rgba(0,0,0,0.2)',
+                opacity: isSaving || autoSaving ? 0.6 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                animation: hasUnsavedChanges ? 'pulse 2s infinite' : 'none',
+              }}
+            >
+              {isSaving || autoSaving ? '⏳' : hasUnsavedChanges ? '💾' : '←'}
+            </button>
+          </div>
+
+          {/* Texto de ayuda en modo mira */}
+          {placementMode && (
+            <div
+              style={{
+                position: 'fixed',
+                top: '70%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 999,
+                padding: '12px 24px',
+                background: 'rgba(0, 0, 0, 0.8)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: '600',
+                textAlign: 'center',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                pointerEvents: 'none',
+              }}
+            >
+              🎯 Apunta la mira donde quieres el hotspot<br />
+              <span style={{ fontSize: '12px', opacity: 0.8 }}>Toca 📍 para fijar la posición</span>
+            </div>
+          )}
+
+          {/* Bottom Sheet con formulario de hotspot (sin cambios) */}
           <MobileBottomSheet
             isOpen={showMobileForm}
             onClose={() => {
@@ -3208,6 +3531,19 @@ export default function HotspotEditor({
               isLoading={isSaving}
             />
           </MobileBottomSheet>
+
+          <style jsx>{`
+            @keyframes pulse {
+              0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 24px rgba(102,126,234,0.5);
+              }
+              50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 32px rgba(102,126,234,0.7);
+              }
+            }
+          `}</style>
         </>
       )}
     </>
