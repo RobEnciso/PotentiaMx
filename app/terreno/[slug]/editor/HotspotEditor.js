@@ -211,7 +211,28 @@ export default function HotspotEditor({
   // Declarar updateMarkers ANTES de initializeViewer
   const updateMarkers = useCallback(() => {
     if (!markersPluginRef.current) return;
-    markersPluginRef.current.clearMarkers();
+
+    // ✅ CRÍTICO: Limpiar solo hotspots HTML, NO polígonos SVG ni puntos de dibujo
+    const allMarkers = markersPluginRef.current.getMarkers();
+    const polygonsPreserved = allMarkers.filter(m => {
+      const id = m.id?.toString() || '';
+      return id.startsWith('saved-polygon-') || id.startsWith('polygon-point-') || id === 'drawing-polygon';
+    });
+
+    allMarkers.forEach((marker) => {
+      const markerId = marker.id?.toString() || '';
+      // Solo borrar hotspots normales (ni polígonos ni puntos de dibujo)
+      if (!markerId.startsWith('saved-polygon-') &&
+          !markerId.startsWith('polygon-point-') &&
+          markerId !== 'drawing-polygon') {
+        markersPluginRef.current.removeMarker(marker.id);
+      }
+    });
+
+    if (polygonsPreserved.length > 0) {
+      console.log(`✅ [Editor] ${polygonsPreserved.length} polígonos/puntos preservados tras updateMarkers`);
+    }
+
     const currentHotspots = hotspots.filter(
       (h) => h.imageIndex === currentImageIndex,
     );
@@ -527,7 +548,7 @@ export default function HotspotEditor({
           return;
         }
 
-        // ✅ PASO 1: Agregar punto individual VISIBLE (círculo verde brillante)
+        // ✅ PASO 1: Agregar punto individual VISIBLE (círculo blanco brillante)
         try {
           markersPluginRef.current.addMarker({
             id: `polygon-point-${pointIndex}`,
@@ -535,10 +556,10 @@ export default function HotspotEditor({
             html: `<div style="
               width: 14px;
               height: 14px;
-              background: #00ff00;
-              border: 3px solid #ffffff;
+              background: #FFFFFF;
+              border: 3px solid rgba(0, 0, 0, 0.3);
               border-radius: 50%;
-              box-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00, inset 0 0 5px #00ff00;
+              box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 5px rgba(255, 255, 255, 0.6);
               cursor: crosshair;
               z-index: 1000;
               position: relative;
@@ -563,16 +584,16 @@ export default function HotspotEditor({
               // No existe, ok
             }
 
-            // Agregar polígono temporal con estilo neón
+            // Agregar polígono temporal con estilo blanco arquitectónico
             markersPluginRef.current.addMarker({
               id: 'drawing-polygon',
               polygon: polygonPointsRef.current,
               svgStyle: {
-                fill: 'rgba(0, 255, 0, 0.25)',
-                stroke: '#00ff00',
-                strokeWidth: '4px',
-                strokeDasharray: '10 5',
-                filter: 'drop-shadow(0 0 12px #00ff00)',
+                fill: 'rgba(255, 255, 255, 0.2)', // Blanco semi-transparente
+                stroke: '#FFFFFF', // Blanco puro
+                strokeWidth: '2.5px', // Línea media para visibilidad en edición
+                strokeDasharray: '8 4', // Línea punteada blanca
+                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))', // Glow blanco
               },
               tooltip: {
                 content: `⏳ Dibujando (${pointIndex} puntos)`,
@@ -814,13 +835,20 @@ export default function HotspotEditor({
       // Limpiar polígonos anteriores (de la vista anterior)
       try {
         const currentMarkers = markersPluginRef.current.getMarkers();
-        currentMarkers.forEach((marker) => {
-          if (marker.id && marker.id.toString().startsWith('saved-polygon-')) {
-            markersPluginRef.current.removeMarker(marker.id);
-          }
+        const polygonsToRemove = currentMarkers.filter(m =>
+          m.id && m.id.toString().startsWith('saved-polygon-')
+        );
+
+        if (polygonsToRemove.length > 0) {
+          console.log(`🧹 [Editor] Limpiando ${polygonsToRemove.length} polígonos anteriores...`);
+        }
+
+        polygonsToRemove.forEach((marker) => {
+          markersPluginRef.current.removeMarker(marker.id);
+          console.log(`  ❌ [Editor] Removido: ${marker.id}`);
         });
       } catch (e) {
-        console.warn('Error limpiando polígonos anteriores:', e);
+        console.warn('⚠️ [Editor] Error limpiando polígonos anteriores:', e);
       }
 
       // Cargar polígonos de la vista actual desde BD
@@ -839,16 +867,19 @@ export default function HotspotEditor({
       // Renderizar cada polígono guardado
       data.forEach((polygon) => {
         try {
+          console.log(`📐 [Editor] Agregando polígono ${polygon.id} a la vista...`);
+
           markersPluginRef.current.addMarker({
             id: `saved-polygon-${polygon.id}`,
             polygon: polygon.points,
             svgStyle: {
-              fill: `${polygon.color}${Math.floor(polygon.fill_opacity * 255).toString(16).padStart(2, '0')}`,
-              stroke: polygon.color,
-              strokeWidth: `${polygon.stroke_width}px`,
-              filter: `drop-shadow(0 0 15px ${polygon.color})`,
-              strokeLinejoin: 'round',
-              strokeLinecap: 'round',
+              // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
+              fill: 'rgba(255, 255, 255, 0.15)', // Relleno más visible en editor
+              stroke: 'rgba(255, 255, 255, 0.9)', // Borde blanco brillante
+              strokeWidth: '2px', // Línea fina arquitectónica
+              filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))', // Glow sutil
+              strokeLinejoin: 'miter', // Esquinas precisas
+              strokeLinecap: 'square', // Terminaciones cuadradas
             },
             tooltip: {
               content: polygon.name || `Polígono ${polygon.id}`,

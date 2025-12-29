@@ -520,10 +520,15 @@ function PhotoSphereViewer({
 
       // Limpiar polígonos anteriores
       const currentMarkers = markersPluginRef.current.getMarkers();
-      currentMarkers.forEach((marker) => {
-        if (marker.id?.toString().startsWith('saved-polygon-')) {
-          markersPluginRef.current.removeMarker(marker.id);
-        }
+      const polygonsToRemove = currentMarkers.filter(m => m.id?.toString().startsWith('saved-polygon-'));
+
+      if (polygonsToRemove.length > 0) {
+        console.log(`🧹 [Viewer Público] Limpiando ${polygonsToRemove.length} polígonos anteriores...`);
+      }
+
+      polygonsToRemove.forEach((marker) => {
+        markersPluginRef.current.removeMarker(marker.id);
+        console.log(`  ❌ Removido: ${marker.id}`);
       });
 
       // Cargar polígonos de la vista actual desde la BD
@@ -547,21 +552,20 @@ function PhotoSphereViewer({
       // Renderizar cada polígono
       data.forEach((polygon) => {
         try {
-          // Convertir fill_opacity a hex alpha (0.0-1.0 → 00-FF)
-          const alphaHex = Math.floor(polygon.fill_opacity * 255)
-            .toString(16)
-            .padStart(2, '0');
+          console.log(`🔷 [Viewer Público] Agregando polígono ${polygon.id} a la vista...`);
 
           markersPluginRef.current.addMarker({
             id: `saved-polygon-${polygon.id}`,
             polygon: polygon.points,
             svgStyle: {
-              fill: `${polygon.color}${alphaHex}`,
-              stroke: polygon.color,
-              strokeWidth: `${polygon.stroke_width}px`,
-              strokeDasharray: '10 5',
+              // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
+              fill: 'rgba(255, 255, 255, 0.1)', // Relleno sutil blanco
+              stroke: 'rgba(255, 255, 255, 0.8)', // Borde blanco semi-transparente
+              strokeWidth: '1.5px', // Línea fina arquitectónica
+              strokeLinejoin: 'miter', // Esquinas precisas
+              strokeLinecap: 'square', // Terminaciones cuadradas
               // 📱 Deshabilitar drop-shadow en móvil (muy costoso en rendimiento)
-              ...(isMobile ? {} : { filter: `drop-shadow(0 0 8px ${polygon.color})` }),
+              ...(isMobile ? {} : { filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))' }),
             },
             tooltip: polygon.name ? {
               content: `🏗️ ${polygon.name}`,
@@ -585,6 +589,34 @@ function PhotoSphereViewer({
       loadPolygons();
     }
   }, [isViewerReady, currentIndex, terreno?.id]);
+
+  // ========================================================================
+  // ✅ FIX SVG VIEWBOX - Prevenir clipping de polígonos
+  // ========================================================================
+  useEffect(() => {
+    if (!containerRef.current || !isViewerReady) return;
+
+    const fixSVGViewBox = () => {
+      const svg = containerRef.current?.querySelector('.psv-markers-svg-container svg');
+      if (svg) {
+        // Forzar viewBox a cubrir TODO el espacio equirectangular
+        svg.setAttribute('viewBox', '-180 -90 360 180');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        svg.style.overflow = 'visible';
+      }
+    };
+
+    // Ejecutar fix con delays progresivos (no intervalo continuo)
+    const timeouts = [100, 300, 600, 1000, 2000].map(delay =>
+      setTimeout(fixSVGViewBox, delay)
+    );
+
+    console.log('✅ [Viewer Público] SVG ViewBox fix programado');
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, [isViewerReady, currentIndex]); // Re-ejecutar al cambiar de vista
 
   // ========================================================================
   // ✅ EFECTO A (MOUNT) - Solo se ejecuta UNA VEZ al montar
@@ -1032,8 +1064,23 @@ function PhotoSphereViewer({
       const markersPlugin = markersPluginRef.current;
       if (!markersPlugin) return;
 
-      // Limpiar markers anteriores
-      markersPlugin.clearMarkers();
+      // ✅ CRÍTICO: Limpiar solo hotspots HTML, NO polígonos SVG guardados
+      const allMarkers = markersPlugin.getMarkers();
+      const polygonsPreserved = allMarkers.filter(m =>
+        m.id?.toString().startsWith('saved-polygon-')
+      );
+
+      allMarkers.forEach((marker) => {
+        const markerId = marker.id?.toString() || '';
+        // Solo borrar hotspots normales, NO polígonos guardados
+        if (!markerId.startsWith('saved-polygon-')) {
+          markersPlugin.removeMarker(marker.id);
+        }
+      });
+
+      if (polygonsPreserved.length > 0) {
+        console.log(`✅ [Viewer Público] ${polygonsPreserved.length} polígonos preservados tras updateMarkers`);
+      }
 
       // ⚠️ Solo verificar hotspots, NO markersVisible (se maneja con CSS opacity)
       if (!hotspots || hotspots.length === 0) {
@@ -1343,6 +1390,13 @@ function PhotoSphereViewer({
         .psv-markers-svg-container polygon {
           pointer-events: auto !important;
           vector-effect: non-scaling-stroke !important;
+          transition: fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease !important;
+        }
+        /* ✨ ARCHITECTURAL HOVER: Highlight sutil blanco brillante */
+        .psv-markers-svg-container polygon:hover {
+          fill: rgba(255, 255, 255, 0.2) !important;
+          stroke: rgba(255, 255, 255, 1) !important;
+          filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)) !important;
         }
         .psv-marker {
           pointer-events: auto !important;
