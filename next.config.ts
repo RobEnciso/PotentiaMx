@@ -2,7 +2,8 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // PERFORMANCE CRITICAL: Aggressive optimization settings
-  reactStrictMode: true,
+  // ⚠️ Strict Mode deshabilitado: Causa problemas con PhotoSphereViewer (double-mount)
+  reactStrictMode: false,
 
   // Reduce bundle size by removing unused code
   compiler: {

@@ -51,6 +51,7 @@ export default function EditTerrain() {
     contact_phone: '5213221234567',
     latitude: null, // Coordenadas geográficas
     longitude: null,
+    north_offset: 0, // 🧭 Calibración de Norte para radar (0-360 grados)
   });
 
   const [loading, setLoading] = useState(false);
@@ -116,6 +117,7 @@ export default function EditTerrain() {
         contact_phone: terreno.contact_phone || '5213221234567',
         latitude: terreno.latitude || null, // ✅ Cargar coordenadas
         longitude: terreno.longitude || null, // ✅ Cargar coordenadas
+        north_offset: terreno.north_offset || 0, // 🧭 Cargar calibración de Norte
       });
 
       setLoadingData(false);
@@ -196,6 +198,7 @@ export default function EditTerrain() {
           contact_phone: formData.contact_phone,
           latitude: formData.latitude, // ✅ Guardar coordenadas
           longitude: formData.longitude, // ✅ Guardar coordenadas
+          north_offset: parseFloat(formData.north_offset) || 0, // 🧭 Guardar calibración de Norte
         })
         .eq('id', terrenoId);
 
@@ -665,6 +668,54 @@ export default function EditTerrain() {
                 <li>Arrastra el marcador para afinar la posición</li>
                 <li>Esta ubicación se mostrará en el marketplace</li>
               </ul>
+            </div>
+
+            {/* 🧭 Calibración de Norte para Radar */}
+            <div className="mt-6 bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-purple-100 rounded-lg">
+                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">
+                    🧭 Calibración del Radar (Opcional)
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    Ajusta la orientación del mini-radar para que apunte al Norte real
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Offset del Norte (0-360 grados)
+                  </label>
+                  <input
+                    type="number"
+                    name="north_offset"
+                    value={formData.north_offset}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="360"
+                    step="1"
+                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-lg"
+                    placeholder="0"
+                  />
+                  <p className="mt-2 text-xs text-slate-500">
+                    Si las imágenes 360° tienen rotación, ajusta este valor para alinear el radar.
+                    <strong className="text-purple-600"> Tip:</strong> Ve al editor de hotspots, activa una vista y gira hasta que sepas dónde está el Norte. Luego ajusta este número.
+                  </p>
+                </div>
+
+                <div className="bg-purple-100 rounded-lg p-4">
+                  <p className="text-sm text-purple-800">
+                    <strong>🎯 Vista previa en vivo:</strong> Los cambios se reflejarán en el mini-radar del visor público inmediatamente después de guardar.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 

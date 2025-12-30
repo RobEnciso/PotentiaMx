@@ -8,6 +8,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import ContactFormModal from '@/components/ContactFormModal';
 import { getPolygonsByPanorama } from '@/lib/polygonsService';
+import { isTextLabel, getLabelMetadata } from '@/lib/textLabelsService';
 import { sanitizeHTML, sanitizeAttribute } from '@/lib/sanitize';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/markers-plugin/index.css';
@@ -200,6 +201,34 @@ function PhotoSphereViewer({
       `,
     };
 
+    // 🏷️ TEXT LABELS: Estilos minimalistas para etiquetas de texto flotantes
+    const textLabelStyles = `
+      .text-label-marker {
+        background: transparent !important;
+        color: #FFFFFF;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8),
+                     0 0 8px rgba(0, 0, 0, 0.6),
+                     1px 1px 2px rgba(0, 0, 0, 0.9);
+        cursor: default;
+        pointer-events: none;
+        white-space: nowrap;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        opacity: 0;
+        animation: fadeInLabel 0.8s ease-out forwards;
+      }
+
+      @keyframes fadeInLabel {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+    `;
+
     return (
       styles[markerStyle] ||
       styles.apple + `
@@ -209,7 +238,7 @@ function PhotoSphereViewer({
           100% { opacity: 1; transform: scale(1) translateY(0); }
         }
       `
-    );
+    ) + textLabelStyles;
   };
 
   const containerRef = useRef(null);
@@ -518,12 +547,15 @@ function PhotoSphereViewer({
 
       console.log(`🔷 [Viewer Público] Cargando polígonos para vista ${currentIndex}...`);
 
-      // Limpiar polígonos anteriores
+      // Limpiar polígonos y labels anteriores
       const currentMarkers = markersPluginRef.current.getMarkers();
-      const polygonsToRemove = currentMarkers.filter(m => m.id?.toString().startsWith('saved-polygon-'));
+      const polygonsToRemove = currentMarkers.filter(m => {
+        const id = m.id?.toString() || '';
+        return id.startsWith('saved-polygon-') || id.startsWith('text-label-');
+      });
 
       if (polygonsToRemove.length > 0) {
-        console.log(`🧹 [Viewer Público] Limpiando ${polygonsToRemove.length} polígonos anteriores...`);
+        console.log(`🧹 [Viewer Público] Limpiando ${polygonsToRemove.length} polígonos/labels anteriores...`);
       }
 
       polygonsToRemove.forEach((marker) => {
@@ -544,43 +576,71 @@ function PhotoSphereViewer({
         return;
       }
 
-      console.log(`✅ [Viewer Público] ${data.length} polígonos cargados para vista ${currentIndex}`);
+      console.log(`✅ [Viewer Público] ${data.length} polígonos/labels cargados para vista ${currentIndex}`);
 
       // 📱 Detectar móvil para deshabilitar efectos costosos
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
 
-      // Renderizar cada polígono
+      // Renderizar cada polígono o label
       data.forEach((polygon) => {
         try {
-          console.log(`🔷 [Viewer Público] Agregando polígono ${polygon.id} a la vista...`);
+          // 🏷️ DETECTAR SI ES TEXT LABEL O POLÍGONO REGULAR
+          if (isTextLabel(polygon)) {
+            // ===== RENDERIZAR TEXT LABEL =====
+            const labelData = getLabelMetadata(polygon);
+            if (!labelData || !labelData.position) {
+              console.warn(`⚠️ Label ${polygon.id} tiene metadata inválida`);
+              return;
+            }
 
-          markersPluginRef.current.addMarker({
-            id: `saved-polygon-${polygon.id}`,
-            polygon: polygon.points,
-            svgStyle: {
-              // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
-              fill: 'rgba(255, 255, 255, 0.1)', // Relleno sutil blanco
-              stroke: 'rgba(255, 255, 255, 0.8)', // Borde blanco semi-transparente
-              strokeWidth: '1.5px', // Línea fina arquitectónica
-              strokeLinejoin: 'miter', // Esquinas precisas
-              strokeLinecap: 'square', // Terminaciones cuadradas
-              // 📱 Deshabilitar drop-shadow en móvil (muy costoso en rendimiento)
-              ...(isMobile ? {} : { filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))' }),
-            },
-            tooltip: polygon.name ? {
-              content: `🏗️ ${polygon.name}`,
-              position: 'bottom center',
-            } : undefined,
-            data: {
-              type: 'boundary',
-              description: polygon.description || 'Límite del terreno',
-              dbId: polygon.id,
-            },
-          });
+            console.log(`🏷️ [Viewer Público] Agregando text label: "${labelData.text}"`);
 
-          console.log(`  ✓ Polígono renderizado: ${polygon.name || 'Sin nombre'} (ID: ${polygon.id})`);
+            markersPluginRef.current.addMarker({
+              id: `text-label-${polygon.id}`,
+              position: {
+                yaw: labelData.position.yaw,
+                pitch: labelData.position.pitch,
+              },
+              html: `<div class="text-label-marker">${sanitizeHTML(labelData.text)}</div>`,
+              data: {
+                type: 'text_label',
+                dbId: polygon.id,
+              },
+            });
+
+            console.log(`  ✓ Label renderizado: "${labelData.text}" (ID: ${polygon.id})`);
+          } else {
+            // ===== RENDERIZAR POLÍGONO REGULAR =====
+            console.log(`🔷 [Viewer Público] Agregando polígono ${polygon.id} a la vista...`);
+
+            markersPluginRef.current.addMarker({
+              id: `saved-polygon-${polygon.id}`,
+              polygon: polygon.points,
+              svgStyle: {
+                // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
+                fill: 'rgba(255, 255, 255, 0.1)', // Relleno sutil blanco
+                stroke: 'rgba(255, 255, 255, 0.8)', // Borde blanco semi-transparente
+                strokeWidth: '1.5px', // Línea fina arquitectónica
+                strokeLinejoin: 'miter', // Esquinas precisas
+                strokeLinecap: 'square', // Terminaciones cuadradas
+                // 📱 Deshabilitar drop-shadow en móvil (muy costoso en rendimiento)
+                ...(isMobile ? {} : { filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))' }),
+              },
+              tooltip: polygon.name ? {
+                content: `🏗️ ${polygon.name}`,
+                position: 'bottom center',
+              } : undefined,
+              data: {
+                type: 'boundary',
+                description: polygon.description || 'Límite del terreno',
+                dbId: polygon.id,
+              },
+            });
+
+            console.log(`  ✓ Polígono renderizado: ${polygon.name || 'Sin nombre'} (ID: ${polygon.id})`);
+          }
         } catch (renderError) {
-          console.error(`❌ Error al renderizar polígono ${polygon.id}:`, renderError);
+          console.error(`❌ Error al renderizar polígono/label ${polygon.id}:`, renderError);
         }
       });
     }
@@ -765,6 +825,11 @@ function PhotoSphereViewer({
             // yaw = 0 apunta al norte, positivo hacia el este
             let bearingDegrees = (position.yaw * 180 / Math.PI);
 
+            // 🧭 CALIBRACIÓN DE NORTE UNIVERSAL: Aplicar offset configurado por el usuario
+            // Si la imagen 360° tiene rotación arbitraria, north_offset corrige la orientación
+            const northOffset = terreno?.north_offset || 0;
+            bearingDegrees += northOffset;
+
             // Normalizar a rango 0-360
             bearingDegrees = ((bearingDegrees % 360) + 360) % 360;
 
@@ -908,7 +973,9 @@ function PhotoSphereViewer({
     // G. Cleanup
     return () => {
       // ⚠️ CRÍTICO: NO resetear isMountedRef.current
-      // Si lo reseteamos, React StrictMode puede remontar y crear viewer duplicado
+      // En React Strict Mode (dev), el componente se monta/desmonta/remonta
+      // Si reseteamos el flag, el segundo mount intenta crear otro viewer y causa conflictos
+      // Cada INSTANCIA del componente mantiene su propio flag de montaje
 
       // Solo destruir el viewer si realmente existe
       if (viewerRef.current) {
@@ -1064,22 +1131,23 @@ function PhotoSphereViewer({
       const markersPlugin = markersPluginRef.current;
       if (!markersPlugin) return;
 
-      // ✅ CRÍTICO: Limpiar solo hotspots HTML, NO polígonos SVG guardados
+      // ✅ CRÍTICO: Limpiar solo hotspots HTML, NO polígonos/labels SVG guardados
       const allMarkers = markersPlugin.getMarkers();
-      const polygonsPreserved = allMarkers.filter(m =>
-        m.id?.toString().startsWith('saved-polygon-')
-      );
+      const savedItemsPreserved = allMarkers.filter(m => {
+        const id = m.id?.toString() || '';
+        return id.startsWith('saved-polygon-') || id.startsWith('text-label-');
+      });
 
       allMarkers.forEach((marker) => {
         const markerId = marker.id?.toString() || '';
-        // Solo borrar hotspots normales, NO polígonos guardados
-        if (!markerId.startsWith('saved-polygon-')) {
+        // Solo borrar hotspots normales, NO polígonos ni text labels guardados
+        if (!markerId.startsWith('saved-polygon-') && !markerId.startsWith('text-label-')) {
           markersPlugin.removeMarker(marker.id);
         }
       });
 
-      if (polygonsPreserved.length > 0) {
-        console.log(`✅ [Viewer Público] ${polygonsPreserved.length} polígonos preservados tras updateMarkers`);
+      if (savedItemsPreserved.length > 0) {
+        console.log(`✅ [Viewer Público] ${savedItemsPreserved.length} polígonos/labels preservados tras updateMarkers`);
       }
 
       // ⚠️ Solo verificar hotspots, NO markersVisible (se maneja con CSS opacity)

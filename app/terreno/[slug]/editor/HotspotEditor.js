@@ -17,6 +17,12 @@ import {
   deletePolygonsByPanorama,
   deletePolygon,
 } from '@/lib/polygonsService';
+import {
+  createTextLabel,
+  deleteTextLabel,
+  isTextLabel,
+  getLabelMetadata,
+} from '@/lib/textLabelsService';
 import { sanitizeHTML, sanitizeAttribute } from '@/lib/sanitize';
 
 export default function HotspotEditor({
@@ -109,6 +115,13 @@ export default function HotspotEditor({
   const [currentViewPolygons, setCurrentViewPolygons] = useState([]);
   const [deletingPolygonId, setDeletingPolygonId] = useState(null);
 
+  // 🏷️ Text Labels - Estados para colocar etiquetas de texto
+  const [isPlacingLabel, setIsPlacingLabel] = useState(false);
+  const [labelText, setLabelText] = useState('');
+  const [showLabelModal, setShowLabelModal] = useState(false);
+  const [tempLabelPosition, setTempLabelPosition] = useState(null);
+  const [savingLabel, setSavingLabel] = useState(false);
+  const isPlacingLabelRef = useRef(false); // 🔒 Ref para sincronizar con event listener
 
   // Detectar si estamos en móvil (solo en cliente)
   useEffect(() => {
@@ -205,6 +218,14 @@ export default function HotspotEditor({
     isDrawingPolygonRef.current = isDrawingPolygon;
   }, [isDrawingPolygon]);
 
+  // Sincronizar isPlacingLabelRef con isPlacingLabel
+  useEffect(() => {
+    console.log('🏷️ Sincronizando ref de label placement:', {
+      antes: isPlacingLabelRef.current,
+      despues: isPlacingLabel,
+    });
+    isPlacingLabelRef.current = isPlacingLabel;
+  }, [isPlacingLabel]);
 
   // Validación inicial
   useEffect(() => {
@@ -334,10 +355,21 @@ export default function HotspotEditor({
                 viewer.addEventListener('click', (event) => {
           // Si estamos dibujando polígono, no interferir
           if (isDrawingPolygonRef.current) return;
-          if (!placementModeRef.current) return;
-          
 
           const { yaw, pitch } = event.data;
+
+          // 🏷️ MODO LABEL PLACEMENT: Manejar colocación de etiquetas de texto
+          if (isPlacingLabelRef.current) {
+            console.log('🏷️ Label placement click:', { yaw, pitch });
+            setTempLabelPosition({ yaw, pitch });
+            setShowLabelModal(true);
+            setIsPlacingLabel(false);
+            return;
+          }
+
+          // 🔵 MODO HOTSPOT PLACEMENT: Manejar colocación de hotspots
+          if (!placementModeRef.current) return;
+
           setTempMarkerPosition({ yaw, pitch });
           setTimeout(() => setTempMarkerPosition(null), 2000);
 
@@ -490,17 +522,17 @@ export default function HotspotEditor({
     updateMarkers,
   ]);
 
-  // Actualizar cursor según modo
+  // Actualizar cursor según modo (hotspot o label placement)
   useEffect(() => {
     if (viewerRef.current) {
-      viewerRef.current.style.cursor = placementMode ? 'crosshair' : 'grab';
+      viewerRef.current.style.cursor = (placementMode || isPlacingLabel) ? 'crosshair' : 'grab';
     }
     // También aplicar al canvas del viewer si existe
     const viewerCanvas = viewerRef.current?.querySelector('canvas');
     if (viewerCanvas) {
-      viewerCanvas.style.cursor = placementMode ? 'crosshair' : 'grab';
+      viewerCanvas.style.cursor = (placementMode || isPlacingLabel) ? 'crosshair' : 'grab';
     }
-  }, [placementMode]);
+  }, [placementMode, isPlacingLabel]);
 
   // ✅ Actualizar cursor según modo de dibujo de polígono (SOLO EN VIEWER)
   useEffect(() => {
@@ -515,14 +547,14 @@ export default function HotspotEditor({
       if (canvas) canvas.style.setProperty('cursor', 'crosshair', 'important');
 
       console.log('🎯 Cursor cambiado a CROSSHAIR (modo dibujo activo)');
-    } else if (!placementMode) {
-      // Restaurar cursor normal
+    } else if (!placementMode && !isPlacingLabel) {
+      // Restaurar cursor normal solo si no estamos en ningún modo de placement
       container.style.cursor = 'grab';
       if (canvas) canvas.style.cursor = 'grab';
 
       console.log('👆 Cursor restaurado a GRAB');
     }
-  }, [isDrawingPolygon, placementMode]);
+  }, [isDrawingPolygon, placementMode, isPlacingLabel]);
 
   // Event listener para captura de clicks de polígono
   useEffect(() => {
@@ -874,33 +906,71 @@ export default function HotspotEditor({
       // ✅ Actualizar estado con polígonos de la vista actual
       setCurrentViewPolygons(data);
 
-      // Renderizar cada polígono guardado
+      // Renderizar cada polígono o label guardado
       data.forEach((polygon) => {
         try {
-          console.log(`📐 [Editor] Agregando polígono ${polygon.id} a la vista...`);
+          // 🏷️ DETECTAR SI ES TEXT LABEL
+          if (isTextLabel(polygon)) {
+            const labelData = getLabelMetadata(polygon);
+            if (!labelData || !labelData.position) {
+              console.warn(`⚠️ Label ${polygon.id} tiene metadata inválida`);
+              return;
+            }
 
-          markersPluginRef.current.addMarker({
-            id: `saved-polygon-${polygon.id}`,
-            polygon: polygon.points,
-            svgStyle: {
-              // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
-              fill: 'rgba(255, 255, 255, 0.15)', // Relleno más visible en editor
-              stroke: 'rgba(255, 255, 255, 0.9)', // Borde blanco brillante
-              strokeWidth: '2px', // Línea fina arquitectónica
-              filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))', // Glow sutil
-              strokeLinejoin: 'miter', // Esquinas precisas
-              strokeLinecap: 'square', // Terminaciones cuadradas
-            },
-            tooltip: {
-              content: polygon.name || `Polígono ${polygon.id}`,
-              position: 'bottom center',
-            },
-            listOnly: false,
-            visible: polygon.visible,
-          });
-          console.log(`✅ Polígono ${polygon.id} renderizado:`, polygon.name);
+            console.log(`🏷️ [Editor] Agregando text label: "${labelData.text}"`);
+
+            markersPluginRef.current.addMarker({
+              id: `saved-polygon-${polygon.id}`,
+              position: {
+                yaw: labelData.position.yaw,
+                pitch: labelData.position.pitch,
+              },
+              html: `<div style="
+                background: transparent;
+                color: #FFFFFF;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6), 1px 1px 2px rgba(0,0,0,0.9);
+                cursor: default;
+                padding: 4px 8px;
+                border: 1px dashed rgba(147, 51, 234, 0.5);
+                border-radius: 4px;
+              ">${sanitizeHTML(labelData.text)}</div>`,
+              tooltip: {
+                content: `🏷️ Label: ${labelData.text}`,
+                position: 'bottom center',
+              },
+            });
+
+            console.log(`✅ Label ${polygon.id} renderizado: "${labelData.text}"`);
+          } else {
+            // ===== RENDERIZAR POLÍGONO REGULAR =====
+            console.log(`📐 [Editor] Agregando polígono ${polygon.id} a la vista...`);
+
+            markersPluginRef.current.addMarker({
+              id: `saved-polygon-${polygon.id}`,
+              polygon: polygon.points,
+              svgStyle: {
+                // ✨ ARCHITECTURAL WHITE: Estilo minimalista forzado (ignora color de BD)
+                fill: 'rgba(255, 255, 255, 0.15)', // Relleno más visible en editor
+                stroke: 'rgba(255, 255, 255, 0.9)', // Borde blanco brillante
+                strokeWidth: '2px', // Línea fina arquitectónica
+                filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))', // Glow sutil
+                strokeLinejoin: 'miter', // Esquinas precisas
+                strokeLinecap: 'square', // Terminaciones cuadradas
+              },
+              tooltip: {
+                content: polygon.name || `Polígono ${polygon.id}`,
+                position: 'bottom center',
+              },
+              listOnly: false,
+              visible: polygon.visible,
+            });
+            console.log(`✅ Polígono ${polygon.id} renderizado:`, polygon.name);
+          }
         } catch (renderError) {
-          console.error(`Error renderizando polígono ${polygon.id}:`, renderError);
+          console.error(`Error renderizando polígono/label ${polygon.id}:`, renderError);
         }
       });
 
@@ -1183,6 +1253,53 @@ export default function HotspotEditor({
     } else if (e.key === 'Escape') {
       e.preventDefault();
       handleCancelEditViewName();
+    }
+  };
+
+  // 🏷️ Guardar text label
+  const handleSaveLabel = async () => {
+    if (!labelText.trim()) {
+      alert('Por favor ingresa un texto para la etiqueta');
+      return;
+    }
+
+    if (!tempLabelPosition) {
+      alert('Error: No se detectó la posición de la etiqueta');
+      return;
+    }
+
+    setSavingLabel(true);
+
+    try {
+      const result = await createTextLabel({
+        terrenoId: terrainId,
+        panoramaIndex: currentImageIndex,
+        yaw: tempLabelPosition.yaw,
+        pitch: tempLabelPosition.pitch,
+        text: labelText,
+        fontSize: 14,
+        color: '#FFFFFF',
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      console.log('✅ Label guardado exitosamente:', result.data);
+      alert(`✅ Etiqueta "${labelText}" guardada exitosamente`);
+
+      // Agregar el label al estado de polígonos actuales para mostrarlo inmediatamente
+      setCurrentViewPolygons((prev) => [...prev, result.data]);
+
+      // Limpiar estado
+      setLabelText('');
+      setTempLabelPosition(null);
+      setShowLabelModal(false);
+    } catch (error) {
+      console.error('❌ Error al guardar label:', error);
+      alert(`Error al guardar etiqueta: ${error.message}`);
+    } finally {
+      setSavingLabel(false);
     }
   };
 
@@ -1776,9 +1893,22 @@ export default function HotspotEditor({
           <button
             onClick={handleNewHotspotClick}
             disabled={placementMode || isLoading || isSaving}
-            className="btn-primary w-full mb-6 py-3"
+            className="btn-primary w-full mb-3 py-3"
           >
             ➕ Nuevo Hotspot
+          </button>
+
+          <button
+            onClick={() => {
+              setIsPlacingLabel(true);
+              setPlacementMode(false);
+              placementModeRef.current = false;
+            }}
+            disabled={isPlacingLabel || placementMode || isLoading || isSaving}
+            className="w-full mb-6 py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            <span>🏷️</span>
+            {isPlacingLabel ? 'Haz click para colocar...' : 'Añadir Etiqueta de Texto'}
           </button>
 
           <div className="flex-1">
@@ -2671,11 +2801,10 @@ export default function HotspotEditor({
                   >
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: '13px', color: 'white', fontWeight: '500', marginBottom: '4px' }}>
-                        {polygon.name || `Polígono ${polygon.id}`}
+                        {isTextLabel(polygon) ? '🏷️' : '📐'} {polygon.name || `Polígono ${polygon.id}`}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#9ca3af' }}>
-                        {polygon.points?.length || 0} puntos
-                        {polygon.description && ` • ${polygon.description}`}
+                      <div style={{ fontSize: '11px', color: isTextLabel(polygon) ? '#c084fc' : '#9ca3af' }}>
+                        {isTextLabel(polygon) ? 'Etiqueta de texto' : `${polygon.points?.length || 0} puntos`}
                       </div>
                     </div>
                     <button
@@ -3506,6 +3635,32 @@ export default function HotspotEditor({
             </div>
           )}
 
+          {/* 🏷️ Texto de ayuda en modo label placement */}
+          {isPlacingLabel && (
+            <div
+              style={{
+                position: 'fixed',
+                top: '70%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 999,
+                padding: '12px 24px',
+                background: 'rgba(147, 51, 234, 0.9)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: '600',
+                textAlign: 'center',
+                boxShadow: '0 4px 12px rgba(147,51,234,0.5)',
+                pointerEvents: 'none',
+              }}
+            >
+              🏷️ Haz click donde quieres colocar la etiqueta<br />
+              <span style={{ fontSize: '12px', opacity: 0.9 }}>El texto será visible en el visor público</span>
+            </div>
+          )}
+
           {/* Bottom Sheet con formulario de hotspot (sin cambios) */}
           <MobileBottomSheet
             isOpen={showMobileForm}
@@ -3545,6 +3700,120 @@ export default function HotspotEditor({
             }
           `}</style>
         </>
+      )}
+
+      {/* 🏷️ MODAL TEXT LABEL: Introducir texto de la etiqueta (DESKTOP & MOBILE) */}
+      {showLabelModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '20px',
+          }}
+          onClick={() => {
+            setShowLabelModal(false);
+            setLabelText('');
+            setTempLabelPosition(null);
+          }}
+        >
+          <div
+            style={{
+              background: '#1f2937',
+              borderRadius: '16px',
+              padding: '32px',
+              maxWidth: '500px',
+              width: '100%',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: 'white' }}>
+              🏷️ Nueva Etiqueta de Texto
+            </h3>
+            <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '24px' }}>
+              Introduce el texto que aparecerá en el visor 360°
+            </p>
+
+            <input
+              type="text"
+              value={labelText}
+              onChange={(e) => setLabelText(e.target.value)}
+              placeholder="Ej: Hacia El Tuito"
+              maxLength={50}
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                fontSize: '16px',
+                border: '2px solid #374151',
+                borderRadius: '8px',
+                background: '#111827',
+                color: 'white',
+                marginBottom: '24px',
+                outline: 'none',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#9333ea';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#374151';
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && labelText.trim()) {
+                  handleSaveLabel();
+                }
+              }}
+            />
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => {
+                  setShowLabelModal(false);
+                  setLabelText('');
+                  setTempLabelPosition(null);
+                }}
+                disabled={savingLabel}
+                style={{
+                  flex: 1,
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  border: '2px solid #374151',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  color: '#9ca3af',
+                  cursor: savingLabel ? 'not-allowed' : 'pointer',
+                  opacity: savingLabel ? 0.5 : 1,
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveLabel}
+                disabled={!labelText.trim() || savingLabel}
+                style={{
+                  flex: 1,
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  border: 'none',
+                  borderRadius: '8px',
+                  background: !labelText.trim() || savingLabel ? '#4b5563' : '#9333ea',
+                  color: 'white',
+                  cursor: !labelText.trim() || savingLabel ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {savingLabel ? 'Guardando...' : 'Guardar Etiqueta'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
