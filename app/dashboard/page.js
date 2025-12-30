@@ -1643,7 +1643,7 @@ export default function Dashboard() {
                         {/* Actions - Reorganizadas para mejor UX */}
                         <div className="space-y-2">
                           {/* Acciones Principales - Más grandes y destacadas */}
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                             <Link
                               href={`/dashboard/edit-terrain/${terreno.id}`}
                               data-tutorial={
@@ -1671,6 +1671,18 @@ export default function Dashboard() {
                               <BarChart3 className="w-4 h-4" />
                               <span className="hidden xl:inline">Analytics</span>
                             </Link>
+                            <button
+                              onClick={() => {
+                                const tourUrl = `${window.location.origin}/terreno/${terreno.slug}`;
+                                const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(tourUrl)}`;
+                                window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+                              }}
+                              className="inline-flex items-center justify-center gap-1 px-3 py-3 bg-gradient-to-r from-[#1877F2] to-[#0C63D4] hover:from-[#0C63D4] hover:to-[#044FB8] text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
+                              title="Compartir en Facebook"
+                            >
+                              <Share2 className="w-4 h-4" />
+                              <span className="hidden xl:inline">Publicar</span>
+                            </button>
                           </div>
 
                           {/* Acciones Secundarias */}
