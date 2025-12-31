@@ -1560,7 +1560,7 @@ export default function HotspotEditor({
         style={{ display: 'flex', height: '100vh', backgroundColor: '#111827' }}
       >
         {/* Visor 360° */}
-        <div style={{ flex: 1, position: 'relative' }}>
+        <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
                     {/* Botón de regreso al dashboard */}
           <button
             onClick={handleBackToDashboard}
@@ -1673,198 +1673,238 @@ export default function HotspotEditor({
               </button>
             </div>
           )}
-          <div ref={viewerRef} style={{ width: '100%', height: '100%' }} />
-          {imageUrls.length > 1 && !isMobile && (
-            <div className="viewer-controls">
-              {imageUrls.map((imageUrl, index) => (
-                <div
-                  key={index}
-                  style={{
-                    position: 'relative',
-                    display: 'inline-block',
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      // No cambiar vista si estamos editando el nombre
-                      if (editingViewIndex !== index) {
-                        setCurrentImageIndex(index);
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      // Evitar que el espacio active el botón cuando estamos editando
-                      if (editingViewIndex === index && e.key === ' ') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                    disabled={isLoading || isSaving || autoSaving}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '10px 12px',
-                      background:
-                        currentImageIndex === index
-                          ? 'rgba(102, 126, 234, 0.95)'
-                          : 'rgba(31, 41, 55, 0.9)',
-                      color: '#fff',
-                      border:
-                        currentImageIndex === index
-                          ? '2px solid #667eea'
-                          : '2px solid rgba(255,255,255,0.2)',
-                      borderRadius: '12px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      fontWeight: '600',
-                      fontSize: '13px',
-                      boxShadow:
-                        currentImageIndex === index
-                          ? '0 4px 15px rgba(102, 126, 234, 0.5)'
-                          : '0 2px 8px rgba(0,0,0,0.3)',
-                      opacity: isLoading || isSaving || autoSaving ? 0.5 : 1,
-                    }}
-                    onMouseEnter={(e) => {
-                      if (currentImageIndex !== index) {
-                        e.currentTarget.style.background =
-                          'rgba(55, 65, 81, 0.95)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (currentImageIndex !== index) {
-                        e.currentTarget.style.background =
-                          'rgba(31, 41, 55, 0.9)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                      }
-                    }}
+          <div ref={viewerRef} style={{ width: '100%', flex: 1 }} />
+
+          {/* Footer con selector de vistas - Solo desktop */}
+          {!isMobile && imageUrls.length > 1 && (() => {
+            // 🎯 ADAPTIVE LAYOUT: Solo mostrar scroll si hay más de 15 vistas
+            const needsScroll = imageUrls.length > 15;
+
+            return (
+              <div style={{
+                background: '#1f2937',
+                borderTop: '2px solid #374151',
+                padding: '20px 24px 16px 24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '16px',
+                maxHeight: '150px',
+                overflow: 'visible',
+                position: 'relative',
+                zIndex: 10,
+              }}>
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  // Scroll solo si hay muchas vistas
+                  overflowX: needsScroll ? 'auto' : 'visible',
+                  overflowY: 'visible',
+                  // Máximo ancho adaptativo (considera panel lateral de 384px)
+                  maxWidth: needsScroll ? 'calc(100vw - 450px)' : 'none',
+                  paddingBottom: '8px',
+                  paddingTop: '4px',
+                  // Mejora la funcionalidad del scroll
+                  WebkitOverflowScrolling: 'touch',
+                }}>
+                {imageUrls.map((url, index) => (
+                  <div
+                    key={index}
+                    style={{ position: 'relative', flexShrink: 0 }}
                   >
-                    <img
-                      src={imageUrl}
-                      alt={viewNames[index] || `Vista ${index + 1}`}
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        objectFit: 'cover',
-                        borderRadius: '8px',
-                        border: '2px solid rgba(255,255,255,0.3)',
+                    <div
+                      onClick={() => {
+                        if (!isLoading && !isSaving && editingViewIndex !== index) {
+                          console.log(`📸 [Footer] Cambiando a vista ${index + 1}`);
+                          setCurrentImageIndex(index);
+                        }
                       }}
-                    />
-                    {editingViewIndex === index ? (
-                      <input
-                        type="text"
-                        value={editingViewName}
-                        onChange={(e) => setEditingViewName(e.target.value)}
-                        onKeyDown={(e) => {
-                          e.stopPropagation(); // Evitar que el espacio cambie de vista
-                          handleViewNameKeyDown(e);
-                        }}
-                        onBlur={handleSaveViewName}
-                        autoFocus
-                        onClick={(e) => e.stopPropagation()}
-                        style={{
-                          width: '100%',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          border: '2px solid #667eea',
-                          background: 'white',
-                          color: '#1f2937',
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          textAlign: 'center',
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                        }}
-                      >
-                        <span>{viewNames[index] || `Vista ${index + 1}`}</span>
-                        {onRenameView && (
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (!isLoading && !isSaving && !autoSaving) {
-                                handleStartEditingViewName(index);
-                              }
-                            }}
-                            title="Renombrar vista"
-                            style={{
-                              color: 'rgba(255,255,255,0.6)',
-                              cursor:
-                                isLoading || isSaving || autoSaving
-                                  ? 'not-allowed'
-                                  : 'pointer',
-                              padding: '2px',
-                              fontSize: '12px',
-                              transition: 'color 0.2s ease',
-                              opacity:
-                                isLoading || isSaving || autoSaving ? 0.5 : 1,
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!isLoading && !isSaving && !autoSaving) {
-                                e.target.style.color = '#667eea';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = 'rgba(255,255,255,0.6)';
-                            }}
-                          >
-                            ✏️
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </button>
-                  {imageUrls.length > 1 && onDeleteView && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteView(index);
-                      }}
-                      disabled={isLoading || isSaving || autoSaving}
-                      title={`Eliminar Vista ${index + 1}`}
                       style={{
-                        position: 'absolute',
-                        top: '-6px',
-                        right: '-6px',
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        background: '#ef4444',
-                        color: 'white',
-                        border: '2px solid white',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: 0,
-                        lineHeight: 1,
-                        transition: 'all 0.2s ease',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                        position: 'relative',
+                        cursor: isLoading || isSaving ? 'not-allowed' : 'pointer',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        border: currentImageIndex === index
+                          ? '3px solid #3b82f6'
+                          : '2px solid rgba(255,255,255,0.2)',
+                        transition: 'all 0.25s ease',
+                        width: '100px',
+                        height: '100px',
+                        boxShadow: currentImageIndex === index
+                          ? '0 0 0 4px rgba(59, 130, 246, 0.2), 0 4px 12px rgba(0,0,0,0.4)'
+                          : '0 2px 8px rgba(0,0,0,0.3)',
+                        opacity: isLoading || isSaving ? 0.5 : 1,
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.background = '#dc2626';
-                        e.target.style.transform = 'scale(1.15)';
+                        if (currentImageIndex !== index && !isLoading && !isSaving) {
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
+                          e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.5)';
+                        }
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.background = '#ef4444';
-                        e.target.style.transform = 'scale(1)';
+                        if (currentImageIndex !== index) {
+                          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                        }
                       }}
                     >
-                      ✕
-                    </button>
-                  )}
+                      <img
+                        src={url}
+                        alt={viewNames[index] || `Vista ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '0',
+                        left: '0',
+                        right: '0',
+                        background: currentImageIndex === index
+                          ? 'linear-gradient(to top, rgba(59, 130, 246, 0.95), rgba(59, 130, 246, 0.6))'
+                          : 'linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4))',
+                        padding: editingViewIndex === index ? '8px 6px' : '6px',
+                        fontSize: '11px',
+                        color: 'white',
+                        textAlign: 'center',
+                        fontWeight: '700',
+                        letterSpacing: '0.5px',
+                      }}>
+                        {editingViewIndex === index ? (
+                          <input
+                            type="text"
+                            value={editingViewName}
+                            onChange={(e) => setEditingViewName(e.target.value)}
+                            onKeyDown={(e) => {
+                              e.stopPropagation();
+                              handleViewNameKeyDown(e);
+                            }}
+                            onBlur={handleSaveViewName}
+                            onClick={(e) => e.stopPropagation()}
+                            autoFocus
+                            style={{
+                              width: '100%',
+                              padding: '3px 6px',
+                              borderRadius: '4px',
+                              border: '1px solid #3b82f6',
+                              background: 'white',
+                              color: '#1f2937',
+                              fontSize: '10px',
+                              fontWeight: '600',
+                              textAlign: 'center',
+                            }}
+                          />
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                            <span>#{index + 1}</span>
+                            {onRenameView && (
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!isLoading && !isSaving && !autoSaving) {
+                                    handleStartEditingViewName(index);
+                                  }
+                                }}
+                                title="Renombrar vista"
+                                style={{
+                                  cursor: isLoading || isSaving || autoSaving ? 'not-allowed' : 'pointer',
+                                  fontSize: '10px',
+                                  opacity: isLoading || isSaving || autoSaving ? 0.5 : 0.7,
+                                  transition: 'opacity 0.2s',
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (!isLoading && !isSaving && !autoSaving) {
+                                    e.currentTarget.style.opacity = '1';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.opacity = '0.7';
+                                }}
+                              >
+                                ✏️
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      {currentImageIndex === index && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '6px',
+                          right: '6px',
+                          background: '#3b82f6',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '14px',
+                          border: '2px solid white',
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                        }}>
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                    {/* Botón eliminar vista */}
+                    {imageUrls.length > 1 && onDeleteView && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteView(index);
+                        }}
+                        disabled={isLoading || isSaving || autoSaving}
+                        title={`Eliminar Vista ${index + 1}`}
+                        style={{
+                          position: 'absolute',
+                          top: '-8px',
+                          left: '-8px',
+                          width: '26px',
+                          height: '26px',
+                          borderRadius: '50%',
+                          background: '#ef4444',
+                          color: 'white',
+                          border: '2px solid white',
+                          fontSize: '13px',
+                          fontWeight: 'bold',
+                          cursor: isLoading || isSaving || autoSaving ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 0,
+                          lineHeight: 1,
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 3px 10px rgba(0,0,0,0.6)',
+                          opacity: isLoading || isSaving || autoSaving ? 0.5 : 1,
+                          zIndex: 50,
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isLoading && !isSaving && !autoSaving) {
+                            e.currentTarget.style.background = '#dc2626';
+                            e.currentTarget.style.transform = 'scale(1.25)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.7)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '#ef4444';
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.6)';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Panel lateral - Solo en desktop */}
