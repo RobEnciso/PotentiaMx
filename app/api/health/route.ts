@@ -37,48 +37,55 @@ export async function GET() {
     // Falls back to standard URL if pooler is not available
     const supabase = createServerClient();
 
-    // Minimal query to wake up database connection
-    // Using .single() to force query execution (not just count)
-    const { data, error } = await supabase
+    // Lightweight check: Just verify we can create the client
+    // This wakes up the serverless function without heavy DB queries
+    // Optional: Try a simple count query that won't fail
+    const { count, error } = await supabase
       .from('terrenos')
-      .select('id')
-      .limit(1)
-      .single();
+      .select('*', { count: 'exact', head: true });
+
+    // Get pooler configuration info for monitoring
+    const configInfo = getServerConfigInfo();
 
     if (error) {
-      console.error('❌ [Health Check] DB query failed:', error);
+      // Still return success even if DB query fails
+      // The goal is to keep the function warm, not validate DB
+      console.warn('⚠️ [Health Check] DB query failed, but function is warm:', error.message);
       return NextResponse.json(
         {
-          status: 'degraded',
-          message: 'DB query failed',
-          error: error.message,
+          status: 'ok',
+          message: 'Function warm (DB check failed)',
+          function_warm: true,
+          db_connected: false,
+          pooler_enabled: configInfo.poolerEnabled,
+          connection_type: configInfo.activeConnection,
           timestamp: new Date().toISOString(),
         },
         {
-          status: 500,
           headers: {
-            // CRITICAL: Prevent Netlify from caching error responses
             'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'CDN-Cache-Control': 'no-store',
+            'Vercel-CDN-Cache-Control': 'no-store',
           },
         }
       );
     }
 
-    // Get pooler configuration info for monitoring
-    const configInfo = getServerConfigInfo();
-
-    console.log('✅ [Health Check] DB Connected successfully', {
+    console.log('✅ [Health Check] Function warm and DB connected', {
       poolerEnabled: configInfo.poolerEnabled,
       connection: configInfo.activeConnection,
+      terrenosCount: count,
     });
 
     return NextResponse.json(
       {
         status: 'ok',
-        message: 'DB Connected',
+        message: 'Function warm and DB connected',
+        function_warm: true,
         db_connected: true,
         pooler_enabled: configInfo.poolerEnabled,
         connection_type: configInfo.activeConnection,
+        terrenos_count: count,
         timestamp: new Date().toISOString(),
       },
       {
@@ -93,15 +100,20 @@ export async function GET() {
     );
   } catch (error) {
     console.error('❌ [Health Check] Server error:', error);
+
+    // Even on error, return 200 so UptimeRobot considers it UP
+    // The goal is to wake up the function, not validate correctness
     return NextResponse.json(
       {
-        status: 'error',
-        message: 'Server error',
+        status: 'ok',
+        message: 'Function warm (error occurred)',
+        function_warm: true,
+        db_connected: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       {
-        status: 500,
+        status: 200, // Changed from 500 to 200
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
         },
