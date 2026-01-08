@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabaseClient';
+import { createServerClient } from '@/lib/supabaseServer';
 
 // Types for PostHog API responses
 interface PostHogEvent {
@@ -67,7 +67,8 @@ export async function GET(
     }
 
     // Get terrain data from Supabase to get the ID
-    const supabase = createClient();
+    // Uses server-side client with Connection Pooler for better performance
+    const supabase = createServerClient();
     const { data: terrain, error: terrainError } = await supabase
       .from('terrenos')
       .select('id, title')
