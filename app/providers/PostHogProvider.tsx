@@ -3,14 +3,15 @@
 import { Suspense, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import posthog from 'posthog-js';
+import { PostHogProvider as PHProvider, usePostHog } from 'posthog-js/react';
 
 function PostHogPageView() {
+  const posthog = usePostHog();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Track pageviews on route change
-    if (pathname && posthog.__loaded) {
+    if (pathname && posthog) {
       let url = window.origin + pathname;
       if (searchParams && searchParams.toString()) {
         url = url + `?${searchParams.toString()}`;
@@ -19,21 +20,18 @@ function PostHogPageView() {
         $current_url: url,
       });
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, posthog]);
 
   return null;
 }
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // ⚡ MOBILE PERFORMANCE OPTIMIZATION: Init PostHog after window.load
-    // This ensures analytics never block critical rendering, especially on slow mobile networks
-    // Desktop: ~1-2s delay, Mobile 3G: ~5-8s delay (but page is already interactive)
+    // Init PostHog after window.load to avoid blocking critical rendering on mobile
     const initPostHog = () => {
       if (typeof window !== 'undefined') {
         const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 
-        // Skip initialization if no key or in development without key
         if (!posthogKey) {
           if (process.env.NODE_ENV === 'development') {
             console.log('📊 PostHog: No API key found, analytics disabled');
@@ -42,36 +40,33 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         }
 
         posthog.init(posthogKey, {
-          api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-          loaded: (posthog) => {
+          api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+          loaded: () => {
             if (process.env.NODE_ENV === 'development') {
-              console.log('📊 PostHog initialized after window.load (mobile-optimized)');
+              console.log('📊 PostHog initialized');
             }
           },
-          capture_pageview: false, // Manual pageview tracking
-          capture_pageleave: true, // Track when users leave
-          autocapture: false, // Manual event tracking only
+          capture_pageview: false,
+          capture_pageleave: true,
+          autocapture: false,
         });
       }
     };
 
-    // Wait for full page load (all resources including images)
     if (document.readyState === 'complete') {
-      // Already loaded, init immediately
       initPostHog();
     } else {
-      // Wait for window.load event
       window.addEventListener('load', initPostHog);
       return () => window.removeEventListener('load', initPostHog);
     }
   }, []);
 
   return (
-    <>
+    <PHProvider client={posthog}>
       <Suspense fallback={null}>
         <PostHogPageView />
       </Suspense>
       {children}
-    </>
+    </PHProvider>
   );
 }
