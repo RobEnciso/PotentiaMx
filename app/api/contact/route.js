@@ -104,7 +104,7 @@ export async function POST(request) {
 
         /* CÓDIGO ANTERIOR - AHORA ESTÁ EN lib/resend.js
         const { data: emailData, error: emailError } = await resend.emails.send({
-            from: 'Potentia MX <hola@potentiamx.com>',
+            from: 'Potentia MX <contacto@potentiamx.com>',
             to: contactEmail,
             replyTo: email,
             subject: `🏡 Nueva solicitud: ${terrenoTitle}`,

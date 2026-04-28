@@ -299,7 +299,7 @@ function PhotoSphereViewer({
   const showWhatsApp = contactType === 'casual' || contactType === 'both';
   const showEmailForm = contactType === 'formal' || contactType === 'both';
   const whatsappNumber = terreno?.contact_phone || '523221234567';
-  const contactEmail = terreno?.contact_email || 'info@potentia.mx';
+  const contactEmail = terreno?.contact_email || 'contacto@potentiamx.com';
 
   // Función para compartir
   const handleShare = () => {

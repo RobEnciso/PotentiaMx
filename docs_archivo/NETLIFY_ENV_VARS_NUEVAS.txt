@@ -1,0 +1,56 @@
+===========================================
+VARIABLES DE ENTORNO PARA NETLIFY
+Copiar y pegar en Netlify Dashboard
+===========================================
+
+Variable 1:
+Key: NEXT_PUBLIC_SUPABASE_URL
+Value: https://tuhojmupstisctgaepsc.supabase.co
+
+---
+
+Variable 2:
+Key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aG9qbXVwc3Rpc2N0Z2FlcHNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNTU4NzcsImV4cCI6MjA4MDUxNTg3N30.XpXEOMtI-IOAnhgmqhwjztpOOPxHLtLRs_5PLdqFTwk
+
+---
+
+Variable 3:
+Key: SUPABASE_SERVICE_ROLE_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aG9qbXVwc3Rpc2N0Z2FlcHNjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTE1NTg3NywiZXhwIjoyMDgwNTE1ODc3fQ.34-kdCAHijbriAxDDUApzhTxLu6_3fAP7nefMawVAdE
+
+---
+
+Variable 4:
+Key: RESEND_API_KEY
+Value: re_FSKyCBuy_NKaNXs24hQcmBnH54w3zjkFc
+
+---
+
+Variable 5:
+Key: POSTHOG_PERSONAL_API_KEY
+Value: [REDACTED - regenera esta key en app.posthog.com]
+
+---
+
+Variable 6 (si no existe, agrégala):
+Key: NEXT_PUBLIC_POSTHOG_KEY
+Value: phc_zh5ppYkGMYHAhE6UQpKRow87AIKZZKBCpGfwpP0TkCR
+
+---
+
+Variable 7 (si no existe, agrégala):
+Key: NEXT_PUBLIC_POSTHOG_HOST
+Value: https://us.i.posthog.com
+
+---
+
+Variable 8 (si no existe, agrégala):
+Key: NEXT_PUBLIC_POSTHOG_PROJECT_ID
+Value: 253501
+
+===========================================
+IMPORTANTE:
+- Marca todas como "Production" y "Deploy previews"
+- Después de actualizar, haz "Trigger deploy" → "Deploy site"
+===========================================

@@ -32,7 +32,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="mailto:hola@potentiamx.com"
+                href="mailto:contacto@potentiamx.com"
                 className="text-gray-400 hover:text-teal-400 transition-colors"
                 title="Email"
               >
@@ -150,10 +150,10 @@ export default function Footer() {
               <p className="text-gray-400">
                 <strong>Email:</strong>{' '}
                 <a
-                  href="mailto:hola@potentiamx.com"
+                  href="mailto:contacto@potentiamx.com"
                   className="hover:text-teal-400 transition-colors"
                 >
-                  hola@potentiamx.com
+                  contacto@potentiamx.com
                 </a>
               </p>
               <p className="text-gray-400">

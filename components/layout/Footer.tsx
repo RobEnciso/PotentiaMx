@@ -84,10 +84,10 @@ export default function Footer() {
               <div className="flex items-start gap-2 text-sm">
                 <Mail className="w-4 h-4 text-[var(--ocean)] flex-shrink-0 mt-1" />
                 <a
-                  href="mailto:hola@potentiamx.com"
+                  href="mailto:contacto@potentiamx.com"
                   className="text-[var(--gray-500)] hover:text-[var(--ocean)] transition-colors duration-[var(--transition-fast)]"
                 >
-                  hola@potentiamx.com
+                  contacto@potentiamx.com
                 </a>
               </div>
             </div>

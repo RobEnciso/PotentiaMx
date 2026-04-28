@@ -1,0 +1,2277 @@
+
+> potentia-app-cms@0.1.0 build
+> next build --turbopack
+
+   ▲ Next.js 15.5.7 (Turbopack)
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 100ms
+ ✓ Compiled successfully in 2.5s
+   Linting and checking validity of types ...
+
+./app/api/analytics/[slug]/route.ts
+50:52  Warning: Insert `,`  prettier/prettier
+59:24  Warning: Insert `⏎·····`  prettier/prettier
+65:24  Warning: Insert `,`  prettier/prettier
+78:32  Warning: Replace `{·error:·'Property·not·found'·},·{·status:·404·}` with `⏎········{·error:·'Property·not·found'·},⏎········{·status:·404·},⏎······`  prettier/prettier
+90:41  Warning: Replace `now.getTime()·-·days·*·24·*·60·*·60·*·1000` with `⏎······now.getTime()·-·days·*·24·*·60·*·60·*·1000,⏎····`  prettier/prettier
+94:42  Warning: Replace `previousPeriodEnd.getTime()·-·days·*·24·*·60·*·60·*·1000` with `⏎······previousPeriodEnd.getTime()·-·days·*·24·*·60·*·60·*·1000,⏎····`  prettier/prettier
+126:20  Warning: Insert `,`  prettier/prettier
+142:18  Warning: Insert `,`  prettier/prettier
+158:20  Warning: Insert `,`  prettier/prettier
+162:20  Warning: Insert `,`  prettier/prettier
+166:20  Warning: Insert `,`  prettier/prettier
+170:20  Warning: Insert `,`  prettier/prettier
+195:32  Warning: Replace `events:·PostHogEvent[],·start:·Date,·end:·Date` with `⏎······events:·PostHogEvent[],⏎······start:·Date,⏎······end:·Date,⏎····`  prettier/prettier
+202:49  Warning: Replace `pageviews,·currentPeriodStart,·currentPeriodEnd` with `⏎······pageviews,⏎······currentPeriodStart,⏎······currentPeriodEnd,⏎····`  prettier/prettier
+203:50  Warning: Replace `sceneViews,·currentPeriodStart,·currentPeriodEnd` with `⏎······sceneViews,⏎······currentPeriodStart,⏎······currentPeriodEnd,⏎····`  prettier/prettier
+204:50  Warning: Replace `sceneTimes,·currentPeriodStart,·currentPeriodEnd` with `⏎······sceneTimes,⏎······currentPeriodStart,⏎······currentPeriodEnd,⏎····`  prettier/prettier
+208:23  Warning: Insert `,`  prettier/prettier
+213:23  Warning: Insert `,`  prettier/prettier
+217:49  Warning: Replace `pageviews,·previousPeriodStart,·previousPeriodEnd` with `⏎······pageviews,⏎······previousPeriodStart,⏎······previousPeriodEnd,⏎····`  prettier/prettier
+218:50  Warning: Replace `sceneTimes,·previousPeriodStart,·previousPeriodEnd` with `⏎······sceneTimes,⏎······previousPeriodStart,⏎······previousPeriodEnd,⏎····`  prettier/prettier
+222:24  Warning: Insert `,`  prettier/prettier
+227:24  Warning: Insert `,`  prettier/prettier
+236:72  Warning: Insert `,`  prettier/prettier
+237:8  Warning: Insert `,`  prettier/prettier
+244:8  Warning: Insert `,`  prettier/prettier
+247:36  Warning: Replace `·?·totalTimeSpent·/·filteredSceneTimes.length` with `⏎········?·totalTimeSpent·/·filteredSceneTimes.length⏎·······`  prettier/prettier
+255:72  Warning: Insert `,`  prettier/prettier
+256:8  Warning: Insert `,`  prettier/prettier
+264:35  Warning: Replace `string,·{·views:·number;·visitors:·Set<string>·}` with `⏎······string,⏎······{·views:·number;·visitors:·Set<string>·}⏎····`  prettier/prettier
+320:42  Warning: Replace `·views:·0,·totalTime:·0,·timeCount:·0` with `⏎··········views:·0,⏎··········totalTime:·0,⏎··········timeCount:·0,⏎·······`  prettier/prettier
+330:75  Warning: Insert `⏎·······`  prettier/prettier
+333:42  Warning: Replace `·views:·0,·totalTime:·0,·timeCount:·0` with `⏎··········views:·0,⏎··········totalTime:·0,⏎··········timeCount:·0,⏎·······`  prettier/prettier
+346:17  Warning: Insert `⏎·········`  prettier/prettier
+362:29  Warning: Replace `current:·number,·previous:·number` with `⏎······current:·number,⏎······previous:·number,⏎····`  prettier/prettier
+378:8  Warning: Insert `,`  prettier/prettier
+389:72  Warning: Insert `,`  prettier/prettier
+390:8  Warning: Insert `,`  prettier/prettier
+432:22  Warning: Insert `,`  prettier/prettier
+
+./app/api/health/route.ts
+39:24  Warning: Insert `,`  prettier/prettier
+57:22  Warning: Insert `,`  prettier/prettier
+
+./app/dashboard/add-terrain/page.js
+189:28  Warning: Replace `'🔄·Optimizando·imagen·de·portada·para·redes·sociales...'` with `⏎······'🔄·Optimizando·imagen·de·portada·para·redes·sociales...',⏎····`  prettier/prettier
+207:19  Warning: Replace ``Original:·${file.name},·${(file.size·/·1024·/·1024).toFixed(2)}MB`` with `⏎········`Original:·${file.name},·${(file.size·/·1024·/·1024).toFixed(2)}MB`,⏎······`  prettier/prettier
+211:19  Warning: Replace ``✅·Optimizada:·${compressedFile.name},·${(compressedFile.size·/·1024·/·1024).toFixed(2)}MB`` with `⏎········`✅·Optimizada:·${compressedFile.name},·${(compressedFile.size·/·1024·/·1024).toFixed(2)}MB`,⏎······`  prettier/prettier
+256:27  Warning: Replace `'📤·Subiendo·imagen·de·portada·optimizada·para·redes·sociales...'` with `⏎··········'📤·Subiendo·imagen·de·portada·optimizada·para·redes·sociales...',⏎········`  prettier/prettier
+303:28  Warning: Insert `⏎·······`  prettier/prettier
+304:1  Warning: Replace `········` with `··········`  prettier/prettier
+305:1  Warning: Insert `··`  prettier/prettier
+306:1  Warning: Replace `········` with `··········`  prettier/prettier
+307:1  Warning: Insert `··`  prettier/prettier
+308:1  Warning: Replace `······})·+·'-'·+` with `········})·+⏎········'-'·+⏎·······`  prettier/prettier
+788:76  Warning: Delete `·(puede`  prettier/prettier
+789:20  Warning: Insert `·(puede`  prettier/prettier
+
+./app/dashboard/analytics/[slug]/page.tsx
+183:58  Warning: Insert `,`  prettier/prettier
+186:11  Warning: Replace `·className={cn('w-12·h-12·rounded-lg·flex·items-center·justify-center·mb-4',·color)}` with `⏎········className={cn(⏎··········'w-12·h-12·rounded-lg·flex·items-center·justify-center·mb-4',⏎··········color,⏎········)}⏎······`  prettier/prettier
+199:20  Warning: Replace `<span·className="text-2xl·text-gray-500·ml-1">{suffix}</span>` with `(⏎··········<span·className="text-2xl·text-gray-500·ml-1">{suffix}</span>⏎········)`  prettier/prettier
+214:24  Warning: Replace `·?·'text-emerald-600'·:·trend·<·0·?·'text-red-600'·:·'text-gray-600'` with `⏎················?·'text-emerald-600'⏎················:·trend·<·0⏎··················?·'text-red-600'⏎··················:·'text-gray-600',`  prettier/prettier
+220:26  Warning: Replace `<span·className="text-xs·text-gray-500·ml-1">{trendLabel}</span>` with `(⏎············<span·className="text-xs·text-gray-500·ml-1">{trendLabel}</span>⏎··········)`  prettier/prettier
+239:69  Warning: Insert `⏎·······`  prettier/prettier
+260:76  Warning: Replace `null` with `⏎····null,⏎··`  prettier/prettier
+296:38  Warning: Replace ``/api/analytics/${slug}?timeRange=${timeRange}`` with `⏎··········`/api/analytics/${slug}?timeRange=${timeRange}`,⏎········`  prettier/prettier
+307:33  Warning: Replace `·?·error.message·:·'Error·al·cargar·los·datos·de·analytics'` with `⏎············?·error.message⏎············:·'Error·al·cargar·los·datos·de·analytics',`  prettier/prettier
+384:35  Warning: Insert `{'·'}⏎···················`  prettier/prettier
+406:58  Warning: Insert `,`  prettier/prettier
+417:58  Warning: Insert `,`  prettier/prettier
+428:58  Warning: Insert `,`  prettier/prettier
+449:76  Warning: Insert `⏎···············`  prettier/prettier
+483:35  Warning: Replace `·className={cn('w-6·h-6',·config.hotLeadsIconColor)}` with `⏎················className={cn('w-6·h-6',·config.hotLeadsIconColor)}⏎·············`  prettier/prettier
+523:40  Warning: Replace `Aún·no·hay·visitas·registradas·para·este·período` with `⏎··················Aún·no·hay·visitas·registradas·para·este·período⏎················`  prettier/prettier
+536:23  Warning: Replace `·dataKey="date"·stroke="#9ca3af"·style={{·fontSize:·'12px'·}}` with `⏎··················dataKey="date"⏎··················stroke="#9ca3af"⏎··················style={{·fontSize:·'12px'·}}⏎···············`  prettier/prettier
+570:35  Warning: Replace `·className={cn('w-5·h-5',·config.hotLeadsIconColor)}` with `⏎················className={cn('w-5·h-5',·config.hotLeadsIconColor)}⏎·············`  prettier/prettier
+573:55  Warning: Replace `{config.heatmapDescription}` with `⏎··············{config.heatmapDescription}⏎············`  prettier/prettier
+604:63  Warning: Replace `{scene.views}·vistas` with `⏎························{scene.views}·vistas⏎······················`  prettier/prettier
+617:77  Warning: Insert `,`  prettier/prettier
+623:79  Warning: Delete `·con{'·'}`  prettier/prettier
+624:24  Warning: Replace `·{scene.views}·vistas.·Úsala·en·tus·campañas·de` with `·con·{scene.views}·vistas.·Úsala·en·tus·campañas·de⏎·······················`  prettier/prettier
+
+./app/dashboard/edit-terrain/[id]/page.js
+169:22  Warning: Insert `⏎·········`  prettier/prettier
+170:11  Warning: Insert `··`  prettier/prettier
+171:1  Warning: Insert `··`  prettier/prettier
+172:1  Warning: Replace `··········` with `············`  prettier/prettier
+173:1  Warning: Insert `··`  prettier/prettier
+174:1  Warning: Replace `········})·+·'-'·+` with `··········})·+⏎··········'-'·+⏎·········`  prettier/prettier
+
+./app/dashboard/page.js
+190:6  Warning: React Hook useEffect has missing dependencies: 'ADMIN_EMAILS', 'loadPendingTerrenos', and 'loadSystemStats'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+604:19  Warning: Replace ``🗑️·Iniciando·eliminación·de·${orphanFiles.length}·archivos...`` with `⏎········`🗑️·Iniciando·eliminación·de·${orphanFiles.length}·archivos...`,⏎······`  prettier/prettier
+608:21  Warning: Replace ``Eliminando·lote·${Math.floor(i·/·batchSize)·+·1}:·${batch.length}·archivos`` with `⏎··········`Eliminando·lote·${Math.floor(i·/·batchSize)·+·1}:·${batch.length}·archivos`,⏎········`  prettier/prettier
+624:19  Warning: Replace ``📊·Resumen:·${deletedCount}·eliminados,·${errorCount}·fallaron`` with `⏎········`📊·Resumen:·${deletedCount}·eliminados,·${errorCount}·fallaron`,⏎······`  prettier/prettier
+1507:78  Warning: Insert `⏎···············`  prettier/prettier
+1509:1  Warning: Delete `··············`  prettier/prettier
+1660:66  Warning: Replace `Analytics` with `⏎································Analytics⏎······························`  prettier/prettier
+
+./app/layout.tsx
+50:17  Warning: Delete `⏎·····`  prettier/prettier
+
+./app/loading.tsx
+39:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'0ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'0ms'·}}⏎···········`  prettier/prettier
+40:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'150ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'150ms'·}}⏎···········`  prettier/prettier
+41:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'300ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'300ms'·}}⏎···········`  prettier/prettier
+
+./app/login/page.js
+41:43  Warning: Insert `⏎·······`  prettier/prettier
+42:9  Warning: Insert `··`  prettier/prettier
+43:1  Warning: Insert `··`  prettier/prettier
+44:1  Warning: Insert `··`  prettier/prettier
+64:16  Warning: Replace `'Error·inesperado·al·iniciar·sesión.·Por·favor·intenta·nuevamente.'` with `⏎········'Error·inesperado·al·iniciar·sesión.·Por·favor·intenta·nuevamente.',⏎······`  prettier/prettier
+285:22  Warning: Replace `·fillRule="evenodd"·d="M5·9V7a5·5·0·0110·0v2a2·2·0·012·2v5a2·2·0·01-2·2H5a2·2·0·01-2-2v-5a2·2·0·012-2zm8-2v2H7V7a3·3·0·016·0z"·clipRule="evenodd"` with `⏎··················fillRule="evenodd"⏎··················d="M5·9V7a5·5·0·0110·0v2a2·2·0·012·2v5a2·2·0·01-2·2H5a2·2·0·01-2-2v-5a2·2·0·012-2zm8-2v2H7V7a3·3·0·016·0z"⏎··················clipRule="evenodd"⏎···············`  prettier/prettier
+353:75  Warning: Replace `·Google,·debes·iniciar·sesión·con·el·botón·de·Google.·No` with `⏎························Google,·debes·iniciar·sesión·con·el·botón·de·Google.·No⏎·······················`  prettier/prettier
+
+./app/page.tsx
+18:4  Warning: Insert `,`  prettier/prettier
+36:4  Warning: Insert `,`  prettier/prettier
+43:20  Warning: Replace `<div·className="h-96·bg-gradient-to-b·from-white·to-gray-50"·aria-hidden="true"·/>` with `(⏎······<div⏎········className="h-96·bg-gradient-to-b·from-white·to-gray-50"⏎········aria-hidden="true"⏎······/>⏎····)`  prettier/prettier
+44:4  Warning: Insert `,`  prettier/prettier
+52:4  Warning: Insert `,`  prettier/prettier
+60:20  Warning: Replace `<div·className="h-screen·bg-gradient-to-b·from-white·to-gray-50"·aria-hidden="true"·/>` with `(⏎······<div⏎········className="h-screen·bg-gradient-to-b·from-white·to-gray-50"⏎········aria-hidden="true"⏎······/>⏎····)`  prettier/prettier
+61:4  Warning: Insert `,`  prettier/prettier
+69:4  Warning: Insert `,`  prettier/prettier
+77:20  Warning: Replace `<div·className="h-screen·bg-gradient-to-b·from-white·to-gray-50"·aria-hidden="true"·/>` with `(⏎······<div⏎········className="h-screen·bg-gradient-to-b·from-white·to-gray-50"⏎········aria-hidden="true"⏎······/>⏎····)`  prettier/prettier
+78:4  Warning: Insert `,`  prettier/prettier
+86:4  Warning: Insert `,`  prettier/prettier
+
+./app/propiedades/page.tsx
+115:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'0ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'0ms'·}}⏎···········`  prettier/prettier
+116:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'150ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'150ms'·}}⏎···········`  prettier/prettier
+117:17  Warning: Replace `·className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"·style={{·animationDelay:·'300ms'·}}` with `⏎··············className="w-2·h-2·bg-teal-500·rounded-full·animate-bounce"⏎··············style={{·animationDelay:·'300ms'·}}⏎···········`  prettier/prettier
+133:20  Warning: Replace `·href="/dashboard"·className="inline-flex·items-center·gap-2·text-slate-700·hover:text-slate-900·transition-colors"` with `⏎················href="/dashboard"⏎················className="inline-flex·items-center·gap-2·text-slate-700·hover:text-slate-900·transition-colors"⏎··············`  prettier/prettier
+134:21  Warning: Replace `·className="w-5·h-5"·fill="none"·stroke="currentColor"·viewBox="0·0·24·24"` with `⏎··················className="w-5·h-5"⏎··················fill="none"⏎··················stroke="currentColor"⏎··················viewBox="0·0·24·24"⏎················`  prettier/prettier
+135:24  Warning: Replace `·strokeLinecap="round"·strokeLinejoin="round"·strokeWidth={2}·d="M15·19l-7-7·7-7"` with `⏎····················strokeLinecap="round"⏎····················strokeLinejoin="round"⏎····················strokeWidth={2}⏎····················d="M15·19l-7-7·7-7"⏎·················`  prettier/prettier
+
+./app/providers/PostHogProvider.tsx
+42:18  Warning: Insert `⏎·········`  prettier/prettier
+63:2  Warning: Delete `␍`  prettier/prettier
+
+./app/robots.ts
+1:38  Warning: Delete `␍`  prettier/prettier
+2:1  Warning: Delete `␍`  prettier/prettier
+3:57  Warning: Delete `␍`  prettier/prettier
+4:11  Warning: Delete `␍`  prettier/prettier
+5:13  Warning: Delete `␍`  prettier/prettier
+6:61  Warning: Delete `␍`  prettier/prettier
+7:72  Warning: Delete `␍`  prettier/prettier
+8:8  Warning: Delete `␍`  prettier/prettier
+9:21  Warning: Delete `␍`  prettier/prettier
+10:20  Warning: Delete `␍`  prettier/prettier
+11:26  Warning: Delete `␍`  prettier/prettier
+12:27  Warning: Delete `␍`  prettier/prettier
+13:27  Warning: Delete `␍`  prettier/prettier
+14:29  Warning: Delete `␍`  prettier/prettier
+15:29  Warning: Delete `␍`  prettier/prettier
+16:23  Warning: Delete `␍`  prettier/prettier
+17:25  Warning: Delete `␍`  prettier/prettier
+18:11  Warning: Delete `␍`  prettier/prettier
+19:20  Warning: Replace `'/dashboard/',·'/api/',·'/login',·'/signup',·'/reset-password'],␍` with `⏎··········'/dashboard/',⏎··········'/api/',⏎··········'/login',⏎··········'/signup',⏎··········'/reset-password',⏎········],`  prettier/prettier
+20:51  Warning: Delete `␍`  prettier/prettier
+21:9  Warning: Delete `␍`  prettier/prettier
+22:1  Warning: Delete `␍`  prettier/prettier
+23:67  Warning: Delete `␍`  prettier/prettier
+24:61  Warning: Delete `␍`  prettier/prettier
+25:8  Warning: Delete `␍`  prettier/prettier
+26:21  Warning: Delete `␍`  prettier/prettier
+27:19  Warning: Delete `␍`  prettier/prettier
+28:24  Warning: Delete `␍`  prettier/prettier
+29:23  Warning: Delete `␍`  prettier/prettier
+30:25  Warning: Delete `␍`  prettier/prettier
+31:32  Warning: Delete `␍`  prettier/prettier
+32:31  Warning: Delete `␍`  prettier/prettier
+33:26  Warning: Delete `␍`  prettier/prettier
+34:23  Warning: Delete `␍`  prettier/prettier
+35:11  Warning: Delete `␍`  prettier/prettier
+36:25  Warning: Delete `␍`  prettier/prettier
+37:9  Warning: Delete `␍`  prettier/prettier
+38:1  Warning: Delete `␍`  prettier/prettier
+39:72  Warning: Delete `␍`  prettier/prettier
+40:8  Warning: Delete `␍`  prettier/prettier
+41:45  Warning: Delete `␍`  prettier/prettier
+42:22  Warning: Delete `␍`  prettier/prettier
+43:44  Warning: Delete `␍`  prettier/prettier
+44:9  Warning: Delete `␍`  prettier/prettier
+45:1  Warning: Delete `␍`  prettier/prettier
+46:44  Warning: Delete `␍`  prettier/prettier
+47:8  Warning: Delete `␍`  prettier/prettier
+48:24  Warning: Delete `␍`  prettier/prettier
+49:22  Warning: Delete `␍`  prettier/prettier
+50:65  Warning: Delete `␍`  prettier/prettier
+51:9  Warning: Delete `␍`  prettier/prettier
+52:7  Warning: Delete `␍`  prettier/prettier
+53:51  Warning: Delete `␍`  prettier/prettier
+54:5  Warning: Delete `␍`  prettier/prettier
+55:2  Warning: Delete `␍`  prettier/prettier
+
+./app/servicios-captura/page.tsx
+1:1  Warning: Delete `⏎`  prettier/prettier
+10:17  Warning: Insert `⏎·····`  prettier/prettier
+22:17  Warning: Insert `⏎·····`  prettier/prettier
+35:17  Warning: Insert `⏎·····`  prettier/prettier
+56:75  Warning: Replace `·profesionales·captura·tu·propiedad·por·ti·con·equipo·de·última` with `⏎············profesionales·captura·tu·propiedad·por·ti·con·equipo·de·última⏎···········`  prettier/prettier
+62:17  Warning: Replace `·key={service.name}·className="relative·p-8·bg-white·border·border-gray-200·rounded-2xl·shadow-sm·flex·flex-col"` with `⏎··············key={service.name}⏎··············className="relative·p-8·bg-white·border·border-gray-200·rounded-2xl·shadow-sm·flex·flex-col"⏎············`  prettier/prettier
+64:70  Warning: Replace `{service.name}` with `⏎··················{service.name}⏎················`  prettier/prettier
+66:76  Warning: Replace `{service.price}` with `⏎····················{service.price}⏎··················`  prettier/prettier
+72:39  Warning: Replace `·className="flex-shrink-0·w-6·h-6·text-teal-500"·aria-hidden="true"` with `⏎························className="flex-shrink-0·w-6·h-6·text-teal-500"⏎························aria-hidden="true"⏎·····················`  prettier/prettier
+78:20  Warning: Insert `⏎···············`  prettier/prettier
+79:158  Warning: Insert `⏎··············`  prettier/prettier
+87:50  Warning: Replace `Todos·los·precios·incluyen·IVA.</p>` with `⏎············Todos·los·precios·incluyen·IVA.`  prettier/prettier
+88:1  Warning: Replace `········</div` with `··········</p`  prettier/prettier
+89:9  Warning: Insert `</div>⏎`  prettier/prettier
+91:1  Warning: Replace `············<h2·className="text-3xl·font-bold·text-gray-900">¿Necesitas·algo·diferente?` with `··········<h2·className="text-3xl·font-bold·text-gray-900">⏎············¿Necesitas·algo·diferente?⏎··········`  prettier/prettier
+92:1  Warning: Replace `············` with `··········`  prettier/prettier
+93:1  Warning: Delete `····`  prettier/prettier
+94:1  Warning: Replace `············` with `··········`  prettier/prettier
+95:1  Warning: Delete `··`  prettier/prettier
+96:1  Warning: Replace `················<Link·href="/#precios"·className="text-base·font-medium·text-teal-600·hover:text-teal-500">` with `············<Link⏎··············href="/#precios"⏎··············className="text-base·font-medium·text-teal-600·hover:text-teal-500"`  prettier/prettier
+97:11  Warning: Replace `··········` with `··>⏎··············`  prettier/prettier
+98:1  Warning: Replace `················` with `············`  prettier/prettier
+99:1  Warning: Delete `··`  prettier/prettier
+100:15  Warning: Delete `⏎`  prettier/prettier
+
+./app/signup/page.js
+246:22  Warning: Replace `·fillRule="evenodd"·d="M5·9V7a5·5·0·0110·0v2a2·2·0·012·2v5a2·2·0·01-2·2H5a2·2·0·01-2-2v-5a2·2·0·012-2zm8-2v2H7V7a3·3·0·016·0z"·clipRule="evenodd"` with `⏎··················fillRule="evenodd"⏎··················d="M5·9V7a5·5·0·0110·0v2a2·2·0·012·2v5a2·2·0·01-2·2H5a2·2·0·01-2-2v-5a2·2·0·012-2zm8-2v2H7V7a3·3·0·016·0z"⏎··················clipRule="evenodd"⏎···············`  prettier/prettier
+
+./app/sitemap.ts
+1:38  Warning: Delete `␍`  prettier/prettier
+2:53  Warning: Delete `␍`  prettier/prettier
+3:1  Warning: Delete `␍`  prettier/prettier
+4:74  Warning: Delete `␍`  prettier/prettier
+5:35  Warning: Delete `␍`  prettier/prettier
+6:1  Warning: Delete `␍`  prettier/prettier
+7:75  Warning: Delete `␍`  prettier/prettier
+8:44  Warning: Delete `␍`  prettier/prettier
+9:22  Warning: Delete `␍`  prettier/prettier
+10:32  Warning: Delete `␍`  prettier/prettier
+11:40  Warning: Delete `␍`  prettier/prettier
+12:29  Warning: Delete `␍`  prettier/prettier
+13:1  Warning: Delete `␍`  prettier/prettier
+14:30  Warning: Delete `␍`  prettier/prettier
+15:23  Warning: Delete `␍`  prettier/prettier
+16:6  Warning: Delete `␍`  prettier/prettier
+17:37  Warning: Delete `␍`  prettier/prettier
+18:32  Warning: Delete `␍`  prettier/prettier
+19:41  Warning: Delete `␍`  prettier/prettier
+20:19  Warning: Delete `␍`  prettier/prettier
+21:7  Warning: Delete `␍`  prettier/prettier
+22:6  Warning: Delete `␍`  prettier/prettier
+23:49  Warning: Delete `␍`  prettier/prettier
+24:32  Warning: Delete `␍`  prettier/prettier
+25:41  Warning: Delete `␍`  prettier/prettier
+26:21  Warning: Delete `␍`  prettier/prettier
+27:7  Warning: Delete `␍`  prettier/prettier
+28:5  Warning: Delete `␍`  prettier/prettier
+29:1  Warning: Delete `␍`  prettier/prettier
+30:62  Warning: Delete `␍`  prettier/prettier
+31:40  Warning: Delete `␍`  prettier/prettier
+32:69  Warning: Delete `␍`  prettier/prettier
+33:25  Warning: Delete `␍`  prettier/prettier
+34:61  Warning: Delete `␍`  prettier/prettier
+35:64  Warning: Delete `␍`  prettier/prettier
+36:42  Warning: Delete `␍`  prettier/prettier
+37:21  Warning: Delete `␍`  prettier/prettier
+38:9  Warning: Delete `␍`  prettier/prettier
+39:1  Warning: Delete `␍`  prettier/prettier
+40:43  Warning: Delete `␍`  prettier/prettier
+41:2  Warning: Delete `␍`  prettier/prettier
+
+./app/terreno/[slug]/editor/HotspotEditor.js
+28:20  Warning: Replace `·ambient:·[],·ambientVolume:·[],·narration:·[],·narrationVolume:·[],·autoplay:·[]` with `⏎····ambient:·[],⏎····ambientVolume:·[],⏎····narration:·[],⏎····narrationVolume:·[],⏎····autoplay:·[],⏎·`  prettier/prettier
+106:1  Warning: Delete `⏎`  prettier/prettier
+200:26  Warning: Delete `⏎`  prettier/prettier
+306:9  Warning: Delete `⏎················`  prettier/prettier
+311:1  Warning: Delete `··········⏎`  prettier/prettier
+368:15  Warning: Replace `hotspotType·===·'navigation'·&&·hotspot.targetImageIndex·!==·undefined` with `⏎············hotspotType·===·'navigation'·&&⏎············hotspot.targetImageIndex·!==·undefined⏎··········`  prettier/prettier
+372:25  Warning: Replace ``${hotspot.type·===·'info'·?·'ℹ️'·:·hotspot.type·===·'image'·?·'🖼️'·:·hotspot.type·===·'video'·?·'🎥'·:·'🔊'}·Hotspot·multimedia·clickeado·(no·navega)`` with `⏎··············`${hotspot.type·===·'info'·?·'ℹ️'·:·hotspot.type·===·'image'·?·'🖼️'·:·hotspot.type·===·'video'·?·'🎥'·:·'🔊'}·Hotspot·multimedia·clickeado·(no·navega)`,⏎············`  prettier/prettier
+381:5  Warning: React Hook useCallback has a missing dependency: 'updateMarkers'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+523:21  Warning: Replace ``🎯·Punto·${pointIndex}·agregado:`,·point,·'Total:',·pointIndex` with `⏎··········`🎯·Punto·${pointIndex}·agregado:`,⏎··········point,⏎··········'Total:',⏎··········pointIndex,⏎········`  prettier/prettier
+553:25  Warning: Replace ``❌·Error·agregando·punto·visual·${pointIndex}:`,·pointError` with `⏎············`❌·Error·agregando·punto·visual·${pointIndex}:`,⏎············pointError,⏎··········`  prettier/prettier
+584:25  Warning: Replace ``✅·Polígono·temporal·actualizado·(${pointIndex}·puntos)`` with `⏎··············`✅·Polígono·temporal·actualizado·(${pointIndex}·puntos)`,⏎············`  prettier/prettier
+607:52  Warning: Replace `'.psv-markers-svg-container·svg'` with `⏎········'.psv-markers-svg-container·svg',⏎······`  prettier/prettier
+621:19  Warning: Replace `'✅·ViewBox·del·SVG·forzado:·-180·-90·360·180·(sin·clipping)'` with `⏎········'✅·ViewBox·del·SVG·forzado:·-180·-90·360·180·(sin·clipping)',⏎······`  prettier/prettier
+827:59  Warning: Replace `terrainId,·currentImageIndex` with `⏎········terrainId,⏎········currentImageIndex,⏎······`  prettier/prettier
+835:21  Warning: Replace ``ℹ️·No·hay·polígonos·guardados·en·vista·${currentImageIndex}`` with `⏎··········`ℹ️·No·hay·polígonos·guardados·en·vista·${currentImageIndex}`,⏎········`  prettier/prettier
+846:78  Warning: Replace `.toString(16)` with `⏎················.toString(16)⏎················`  prettier/prettier
+862:25  Warning: Replace ``Error·renderizando·polígono·${polygon.id}:`,·renderError` with `⏎············`Error·renderizando·polígono·${polygon.id}:`,⏎············renderError,⏎··········`  prettier/prettier
+866:19  Warning: Replace ``✅·${data.length}·polígono(s)·cargado(s)·en·vista·${currentImageIndex}`` with `⏎········`✅·${data.length}·polígono(s)·cargado(s)·en·vista·${currentImageIndex}`,⏎······`  prettier/prettier
+946:73  Warning: Insert `,`  prettier/prettier
+1197:15  Warning: Replace `·className="mx-auto·h-16·w-16·text-red-500"·fill="none"·viewBox="0·0·24·24"·stroke="currentColor"` with `⏎············className="mx-auto·h-16·w-16·text-red-500"⏎············fill="none"⏎············viewBox="0·0·24·24"⏎············stroke="currentColor"⏎··········`  prettier/prettier
+1198:18  Warning: Replace `·strokeLinecap="round"·strokeLinejoin="round"·strokeWidth={2}·d="M12·8v4m0·4h.01M21·12a9·9·0·11-18·0·9·9·0·0118·0z"` with `⏎··············strokeLinecap="round"⏎··············strokeLinejoin="round"⏎··············strokeWidth={2}⏎··············d="M12·8v4m0·4h.01M21·12a9·9·0·11-18·0·9·9·0·0118·0z"⏎···········`  prettier/prettier
+1200:67  Warning: Replace `No·se·pueden·cargar·las·imágenes` with `⏎············No·se·pueden·cargar·las·imágenes⏎··········`  prettier/prettier
+1201:53  Warning: Replace `⏎············{loadError}⏎··········` with `{loadError}`  prettier/prettier
+1205:13  Warning: Replace `·<h3·className="text-lg·font-bold·text-purple-200">¿No·tienes·fotos·360°?` with `<h3·className="text-lg·font-bold·text-purple-200">⏎··············¿No·tienes·fotos·360°?⏎············`  prettier/prettier
+1206:1  Warning: Delete `·`  prettier/prettier
+1207:1  Warning: Replace `···············Deja·que·nuestro·equipo·de·fotógrafos·profesionales·capture·tu` with `··············Deja·que·nuestro·equipo·de·fotógrafos·profesionales·capture·tu⏎·············`  prettier/prettier
+1208:13  Warning: Delete `·`  prettier/prettier
+1209:1  Warning: Delete `·`  prettier/prettier
+1218:1  Warning: Delete `·`  prettier/prettier
+1308:11  Warning: Delete `··········`  prettier/prettier
+1370:20  Warning: Replace `·style={{·fontSize:·isMobile·?·'16px'·:·'14px',·textAlign:·'center'·}}` with `⏎················style={{⏎··················fontSize:·isMobile·?·'16px'·:·'14px',⏎··················textAlign:·'center',⏎················}}⏎··············`  prettier/prettier
+1371:77  Warning: Insert `⏎···············`  prettier/prettier
+1405:55  Warning: Insert `⏎·····················`  prettier/prettier
+1411:55  Warning: Insert `⏎·····················`  prettier/prettier
+1487:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+1616:9  Warning: Insert `··`  prettier/prettier
+1617:11  Warning: Insert `··`  prettier/prettier
+1618:1  Warning: Replace `············` with `··············`  prettier/prettier
+1619:13  Warning: Insert `··`  prettier/prettier
+1620:1  Warning: Insert `··`  prettier/prettier
+1621:15  Warning: Insert `··`  prettier/prettier
+1622:1  Warning: Insert `··`  prettier/prettier
+1623:1  Warning: Replace `··············` with `················`  prettier/prettier
+1624:1  Warning: Insert `··`  prettier/prettier
+1625:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1626:1  Warning: Insert `··`  prettier/prettier
+1627:1  Warning: Insert `··`  prettier/prettier
+1628:15  Warning: Insert `··`  prettier/prettier
+1629:1  Warning: Insert `··`  prettier/prettier
+1630:15  Warning: Insert `··`  prettier/prettier
+1631:13  Warning: Insert `··`  prettier/prettier
+1632:1  Warning: Replace `··········` with `············`  prettier/prettier
+1633:1  Warning: Insert `··`  prettier/prettier
+1634:1  Warning: Replace `············{viewNames[currentImageIndex]·||·`Vista·${currentImageIndex·+·1}`}·(` with `··············{viewNames[currentImageIndex]·||·`Vista·${currentImageIndex·+·1}`}{'·'}`  prettier/prettier
+1635:1  Warning: Replace `············` with `··············(`  prettier/prettier
+1636:11  Warning: Insert `··`  prettier/prettier
+1637:1  Warning: Insert `··`  prettier/prettier
+1638:13  Warning: Insert `··`  prettier/prettier
+1639:1  Warning: Insert `··`  prettier/prettier
+1640:13  Warning: Insert `··`  prettier/prettier
+1641:1  Warning: Replace `··········` with `············`  prettier/prettier
+1642:1  Warning: Insert `··`  prettier/prettier
+1643:11  Warning: Insert `··`  prettier/prettier
+1645:1  Warning: Replace `··········` with `············`  prettier/prettier
+1646:1  Warning: Insert `··`  prettier/prettier
+1647:15  Warning: Insert `··`  prettier/prettier
+1648:1  Warning: Insert `··`  prettier/prettier
+1649:13  Warning: Insert `··`  prettier/prettier
+1650:15  Warning: Insert `··`  prettier/prettier
+1651:1  Warning: Insert `··`  prettier/prettier
+1652:17  Warning: Insert `··`  prettier/prettier
+1653:1  Warning: Insert `··`  prettier/prettier
+1654:21  Warning: Insert `··`  prettier/prettier
+1655:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1656:1  Warning: Insert `··`  prettier/prettier
+1657:21  Warning: Insert `··`  prettier/prettier
+1658:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1659:19  Warning: Insert `··`  prettier/prettier
+1660:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1661:1  Warning: Insert `··`  prettier/prettier
+1662:21  Warning: Insert `··`  prettier/prettier
+1663:21  Warning: Insert `··`  prettier/prettier
+1664:1  Warning: Insert `··`  prettier/prettier
+1665:21  Warning: Insert `··`  prettier/prettier
+1666:19  Warning: Insert `··`  prettier/prettier
+1667:1  Warning: Insert `··`  prettier/prettier
+1669:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1670:1  Warning: Insert `··`  prettier/prettier
+1671:23  Warning: Insert `··`  prettier/prettier
+1672:1  Warning: Replace `······················` with `························`  prettier/prettier
+1673:21  Warning: Insert `··`  prettier/prettier
+1674:1  Warning: Insert `··`  prettier/prettier
+1675:1  Warning: Insert `··`  prettier/prettier
+1676:27  Warning: Insert `··`  prettier/prettier
+1677:1  Warning: Insert `··`  prettier/prettier
+1678:1  Warning: Insert `··`  prettier/prettier
+1679:25  Warning: Insert `··`  prettier/prettier
+1680:27  Warning: Insert `··`  prettier/prettier
+1681:1  Warning: Insert `··`  prettier/prettier
+1682:25  Warning: Replace `{hotspotType·===·'navigation'·&&` with `··{hotspotType·===·'navigation'·&&⏎···························`  prettier/prettier
+1683:1  Warning: Insert `····`  prettier/prettier
+1684:29  Warning: Replace `→·{viewNames[h.targetImageIndex]·||` with `····→{'·'}⏎································{viewNames[h.targetImageIndex]·||⏎·································`  prettier/prettier
+1685:27  Warning: Insert `····`  prettier/prettier
+1686:1  Warning: Replace `························` with `····························`  prettier/prettier
+1687:1  Warning: Insert `··`  prettier/prettier
+1688:1  Warning: Insert `··`  prettier/prettier
+1689:29  Warning: Insert `··`  prettier/prettier
+1690:27  Warning: Insert `··`  prettier/prettier
+1691:25  Warning: Insert `··`  prettier/prettier
+1692:1  Warning: Replace `························` with `··························`  prettier/prettier
+1693:1  Warning: Insert `··`  prettier/prettier
+1694:29  Warning: Insert `··`  prettier/prettier
+1695:1  Warning: Replace `····························{h.audio_ambient_url·&&·h.audio_narration_url·&&` with `······························{h.audio_ambient_url·&&⏎································h.audio_narration_url·&&⏎·······························`  prettier/prettier
+1696:1  Warning: Insert `··`  prettier/prettier
+1697:27  Warning: Insert `··`  prettier/prettier
+1698:1  Warning: Replace `························` with `··························`  prettier/prettier
+1699:1  Warning: Insert `··`  prettier/prettier
+1700:1  Warning: Insert `··`  prettier/prettier
+1701:1  Warning: Replace `························` with `··························`  prettier/prettier
+1702:1  Warning: Insert `··`  prettier/prettier
+1703:27  Warning: Insert `··`  prettier/prettier
+1704:1  Warning: Insert `··`  prettier/prettier
+1705:29  Warning: Insert `··`  prettier/prettier
+1706:29  Warning: Insert `··`  prettier/prettier
+1707:1  Warning: Insert `··`  prettier/prettier
+1708:29  Warning: Insert `··`  prettier/prettier
+1709:1  Warning: Insert `··`  prettier/prettier
+1710:29  Warning: Insert `··`  prettier/prettier
+1711:1  Warning: Replace `····························` with `······························`  prettier/prettier
+1712:1  Warning: Insert `··`  prettier/prettier
+1713:27  Warning: Insert `··`  prettier/prettier
+1714:1  Warning: Replace `··························` with `····························`  prettier/prettier
+1715:1  Warning: Insert `··`  prettier/prettier
+1716:27  Warning: Insert `··`  prettier/prettier
+1717:1  Warning: Insert `··`  prettier/prettier
+1718:29  Warning: Insert `··`  prettier/prettier
+1719:27  Warning: Insert `··`  prettier/prettier
+1720:1  Warning: Insert `··`  prettier/prettier
+1721:27  Warning: Insert `··`  prettier/prettier
+1722:1  Warning: Insert `··`  prettier/prettier
+1723:1  Warning: Insert `··`  prettier/prettier
+1724:27  Warning: Insert `··`  prettier/prettier
+1725:27  Warning: Insert `··`  prettier/prettier
+1726:1  Warning: Insert `··`  prettier/prettier
+1727:27  Warning: Insert `··`  prettier/prettier
+1728:1  Warning: Insert `··`  prettier/prettier
+1729:23  Warning: Insert `··`  prettier/prettier
+1730:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1731:1  Warning: Insert `··`  prettier/prettier
+1732:17  Warning: Insert `··`  prettier/prettier
+1733:1  Warning: Replace `············` with `··············`  prettier/prettier
+1734:1  Warning: Insert `··`  prettier/prettier
+1736:1  Warning: Insert `··`  prettier/prettier
+1737:1  Warning: Insert `··`  prettier/prettier
+1738:13  Warning: Insert `··`  prettier/prettier
+1739:1  Warning: Insert `··`  prettier/prettier
+1740:1  Warning: Insert `··`  prettier/prettier
+1741:15  Warning: Insert `··`  prettier/prettier
+1742:1  Warning: Insert `··`  prettier/prettier
+1743:15  Warning: Insert `··`  prettier/prettier
+1744:1  Warning: Replace `············` with `··············`  prettier/prettier
+1745:1  Warning: Insert `··`  prettier/prettier
+1746:13  Warning: Insert `··`  prettier/prettier
+1747:1  Warning: Replace `··············` with `················`  prettier/prettier
+1748:1  Warning: Insert `··`  prettier/prettier
+1749:17  Warning: Insert `··`  prettier/prettier
+1750:1  Warning: Replace `················` with `··················`  prettier/prettier
+1751:1  Warning: Insert `··`  prettier/prettier
+1752:17  Warning: Insert `··`  prettier/prettier
+1753:1  Warning: Replace `················` with `··················`  prettier/prettier
+1754:1  Warning: Insert `··`  prettier/prettier
+1755:15  Warning: Insert `··`  prettier/prettier
+1756:1  Warning: Insert `··`  prettier/prettier
+1757:15  Warning: Replace `🎵·Audio·de·Fondo·-·{viewNames[currentImageIndex]·||` with `··🎵·Audio·de·Fondo·-{'·'}⏎················{viewNames[currentImageIndex]·||⏎·················`  prettier/prettier
+1758:13  Warning: Insert `··`  prettier/prettier
+1759:1  Warning: Replace `············<p·style={{·fontSize:·'11px',·color:·'#9ca3af',·marginBottom:·'12px'·}}` with `··············<p⏎················style={{⏎··················fontSize:·'11px',⏎··················color:·'#9ca3af',⏎··················marginBottom:·'12px',⏎················}}⏎··············`  prettier/prettier
+1760:1  Warning: Insert `··`  prettier/prettier
+1761:13  Warning: Insert `··`  prettier/prettier
+1763:1  Warning: Insert `··`  prettier/prettier
+1764:13  Warning: Insert `··`  prettier/prettier
+1765:15  Warning: Replace `<label·style={{·display:·'block',·color:·'white',·fontSize:·'13px',·fontWeight:·'500',·marginBottom:·'6px'·}}` with `··<label⏎··················style={{⏎····················display:·'block',⏎····················color:·'white',⏎····················fontSize:·'13px',⏎····················fontWeight:·'500',⏎····················marginBottom:·'6px',⏎··················}}⏎················`  prettier/prettier
+1766:1  Warning: Replace `················` with `··················`  prettier/prettier
+1767:15  Warning: Insert `··`  prettier/prettier
+1768:15  Warning: Insert `··`  prettier/prettier
+1769:1  Warning: Insert `··`  prettier/prettier
+1770:19  Warning: Insert `··`  prettier/prettier
+1771:19  Warning: Insert `··`  prettier/prettier
+1772:1  Warning: Insert `··`  prettier/prettier
+1773:21  Warning: Insert `··`  prettier/prettier
+1774:1  Warning: Replace `······················setViewAudioSettings(prev` with `························setViewAudioSettings((prev)`  prettier/prettier
+1775:1  Warning: Replace `························` with `··························`  prettier/prettier
+1776:1  Warning: Insert `··`  prettier/prettier
+1777:25  Warning: Replace `ambientVolume:·audio.recommendedVolume·||·0.3` with `··ambientVolume:·audio.recommendedVolume·||·0.3,`  prettier/prettier
+1778:23  Warning: Insert `··`  prettier/prettier
+1779:21  Warning: Insert `··`  prettier/prettier
+1780:1  Warning: Insert `··`  prettier/prettier
+1781:19  Warning: Insert `··`  prettier/prettier
+1782:17  Warning: Insert `··`  prettier/prettier
+1783:1  Warning: Insert `··`  prettier/prettier
+1784:17  Warning: Insert `··`  prettier/prettier
+1785:1  Warning: Insert `··`  prettier/prettier
+1786:19  Warning: Insert `··`  prettier/prettier
+1787:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1788:1  Warning: Insert `··`  prettier/prettier
+1789:19  Warning: Insert `··`  prettier/prettier
+1790:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1791:1  Warning: Insert `··`  prettier/prettier
+1792:17  Warning: Insert `··`  prettier/prettier
+1793:1  Warning: Insert `··`  prettier/prettier
+1794:17  Warning: Insert `··`  prettier/prettier
+1795:17  Warning: Insert `··`  prettier/prettier
+1796:1  Warning: Insert `··`  prettier/prettier
+1797:21  Warning: Insert `··`  prettier/prettier
+1798:19  Warning: Insert `··`  prettier/prettier
+1799:17  Warning: Insert `··`  prettier/prettier
+1800:1  Warning: Replace `··············` with `················`  prettier/prettier
+1801:1  Warning: Insert `··`  prettier/prettier
+1803:13  Warning: Insert `··`  prettier/prettier
+1804:1  Warning: Replace `············<div·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·margin:·'12px·0'·}}` with `··············<div⏎················style={{⏎··················display:·'flex',⏎··················alignItems:·'center',⏎··················gap:·'8px',⏎··················margin:·'12px·0',⏎················}}⏎··············`  prettier/prettier
+1805:1  Warning: Replace `··············<div·style={{·flex:·1,·borderTop:·'1px·solid·rgba(255,·255,·255,·0.2)'·}}` with `················<div⏎··················style={{⏎····················flex:·1,⏎····················borderTop:·'1px·solid·rgba(255,·255,·255,·0.2)',⏎··················}}⏎················`  prettier/prettier
+1806:15  Warning: Replace `<span·style={{·fontSize:·'11px',·color:·'#9ca3af',·fontWeight:·'600'·}}>O` with `··<span⏎··················style={{⏎····················fontSize:·'11px',⏎····················color:·'#9ca3af',⏎····················fontWeight:·'600',⏎··················}}⏎················>⏎··················O⏎················`  prettier/prettier
+1807:1  Warning: Replace `··············<div·style={{·flex:·1,·borderTop:·'1px·solid·rgba(255,·255,·255,·0.2)'·}}` with `················<div⏎··················style={{⏎····················flex:·1,⏎····················borderTop:·'1px·solid·rgba(255,·255,·255,·0.2)',⏎··················}}⏎················`  prettier/prettier
+1808:1  Warning: Replace `············` with `··············`  prettier/prettier
+1810:1  Warning: Insert `··`  prettier/prettier
+1811:13  Warning: Insert `··`  prettier/prettier
+1812:1  Warning: Replace `··············<label·style={{·display:·'block',·color:·'white',·fontSize:·'13px',·fontWeight:·'500',·marginBottom:·'6px'·}}` with `················<label⏎··················style={{⏎····················display:·'block',⏎····················color:·'white',⏎····················fontSize:·'13px',⏎····················fontWeight:·'500',⏎····················marginBottom:·'6px',⏎··················}}⏎················`  prettier/prettier
+1813:1  Warning: Insert `··`  prettier/prettier
+1814:15  Warning: Insert `··`  prettier/prettier
+1815:1  Warning: Replace `··············` with `················`  prettier/prettier
+1816:1  Warning: Insert `··`  prettier/prettier
+1817:17  Warning: Insert `··`  prettier/prettier
+1818:1  Warning: Replace `················` with `··················`  prettier/prettier
+1819:1  Warning: Insert `··`  prettier/prettier
+1820:19  Warning: Insert `··`  prettier/prettier
+1822:1  Warning: Insert `··`  prettier/prettier
+1823:19  Warning: Insert `··`  prettier/prettier
+1824:19  Warning: Insert `··`  prettier/prettier
+1825:1  Warning: Insert `··`  prettier/prettier
+1826:21  Warning: Insert `··`  prettier/prettier
+1827:1  Warning: Replace `······················setViewAudioSettings(prev·=>·({·...prev,·ambientUrl:·url` with `························setViewAudioSettings((prev)·=>·({⏎··························...prev,⏎··························ambientUrl:·url,⏎·······················`  prettier/prettier
+1828:1  Warning: Insert `··`  prettier/prettier
+1829:19  Warning: Insert `··`  prettier/prettier
+1830:1  Warning: Insert `··`  prettier/prettier
+1831:19  Warning: Insert `··`  prettier/prettier
+1832:1  Warning: Insert `··`  prettier/prettier
+1833:21  Warning: Insert `··`  prettier/prettier
+1834:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1835:1  Warning: Insert `··`  prettier/prettier
+1836:17  Warning: Insert `··`  prettier/prettier
+1837:1  Warning: Replace `················` with `··················`  prettier/prettier
+1838:17  Warning: Insert `··`  prettier/prettier
+1839:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1840:1  Warning: Insert `··`  prettier/prettier
+1841:19  Warning: Insert `··`  prettier/prettier
+1842:1  Warning: Insert `··`  prettier/prettier
+1843:1  Warning: Insert `··`  prettier/prettier
+1844:19  Warning: Insert `··`  prettier/prettier
+1845:1  Warning: Insert `··`  prettier/prettier
+1846:1  Warning: Insert `··`  prettier/prettier
+1847:15  Warning: Insert `··`  prettier/prettier
+1848:1  Warning: Replace `··············{uploadingViewAudio·&&` with `················{uploadingViewAudio·&&⏎·················`  prettier/prettier
+1849:17  Warning: Replace `<p·style={{·fontSize:·'11px',·color:·'#60a5fa',·marginTop:·'4px'·}}>⏳·Subiendo·audio...` with `····<p⏎······················style={{⏎························fontSize:·'11px',⏎························color:·'#60a5fa',⏎························marginTop:·'4px',⏎······················}}⏎····················>⏎······················⏳·Subiendo·audio...⏎····················`  prettier/prettier
+1850:1  Warning: Replace `··············` with `··················`  prettier/prettier
+1851:1  Warning: Insert `··`  prettier/prettier
+1853:1  Warning: Insert `··`  prettier/prettier
+1854:1  Warning: Insert `··`  prettier/prettier
+1855:15  Warning: Replace `<div·style={{·marginBottom:·'12px',·padding:·'8px',·background:·'rgba(31,·41,·55,·0.6)',·borderRadius:·'6px'·}}` with `··<div⏎··················style={{⏎····················marginBottom:·'12px',⏎····················padding:·'8px',⏎····················background:·'rgba(31,·41,·55,·0.6)',⏎····················borderRadius:·'6px',⏎··················}}⏎················`  prettier/prettier
+1856:1  Warning: Replace `················<div·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·marginBottom:·'6px'·}}` with `··················<div⏎····················style={{⏎······················display:·'flex',⏎······················alignItems:·'center',⏎······················gap:·'8px',⏎······················marginBottom:·'6px',⏎····················}}⏎··················`  prettier/prettier
+1857:1  Warning: Replace `··················<span·style={{·fontSize:·'12px',·color:·'white',·fontWeight:·'500'·}}>🎧·Audio·Ambiente` with `····················<span⏎······················style={{⏎························fontSize:·'12px',⏎························color:·'white',⏎························fontWeight:·'500',⏎······················}}⏎····················>⏎······················🎧·Audio·Ambiente⏎····················`  prettier/prettier
+1858:1  Warning: Insert `··`  prettier/prettier
+1859:21  Warning: Replace `onClick={()·=>·setViewAudioSettings(prev·=>·({·...prev,·ambientUrl:·''·}))` with `··onClick={()·=>⏎························setViewAudioSettings((prev)·=>·({⏎··························...prev,⏎··························ambientUrl:·'',⏎························}))⏎······················`  prettier/prettier
+1860:1  Warning: Insert `··`  prettier/prettier
+1861:23  Warning: Insert `··`  prettier/prettier
+1862:1  Warning: Replace `······················` with `························`  prettier/prettier
+1863:1  Warning: Insert `··`  prettier/prettier
+1864:23  Warning: Insert `··`  prettier/prettier
+1865:1  Warning: Insert `··`  prettier/prettier
+1866:23  Warning: Insert `··`  prettier/prettier
+1867:23  Warning: Insert `··`  prettier/prettier
+1868:1  Warning: Insert `··`  prettier/prettier
+1869:21  Warning: Insert `··`  prettier/prettier
+1870:1  Warning: Insert `··`  prettier/prettier
+1871:21  Warning: Insert `··`  prettier/prettier
+1872:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1873:1  Warning: Insert `··`  prettier/prettier
+1874:17  Warning: Replace `<audio·src={viewAudioSettings.ambientUrl}·controls·style={{·width:·'100%',·height:·'30px'·}}` with `··<audio⏎····················src={viewAudioSettings.ambientUrl}⏎····················controls⏎····················style={{·width:·'100%',·height:·'30px'·}}⏎·················`  prettier/prettier
+1875:17  Warning: Replace `<div·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·marginTop:·'6px'·}}` with `··<div⏎····················style={{⏎······················display:·'flex',⏎······················alignItems:·'center',⏎······················gap:·'8px',⏎······················marginTop:·'6px',⏎····················}}⏎··················`  prettier/prettier
+1876:1  Warning: Replace `··················<label·style={{·fontSize:·'11px',·color:·'white',·display:·'flex',·alignItems:·'center',·gap:·'6px',·flex:·1·}}` with `····················<label⏎······················style={{⏎························fontSize:·'11px',⏎························color:·'white',⏎························display:·'flex',⏎························alignItems:·'center',⏎························gap:·'6px',⏎························flex:·1,⏎······················}}⏎····················`  prettier/prettier
+1877:1  Warning: Insert `··`  prettier/prettier
+1878:21  Warning: Insert `··`  prettier/prettier
+1879:1  Warning: Insert `··`  prettier/prettier
+1880:1  Warning: Insert `··`  prettier/prettier
+1881:23  Warning: Insert `··`  prettier/prettier
+1882:1  Warning: Insert `··`  prettier/prettier
+1883:1  Warning: Insert `··`  prettier/prettier
+1884:23  Warning: Replace `onChange={(e)·=>·setViewAudioSettings(prev·=>·({·...prev,·ambientVolume:·parseFloat(e.target.value)·}))` with `··onChange={(e)·=>⏎··························setViewAudioSettings((prev)·=>·({⏎····························...prev,⏎····························ambientVolume:·parseFloat(e.target.value),⏎··························}))⏎························`  prettier/prettier
+1885:1  Warning: Insert `··`  prettier/prettier
+1886:21  Warning: Insert `··`  prettier/prettier
+1887:1  Warning: Replace `····················<span·style={{·fontFamily:·'monospace',·fontSize:·'11px'·}}>{(viewAudioSettings.ambientVolume·*·100).toFixed(0)}%` with `······················<span⏎························style={{·fontFamily:·'monospace',·fontSize:·'11px'·}}⏎······················>⏎························{(viewAudioSettings.ambientVolume·*·100).toFixed(0)}%⏎······················`  prettier/prettier
+1888:1  Warning: Insert `··`  prettier/prettier
+1889:1  Warning: Insert `··`  prettier/prettier
+1890:15  Warning: Insert `··`  prettier/prettier
+1891:13  Warning: Insert `··`  prettier/prettier
+1893:1  Warning: Insert `··`  prettier/prettier
+1894:13  Warning: Replace `<div·style={{·borderTop:·'1px·solid·rgba(255,·255,·255,·0.1)',·margin:·'12px·0'·}}` with `··<div⏎················style={{⏎··················borderTop:·'1px·solid·rgba(255,·255,·255,·0.1)',⏎··················margin:·'12px·0',⏎················}}⏎··············`  prettier/prettier
+1896:1  Warning: Insert `··`  prettier/prettier
+1897:1  Warning: Replace `············` with `··············`  prettier/prettier
+1898:15  Warning: Replace `<label·style={{·display:·'block',·color:·'white',·fontSize:·'13px',·fontWeight:·'500',·marginBottom:·'6px'·}}` with `··<label⏎··················style={{⏎····················display:·'block',⏎····················color:·'white',⏎····················fontSize:·'13px',⏎····················fontWeight:·'500',⏎····················marginBottom:·'6px',⏎··················}}⏎················`  prettier/prettier
+1899:1  Warning: Insert `··`  prettier/prettier
+1900:1  Warning: Insert `··`  prettier/prettier
+1901:15  Warning: Insert `··`  prettier/prettier
+1902:1  Warning: Insert `··`  prettier/prettier
+1903:1  Warning: Insert `··`  prettier/prettier
+1904:17  Warning: Insert `··`  prettier/prettier
+1905:1  Warning: Insert `··`  prettier/prettier
+1906:19  Warning: Insert `··`  prettier/prettier
+1908:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1909:1  Warning: Insert `··`  prettier/prettier
+1910:19  Warning: Insert `··`  prettier/prettier
+1911:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1912:21  Warning: Insert `··`  prettier/prettier
+1913:1  Warning: Replace `······················setViewAudioSettings(prev·=>·({·...prev,·narrationUrl:·url` with `························setViewAudioSettings((prev)·=>·({⏎··························...prev,⏎··························narrationUrl:·url,⏎·······················`  prettier/prettier
+1914:1  Warning: Insert `··`  prettier/prettier
+1915:19  Warning: Insert `··`  prettier/prettier
+1916:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1917:19  Warning: Insert `··`  prettier/prettier
+1918:1  Warning: Insert `··`  prettier/prettier
+1919:1  Warning: Insert `··`  prettier/prettier
+1920:19  Warning: Insert `··`  prettier/prettier
+1921:1  Warning: Insert `··`  prettier/prettier
+1922:1  Warning: Insert `··`  prettier/prettier
+1923:17  Warning: Insert `··`  prettier/prettier
+1924:1  Warning: Insert `··`  prettier/prettier
+1925:19  Warning: Insert `··`  prettier/prettier
+1926:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1927:1  Warning: Insert `··`  prettier/prettier
+1928:1  Warning: Insert `··`  prettier/prettier
+1929:1  Warning: Replace `··················` with `····················`  prettier/prettier
+1930:1  Warning: Insert `··`  prettier/prettier
+1931:19  Warning: Insert `··`  prettier/prettier
+1932:1  Warning: Replace `················` with `··················`  prettier/prettier
+1933:1  Warning: Insert `··`  prettier/prettier
+1934:1  Warning: Replace `··············{uploadingViewAudio·&&` with `················{uploadingViewAudio·&&⏎·················`  prettier/prettier
+1935:17  Warning: Replace `<p·style={{·fontSize:·'11px',·color:·'#60a5fa',·marginTop:·'4px'·}}>⏳·Subiendo·narración...` with `····<p⏎······················style={{⏎························fontSize:·'11px',⏎························color:·'#60a5fa',⏎························marginTop:·'4px',⏎······················}}⏎····················>⏎······················⏳·Subiendo·narración...⏎····················`  prettier/prettier
+1936:1  Warning: Replace `··············` with `··················`  prettier/prettier
+1937:15  Warning: Replace `<p·style={{·fontSize:·'10px',·color:·'#9ca3af',·marginTop:·'4px'·}}` with `··<p⏎··················style={{⏎····················fontSize:·'10px',⏎····················color:·'#9ca3af',⏎····················marginTop:·'4px',⏎··················}}⏎················`  prettier/prettier
+1938:1  Warning: Replace `················La·narración·se·reproduce·una·vez,·mientras·el·audio·ambiente` with `··················La·narración·se·reproduce·una·vez,·mientras·el·audio·ambiente⏎·················`  prettier/prettier
+1939:1  Warning: Insert `··`  prettier/prettier
+1940:13  Warning: Insert `··`  prettier/prettier
+1942:1  Warning: Insert `··`  prettier/prettier
+1943:1  Warning: Insert `··`  prettier/prettier
+1944:15  Warning: Replace `<div·style={{·marginBottom:·'12px',·padding:·'8px',·background:·'rgba(31,·41,·55,·0.6)',·borderRadius:·'6px'·}}` with `··<div⏎··················style={{⏎····················marginBottom:·'12px',⏎····················padding:·'8px',⏎····················background:·'rgba(31,·41,·55,·0.6)',⏎····················borderRadius:·'6px',⏎··················}}⏎················`  prettier/prettier
+1945:1  Warning: Replace `················<div·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·marginBottom:·'6px'·}}` with `··················<div⏎····················style={{⏎······················display:·'flex',⏎······················alignItems:·'center',⏎······················gap:·'8px',⏎······················marginBottom:·'6px',⏎····················}}⏎··················`  prettier/prettier
+1946:1  Warning: Replace `··················<span·style={{·fontSize:·'12px',·color:·'white',·fontWeight:·'500'·}}>🗣️·Narración` with `····················<span⏎······················style={{⏎························fontSize:·'12px',⏎························color:·'white',⏎························fontWeight:·'500',⏎······················}}⏎····················>⏎······················🗣️·Narración⏎····················`  prettier/prettier
+1947:1  Warning: Insert `··`  prettier/prettier
+1948:21  Warning: Replace `onClick={()·=>·setViewAudioSettings(prev·=>·({·...prev,·narrationUrl:·''·}))` with `··onClick={()·=>⏎························setViewAudioSettings((prev)·=>·({⏎··························...prev,⏎··························narrationUrl:·'',⏎························}))⏎······················`  prettier/prettier
+1949:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1950:1  Warning: Insert `··`  prettier/prettier
+1951:23  Warning: Insert `··`  prettier/prettier
+1952:1  Warning: Replace `······················` with `························`  prettier/prettier
+1953:1  Warning: Insert `··`  prettier/prettier
+1954:23  Warning: Insert `··`  prettier/prettier
+1955:1  Warning: Replace `······················` with `························`  prettier/prettier
+1956:1  Warning: Insert `··`  prettier/prettier
+1957:23  Warning: Insert `··`  prettier/prettier
+1958:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1959:1  Warning: Insert `··`  prettier/prettier
+1960:21  Warning: Insert `··`  prettier/prettier
+1961:1  Warning: Insert `··`  prettier/prettier
+1962:17  Warning: Insert `··`  prettier/prettier
+1963:17  Warning: Replace `<audio·src={viewAudioSettings.narrationUrl}·controls·style={{·width:·'100%',·height:·'30px'·}}` with `··<audio⏎····················src={viewAudioSettings.narrationUrl}⏎····················controls⏎····················style={{·width:·'100%',·height:·'30px'·}}⏎·················`  prettier/prettier
+1964:1  Warning: Replace `················<div·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·marginTop:·'6px'·}}` with `··················<div⏎····················style={{⏎······················display:·'flex',⏎······················alignItems:·'center',⏎······················gap:·'8px',⏎······················marginTop:·'6px',⏎····················}}⏎··················`  prettier/prettier
+1965:1  Warning: Replace `··················<label·style={{·fontSize:·'11px',·color:·'white',·display:·'flex',·alignItems:·'center',·gap:·'6px',·flex:·1·}}` with `····················<label⏎······················style={{⏎························fontSize:·'11px',⏎························color:·'white',⏎························display:·'flex',⏎························alignItems:·'center',⏎························gap:·'6px',⏎························flex:·1,⏎······················}}⏎····················`  prettier/prettier
+1966:1  Warning: Insert `··`  prettier/prettier
+1967:1  Warning: Replace `····················` with `······················`  prettier/prettier
+1968:1  Warning: Insert `··`  prettier/prettier
+1969:23  Warning: Insert `··`  prettier/prettier
+1970:1  Warning: Replace `······················` with `························`  prettier/prettier
+1971:1  Warning: Insert `··`  prettier/prettier
+1972:1  Warning: Insert `··`  prettier/prettier
+1973:23  Warning: Replace `onChange={(e)·=>·setViewAudioSettings(prev·=>·({·...prev,·narrationVolume:·parseFloat(e.target.value)·}))` with `··onChange={(e)·=>⏎··························setViewAudioSettings((prev)·=>·({⏎····························...prev,⏎····························narrationVolume:·parseFloat(e.target.value),⏎··························}))⏎························`  prettier/prettier
+1974:1  Warning: Insert `··`  prettier/prettier
+1975:21  Warning: Insert `··`  prettier/prettier
+1976:1  Warning: Replace `····················<span·style={{·fontFamily:·'monospace',·fontSize:·'11px'·}}>{(viewAudioSettings.narrationVolume·*·100).toFixed(0)}%` with `······················<span⏎························style={{·fontFamily:·'monospace',·fontSize:·'11px'·}}⏎······················>⏎························{(viewAudioSettings.narrationVolume·*·100).toFixed(0)}%⏎······················`  prettier/prettier
+1977:1  Warning: Insert `··`  prettier/prettier
+1978:17  Warning: Insert `··`  prettier/prettier
+1979:1  Warning: Replace `··············` with `················`  prettier/prettier
+1980:13  Warning: Insert `··`  prettier/prettier
+1982:1  Warning: Insert `··`  prettier/prettier
+1983:1  Warning: Replace `············<label·style={{·display:·'flex',·alignItems:·'center',·gap:·'8px',·color:·'white',·fontSize:·'12px',·cursor:·'pointer',·marginBottom:·'12px'·}}` with `··············<label⏎················style={{⏎··················display:·'flex',⏎··················alignItems:·'center',⏎··················gap:·'8px',⏎··················color:·'white',⏎··················fontSize:·'12px',⏎··················cursor:·'pointer',⏎··················marginBottom:·'12px',⏎················}}⏎··············`  prettier/prettier
+1984:1  Warning: Insert `··`  prettier/prettier
+1985:1  Warning: Insert `··`  prettier/prettier
+1986:17  Warning: Insert `··`  prettier/prettier
+1987:17  Warning: Replace `onChange={(e)·=>·setViewAudioSettings(prev·=>·({·...prev,·autoplay:·e.target.checked·}))` with `··onChange={(e)·=>⏎····················setViewAudioSettings((prev)·=>·({⏎······················...prev,⏎······················autoplay:·e.target.checked,⏎····················}))⏎··················`  prettier/prettier
+1988:1  Warning: Insert `··`  prettier/prettier
+1989:15  Warning: Insert `··`  prettier/prettier
+1990:1  Warning: Replace `··············<span>▶️·Reproducir·automáticamente·al·entrar·a·esta·vista` with `················<span>⏎··················▶️·Reproducir·automáticamente·al·entrar·a·esta·vista⏎················`  prettier/prettier
+1991:1  Warning: Replace `············` with `··············`  prettier/prettier
+1993:1  Warning: Insert `··`  prettier/prettier
+1994:13  Warning: Insert `··`  prettier/prettier
+1995:1  Warning: Insert `··`  prettier/prettier
+1996:17  Warning: Insert `··`  prettier/prettier
+1997:1  Warning: Insert `··`  prettier/prettier
+1998:1  Warning: Insert `··`  prettier/prettier
+1999:15  Warning: Insert `··`  prettier/prettier
+2000:1  Warning: Replace `··············disabled={uploadingViewAudio·||·(!viewAudioSettings.ambientUrl·&&·!viewAudioSettings.narrationUrl)` with `················disabled={⏎··················uploadingViewAudio·||⏎··················(!viewAudioSettings.ambientUrl·&&⏎····················!viewAudioSettings.narrationUrl)⏎················`  prettier/prettier
+2001:1  Warning: Insert `··`  prettier/prettier
+2002:17  Warning: Insert `··`  prettier/prettier
+2003:1  Warning: Replace `················` with `··················`  prettier/prettier
+2004:17  Warning: Replace `background:·(!viewAudioSettings.ambientUrl·&&·!viewAudioSettings.narrationUrl)` with `··background:⏎····················!viewAudioSettings.ambientUrl·&&⏎····················!viewAudioSettings.narrationUrl`  prettier/prettier
+2005:1  Warning: Insert `····`  prettier/prettier
+2006:1  Warning: Insert `····`  prettier/prettier
+2007:17  Warning: Insert `··`  prettier/prettier
+2008:1  Warning: Insert `··`  prettier/prettier
+2009:17  Warning: Insert `··`  prettier/prettier
+2010:1  Warning: Insert `··`  prettier/prettier
+2011:17  Warning: Insert `··`  prettier/prettier
+2012:1  Warning: Replace `················cursor:·(!viewAudioSettings.ambientUrl·&&·!viewAudioSettings.narrationUrl)·?·'not-allowed'` with `··················cursor:⏎····················!viewAudioSettings.ambientUrl·&&⏎····················!viewAudioSettings.narrationUrl⏎······················?·'not-allowed'⏎·····················`  prettier/prettier
+2013:1  Warning: Insert `··`  prettier/prettier
+2014:1  Warning: Replace `··············` with `················`  prettier/prettier
+2015:13  Warning: Insert `··`  prettier/prettier
+2016:1  Warning: Replace `··············{uploadingViewAudio·?·'⏳·Subiendo...'` with `················{uploadingViewAudio⏎··················?·'⏳·Subiendo...'⏎·················`  prettier/prettier
+2017:13  Warning: Insert `··`  prettier/prettier
+2018:1  Warning: Replace `··········` with `············`  prettier/prettier
+2020:1  Warning: Insert `··`  prettier/prettier
+2021:11  Warning: Insert `··`  prettier/prettier
+2022:1  Warning: Insert `··`  prettier/prettier
+2023:15  Warning: Insert `··`  prettier/prettier
+2024:1  Warning: Insert `··`  prettier/prettier
+2025:1  Warning: Insert `··`  prettier/prettier
+2026:15  Warning: Insert `··`  prettier/prettier
+2027:13  Warning: Insert `··`  prettier/prettier
+2028:11  Warning: Insert `··`  prettier/prettier
+2029:1  Warning: Replace `············` with `··············`  prettier/prettier
+2030:1  Warning: Insert `··`  prettier/prettier
+2031:17  Warning: Insert `··`  prettier/prettier
+2032:1  Warning: Replace `················` with `··················`  prettier/prettier
+2033:1  Warning: Insert `··`  prettier/prettier
+2034:17  Warning: Insert `··`  prettier/prettier
+2035:1  Warning: Replace `················` with `··················`  prettier/prettier
+2036:15  Warning: Insert `··`  prettier/prettier
+2037:13  Warning: Insert `··`  prettier/prettier
+2038:1  Warning: Replace `··············` with `················`  prettier/prettier
+2039:13  Warning: Insert `··`  prettier/prettier
+2040:13  Warning: Replace `<div·style={{·display:·'flex',·gap:·'8px',·flexDirection:·'column'·}}` with `··<div⏎················style={{·display:·'flex',·gap:·'8px',·flexDirection:·'column'·}}⏎··············`  prettier/prettier
+2041:1  Warning: Insert `··`  prettier/prettier
+2042:1  Warning: Replace `················onClick={()·=>·onMarkerStyleChange·&&·onMarkerStyleChange('apple')` with `··················onClick={()·=>⏎····················onMarkerStyleChange·&&·onMarkerStyleChange('apple')⏎··················`  prettier/prettier
+2043:1  Warning: Insert `··`  prettier/prettier
+2044:1  Warning: Insert `··`  prettier/prettier
+2045:19  Warning: Replace `background:` with `··background:⏎·····················`  prettier/prettier
+2046:1  Warning: Insert `····`  prettier/prettier
+2047:1  Warning: Insert `····`  prettier/prettier
+2048:19  Warning: Insert `··`  prettier/prettier
+2049:19  Warning: Replace `border:` with `··border:⏎·····················`  prettier/prettier
+2050:21  Warning: Insert `····`  prettier/prettier
+2051:1  Warning: Insert `····`  prettier/prettier
+2052:19  Warning: Insert `··`  prettier/prettier
+2053:1  Warning: Insert `··`  prettier/prettier
+2054:19  Warning: Insert `··`  prettier/prettier
+2055:1  Warning: Insert `··`  prettier/prettier
+2056:19  Warning: Insert `··`  prettier/prettier
+2057:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2058:1  Warning: Insert `··`  prettier/prettier
+2059:19  Warning: Insert `··`  prettier/prettier
+2060:1  Warning: Replace `················` with `··················`  prettier/prettier
+2061:1  Warning: Insert `··`  prettier/prettier
+2062:19  Warning: Insert `··`  prettier/prettier
+2063:1  Warning: Insert `··`  prettier/prettier
+2064:19  Warning: Insert `··`  prettier/prettier
+2065:1  Warning: Insert `··`  prettier/prettier
+2066:1  Warning: Insert `··`  prettier/prettier
+2067:19  Warning: Insert `··`  prettier/prettier
+2068:1  Warning: Insert `··`  prettier/prettier
+2069:19  Warning: Insert `··`  prettier/prettier
+2070:1  Warning: Replace `················` with `··················`  prettier/prettier
+2071:1  Warning: Insert `··`  prettier/prettier
+2072:17  Warning: Insert `··`  prettier/prettier
+2073:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2074:1  Warning: Insert `··`  prettier/prettier
+2075:21  Warning: Insert `··`  prettier/prettier
+2076:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2077:1  Warning: Insert `··`  prettier/prettier
+2078:21  Warning: Insert `··`  prettier/prettier
+2079:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2080:19  Warning: Insert `··`  prettier/prettier
+2081:17  Warning: Insert `··`  prettier/prettier
+2082:1  Warning: Insert `··`  prettier/prettier
+2083:21  Warning: Insert `··`  prettier/prettier
+2084:1  Warning: Insert `··`  prettier/prettier
+2085:1  Warning: Insert `··`  prettier/prettier
+2086:23  Warning: Insert `··`  prettier/prettier
+2087:1  Warning: Insert `··`  prettier/prettier
+2088:23  Warning: Insert `··`  prettier/prettier
+2089:1  Warning: Replace `······················` with `························`  prettier/prettier
+2090:1  Warning: Insert `··`  prettier/prettier
+2091:23  Warning: Insert `··`  prettier/prettier
+2092:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2093:1  Warning: Insert `··`  prettier/prettier
+2094:17  Warning: Insert `··`  prettier/prettier
+2095:1  Warning: Insert `··`  prettier/prettier
+2096:15  Warning: Insert `··`  prettier/prettier
+2098:15  Warning: Insert `··`  prettier/prettier
+2099:1  Warning: Replace `················onClick={()·=>·onMarkerStyleChange·&&·onMarkerStyleChange('android')` with `··················onClick={()·=>⏎····················onMarkerStyleChange·&&·onMarkerStyleChange('android')⏎··················`  prettier/prettier
+2100:1  Warning: Insert `··`  prettier/prettier
+2101:1  Warning: Insert `··`  prettier/prettier
+2102:19  Warning: Replace `background:` with `··background:⏎·····················`  prettier/prettier
+2103:1  Warning: Insert `····`  prettier/prettier
+2104:21  Warning: Insert `····`  prettier/prettier
+2105:1  Warning: Insert `··`  prettier/prettier
+2106:19  Warning: Replace `border:` with `··border:⏎·····················`  prettier/prettier
+2107:1  Warning: Replace `····················` with `························`  prettier/prettier
+2108:1  Warning: Insert `····`  prettier/prettier
+2109:19  Warning: Insert `··`  prettier/prettier
+2110:19  Warning: Insert `··`  prettier/prettier
+2111:1  Warning: Insert `··`  prettier/prettier
+2112:19  Warning: Insert `··`  prettier/prettier
+2113:1  Warning: Insert `··`  prettier/prettier
+2114:19  Warning: Insert `··`  prettier/prettier
+2115:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2116:1  Warning: Insert `··`  prettier/prettier
+2117:17  Warning: Insert `··`  prettier/prettier
+2118:1  Warning: Replace `················` with `··················`  prettier/prettier
+2119:1  Warning: Insert `··`  prettier/prettier
+2120:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2121:1  Warning: Insert `··`  prettier/prettier
+2122:17  Warning: Insert `··`  prettier/prettier
+2123:1  Warning: Insert `··`  prettier/prettier
+2124:1  Warning: Insert `··`  prettier/prettier
+2125:21  Warning: Insert `··`  prettier/prettier
+2126:19  Warning: Insert `··`  prettier/prettier
+2127:1  Warning: Insert `··`  prettier/prettier
+2128:1  Warning: Replace `··············` with `················`  prettier/prettier
+2129:1  Warning: Insert `··`  prettier/prettier
+2130:19  Warning: Insert `··`  prettier/prettier
+2131:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2132:1  Warning: Insert `··`  prettier/prettier
+2133:21  Warning: Insert `··`  prettier/prettier
+2134:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2135:1  Warning: Insert `··`  prettier/prettier
+2136:21  Warning: Insert `··`  prettier/prettier
+2137:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2138:19  Warning: Insert `··`  prettier/prettier
+2139:17  Warning: Insert `··`  prettier/prettier
+2140:1  Warning: Insert `··`  prettier/prettier
+2141:21  Warning: Insert `··`  prettier/prettier
+2142:1  Warning: Insert `··`  prettier/prettier
+2143:1  Warning: Insert `··`  prettier/prettier
+2144:23  Warning: Insert `··`  prettier/prettier
+2145:1  Warning: Insert `··`  prettier/prettier
+2146:23  Warning: Insert `··`  prettier/prettier
+2147:1  Warning: Replace `······················` with `························`  prettier/prettier
+2148:1  Warning: Insert `··`  prettier/prettier
+2149:23  Warning: Insert `··`  prettier/prettier
+2150:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2151:1  Warning: Insert `··`  prettier/prettier
+2152:17  Warning: Insert `··`  prettier/prettier
+2153:1  Warning: Insert `··`  prettier/prettier
+2154:15  Warning: Insert `··`  prettier/prettier
+2156:15  Warning: Insert `··`  prettier/prettier
+2157:1  Warning: Replace `················onClick={()·=>·onMarkerStyleChange·&&·onMarkerStyleChange('classic')` with `··················onClick={()·=>⏎····················onMarkerStyleChange·&&·onMarkerStyleChange('classic')⏎··················`  prettier/prettier
+2158:1  Warning: Insert `··`  prettier/prettier
+2159:1  Warning: Insert `··`  prettier/prettier
+2160:19  Warning: Replace `background:` with `··background:⏎·····················`  prettier/prettier
+2161:1  Warning: Insert `····`  prettier/prettier
+2162:21  Warning: Insert `····`  prettier/prettier
+2163:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2164:19  Warning: Replace `border:` with `··border:⏎·····················`  prettier/prettier
+2165:1  Warning: Replace `····················` with `························`  prettier/prettier
+2166:1  Warning: Replace `····················` with `························`  prettier/prettier
+2167:1  Warning: Insert `··`  prettier/prettier
+2168:19  Warning: Insert `··`  prettier/prettier
+2169:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2170:1  Warning: Insert `··`  prettier/prettier
+2171:19  Warning: Insert `··`  prettier/prettier
+2172:1  Warning: Insert `··`  prettier/prettier
+2173:19  Warning: Insert `··`  prettier/prettier
+2174:1  Warning: Insert `··`  prettier/prettier
+2175:1  Warning: Insert `··`  prettier/prettier
+2176:17  Warning: Insert `··`  prettier/prettier
+2177:1  Warning: Insert `··`  prettier/prettier
+2178:21  Warning: Insert `··`  prettier/prettier
+2179:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2180:1  Warning: Insert `··`  prettier/prettier
+2181:1  Warning: Insert `··`  prettier/prettier
+2182:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2183:1  Warning: Insert `··`  prettier/prettier
+2184:19  Warning: Insert `··`  prettier/prettier
+2185:1  Warning: Insert `··`  prettier/prettier
+2186:15  Warning: Insert `··`  prettier/prettier
+2187:1  Warning: Insert `··`  prettier/prettier
+2188:1  Warning: Insert `··`  prettier/prettier
+2189:21  Warning: Insert `··`  prettier/prettier
+2190:1  Warning: Insert `··`  prettier/prettier
+2191:21  Warning: Replace `background:` with `··background:⏎·······················`  prettier/prettier
+2192:1  Warning: Insert `··`  prettier/prettier
+2193:21  Warning: Insert `··`  prettier/prettier
+2194:19  Warning: Insert `··`  prettier/prettier
+2195:1  Warning: Insert `··`  prettier/prettier
+2196:17  Warning: Insert `··`  prettier/prettier
+2197:15  Warning: Insert `··`  prettier/prettier
+2198:13  Warning: Insert `··`  prettier/prettier
+2199:1  Warning: Replace `············<p·style={{·fontSize:·'11px',·color:·'#9ca3af',·marginTop:·'8px'·}}` with `··············<p⏎················style={{·fontSize:·'11px',·color:·'#9ca3af',·marginTop:·'8px'·}}⏎··············`  prettier/prettier
+2200:1  Warning: Replace `··············El·estilo·seleccionado·se·aplicará·a·todos·los·visitantes·del` with `················El·estilo·seleccionado·se·aplicará·a·todos·los·visitantes·del⏎···············`  prettier/prettier
+2201:1  Warning: Insert `··`  prettier/prettier
+2202:1  Warning: Insert `··`  prettier/prettier
+2203:15  Warning: Insert `··`  prettier/prettier
+2204:1  Warning: Replace `················` with `··················`  prettier/prettier
+2205:1  Warning: Insert `··`  prettier/prettier
+2206:17  Warning: Insert `··`  prettier/prettier
+2207:1  Warning: Insert `··`  prettier/prettier
+2208:19  Warning: Insert `··`  prettier/prettier
+2209:19  Warning: Insert `··`  prettier/prettier
+2210:1  Warning: Insert `··`  prettier/prettier
+2211:21  Warning: Insert `··`  prettier/prettier
+2212:1  Warning: Insert `··`  prettier/prettier
+2213:19  Warning: Insert `··`  prettier/prettier
+2214:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2215:1  Warning: Insert `··`  prettier/prettier
+2216:19  Warning: Insert `··`  prettier/prettier
+2217:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2218:1  Warning: Insert `··`  prettier/prettier
+2219:19  Warning: Insert `··`  prettier/prettier
+2220:1  Warning: Insert `··`  prettier/prettier
+2221:17  Warning: Insert `··`  prettier/prettier
+2222:1  Warning: Insert `··`  prettier/prettier
+2223:1  Warning: Insert `··`  prettier/prettier
+2224:21  Warning: Insert `··`  prettier/prettier
+2225:1  Warning: Insert `··`  prettier/prettier
+2226:19  Warning: Insert `··`  prettier/prettier
+2227:1  Warning: Replace `················` with `··················`  prettier/prettier
+2228:1  Warning: Insert `··`  prettier/prettier
+2229:19  Warning: Insert `··`  prettier/prettier
+2230:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2231:1  Warning: Insert `··`  prettier/prettier
+2232:19  Warning: Insert `··`  prettier/prettier
+2233:1  Warning: Replace `················` with `··················`  prettier/prettier
+2234:1  Warning: Insert `··`  prettier/prettier
+2235:17  Warning: Replace `{isSavingStyle·?·'⏳·Guardando·estilo...'` with `··{isSavingStyle⏎····················?·'⏳·Guardando·estilo...'⏎···················`  prettier/prettier
+2236:15  Warning: Insert `··`  prettier/prettier
+2237:13  Warning: Insert `··`  prettier/prettier
+2238:1  Warning: Insert `··`  prettier/prettier
+2240:6  Warning: Replace `·····⏎··········` with `·······`  prettier/prettier
+2242:11  Warning: Insert `··`  prettier/prettier
+2243:1  Warning: Insert `··`  prettier/prettier
+2244:15  Warning: Insert `··`  prettier/prettier
+2245:1  Warning: Insert `··`  prettier/prettier
+2246:1  Warning: Insert `··`  prettier/prettier
+2247:15  Warning: Insert `··`  prettier/prettier
+2248:1  Warning: Insert `··`  prettier/prettier
+2249:13  Warning: Insert `··`  prettier/prettier
+2250:1  Warning: Replace `··········` with `············`  prettier/prettier
+2251:1  Warning: Insert `··`  prettier/prettier
+2252:15  Warning: Insert `··`  prettier/prettier
+2253:1  Warning: Replace `················` with `··················`  prettier/prettier
+2254:1  Warning: Insert `··`  prettier/prettier
+2255:17  Warning: Insert `··`  prettier/prettier
+2256:1  Warning: Insert `··`  prettier/prettier
+2257:17  Warning: Insert `··`  prettier/prettier
+2258:1  Warning: Insert `··`  prettier/prettier
+2259:1  Warning: Insert `··`  prettier/prettier
+2260:15  Warning: Insert `··`  prettier/prettier
+2261:13  Warning: Insert `··`  prettier/prettier
+2262:1  Warning: Insert `··`  prettier/prettier
+2263:13  Warning: Insert `··`  prettier/prettier
+2264:13  Warning: Replace `<p·style={{·fontSize:·'11px',·color:·'#9ca3af',·marginBottom:·'12px'·}}` with `··<p⏎················style={{⏎··················fontSize:·'11px',⏎··················color:·'#9ca3af',⏎··················marginBottom:·'12px',⏎················}}⏎··············`  prettier/prettier
+2265:1  Warning: Replace `··············Dibuja·polígonos·para·marcar·los·límites·visuales·del·terreno·en` with `················Dibuja·polígonos·para·marcar·los·límites·visuales·del·terreno·en⏎···············`  prettier/prettier
+2266:1  Warning: Insert `··`  prettier/prettier
+2268:1  Warning: Insert `··`  prettier/prettier
+2269:15  Warning: Insert `··`  prettier/prettier
+2270:1  Warning: Insert `··`  prettier/prettier
+2271:1  Warning: Insert `··`  prettier/prettier
+2272:19  Warning: Insert `··`  prettier/prettier
+2273:1  Warning: Insert `··`  prettier/prettier
+2274:21  Warning: Insert `··`  prettier/prettier
+2275:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2276:1  Warning: Insert `··`  prettier/prettier
+2277:19  Warning: Insert `··`  prettier/prettier
+2279:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2280:1  Warning: Insert `··`  prettier/prettier
+2281:19  Warning: Insert `··`  prettier/prettier
+2283:1  Warning: Replace `··················console.log('✏️·Modo·dibujo·activado·-·Click·en·el·visor·para·agregar·puntos'` with `····················console.log(⏎······················'✏️·Modo·dibujo·activado·-·Click·en·el·visor·para·agregar·puntos',⏎····················`  prettier/prettier
+2284:1  Warning: Replace `··················console.log('isDrawingPolygonRef.current:',·isDrawingPolygonRef.current` with `····················console.log(⏎······················'isDrawingPolygonRef.current:',⏎······················isDrawingPolygonRef.current,⏎····················`  prettier/prettier
+2285:1  Warning: Insert `··`  prettier/prettier
+2286:1  Warning: Insert `··`  prettier/prettier
+2287:1  Warning: Insert `··`  prettier/prettier
+2288:19  Warning: Insert `··`  prettier/prettier
+2289:1  Warning: Insert `··`  prettier/prettier
+2290:19  Warning: Replace `background:` with `··background:⏎·····················`  prettier/prettier
+2291:1  Warning: Insert `····`  prettier/prettier
+2292:21  Warning: Insert `····`  prettier/prettier
+2293:1  Warning: Insert `··`  prettier/prettier
+2294:19  Warning: Insert `··`  prettier/prettier
+2295:1  Warning: Insert `··`  prettier/prettier
+2296:19  Warning: Insert `··`  prettier/prettier
+2297:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2298:19  Warning: Replace `cursor:·placementMode·||·isLoading·||·isSaving·?·'not-allowed'` with `··cursor:⏎······················placementMode·||·isLoading·||·isSaving⏎························?·'not-allowed'⏎·······················`  prettier/prettier
+2299:1  Warning: Insert `··`  prettier/prettier
+2300:1  Warning: Insert `··`  prettier/prettier
+2301:17  Warning: Insert `··`  prettier/prettier
+2302:1  Warning: Insert `··`  prettier/prettier
+2303:1  Warning: Insert `··`  prettier/prettier
+2304:21  Warning: Insert `··`  prettier/prettier
+2305:19  Warning: Insert `··`  prettier/prettier
+2306:1  Warning: Insert `··`  prettier/prettier
+2307:17  Warning: Insert `··`  prettier/prettier
+2308:1  Warning: Insert `··`  prettier/prettier
+2309:1  Warning: Insert `··`  prettier/prettier
+2310:15  Warning: Insert `··`  prettier/prettier
+2311:1  Warning: Insert `··`  prettier/prettier
+2312:15  Warning: Insert `··`  prettier/prettier
+2313:1  Warning: Replace `············` with `··············`  prettier/prettier
+2314:15  Warning: Replace `<div·style={{·display:·'flex',·flexDirection:·'column',·gap:·'10px'·}}` with `··<div⏎··················style={{⏎····················display:·'flex',⏎····················flexDirection:·'column',⏎····················gap:·'10px',⏎··················}}⏎················`  prettier/prettier
+2315:1  Warning: Insert `··`  prettier/prettier
+2316:1  Warning: Insert `··`  prettier/prettier
+2317:21  Warning: Insert `··`  prettier/prettier
+2318:1  Warning: Insert `··`  prettier/prettier
+2319:21  Warning: Insert `··`  prettier/prettier
+2320:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2321:1  Warning: Insert `··`  prettier/prettier
+2322:19  Warning: Insert `··`  prettier/prettier
+2323:1  Warning: Replace `················` with `··················`  prettier/prettier
+2324:1  Warning: Replace `··················<div·style={{·fontSize:·'13px',·color:·'#00ffff',·fontWeight:·'600',·marginBottom:·'4px'·}}` with `····················<div⏎······················style={{⏎························fontSize:·'13px',⏎························color:·'#00ffff',⏎························fontWeight:·'600',⏎························marginBottom:·'4px',⏎······················}}⏎····················`  prettier/prettier
+2325:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2326:19  Warning: Insert `··`  prettier/prettier
+2327:19  Warning: Replace `<div·style={{·fontSize:·'20px',·color:·'#fff',·fontWeight:·'700'·}}` with `··<div⏎······················style={{⏎························fontSize:·'20px',⏎························color:·'#fff',⏎························fontWeight:·'700',⏎······················}}⏎····················`  prettier/prettier
+2328:1  Warning: Insert `··`  prettier/prettier
+2329:19  Warning: Insert `··`  prettier/prettier
+2330:19  Warning: Replace `<div·style={{·fontSize:·'10px',·color:·'#9ca3af',·marginTop:·'4px'·}}` with `··<div⏎······················style={{⏎························fontSize:·'10px',⏎························color:·'#9ca3af',⏎························marginTop:·'4px',⏎······················}}⏎····················`  prettier/prettier
+2331:1  Warning: Insert `··`  prettier/prettier
+2332:19  Warning: Insert `··`  prettier/prettier
+2333:1  Warning: Insert `··`  prettier/prettier
+2335:1  Warning: Replace `················` with `··················`  prettier/prettier
+2336:1  Warning: Insert `··`  prettier/prettier
+2337:1  Warning: Insert `··`  prettier/prettier
+2339:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2340:23  Warning: Replace `alert('⚠️·Se·necesitan·al·menos·3·puntos·para·guardar·el·polígono'` with `··alert(⏎··························'⚠️·Se·necesitan·al·menos·3·puntos·para·guardar·el·polígono',⏎························`  prettier/prettier
+2341:1  Warning: Replace `······················` with `························`  prettier/prettier
+2342:21  Warning: Insert `··`  prettier/prettier
+2344:1  Warning: Insert `··`  prettier/prettier
+2345:1  Warning: Insert `··`  prettier/prettier
+2346:23  Warning: Insert `··`  prettier/prettier
+2347:23  Warning: Insert `··`  prettier/prettier
+2348:1  Warning: Insert `··`  prettier/prettier
+2350:21  Warning: Insert `··`  prettier/prettier
+2351:1  Warning: Insert `··`  prettier/prettier
+2352:23  Warning: Insert `··`  prettier/prettier
+2353:1  Warning: Replace `······················` with `························`  prettier/prettier
+2354:1  Warning: Insert `··`  prettier/prettier
+2355:23  Warning: Insert `··`  prettier/prettier
+2356:1  Warning: Replace `······················` with `························`  prettier/prettier
+2357:1  Warning: Insert `··`  prettier/prettier
+2358:23  Warning: Insert `··`  prettier/prettier
+2359:1  Warning: Insert `··`  prettier/prettier
+2361:21  Warning: Insert `··`  prettier/prettier
+2362:1  Warning: Insert `··`  prettier/prettier
+2363:1  Warning: Replace `······················alert('❌·Error·al·guardar·el·polígono·en·la·base·de·datos.\n'·+·error.message` with `························alert(⏎··························'❌·Error·al·guardar·el·polígono·en·la·base·de·datos.\n'·+⏎····························error.message,⏎························`  prettier/prettier
+2364:1  Warning: Insert `··`  prettier/prettier
+2365:21  Warning: Insert `··`  prettier/prettier
+2367:1  Warning: Replace `····················console.log('✅·Polígono·guardado·en·BD·con·ID:',·data.id` with `······················console.log(⏎························'✅·Polígono·guardado·en·BD·con·ID:',⏎························data.id,⏎······················`  prettier/prettier
+2368:1  Warning: Insert `··`  prettier/prettier
+2369:1  Warning: Insert `··`  prettier/prettier
+2371:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2372:1  Warning: Insert `··`  prettier/prettier
+2373:23  Warning: Insert `··`  prettier/prettier
+2374:1  Warning: Insert `··`  prettier/prettier
+2375:25  Warning: Insert `··`  prettier/prettier
+2376:27  Warning: Insert `··`  prettier/prettier
+2377:1  Warning: Replace `····························markersPluginRef.current.removeMarker(`polygon-point-${index·+·1}`` with `······························markersPluginRef.current.removeMarker(⏎································`polygon-point-${index·+·1}`,⏎······························`  prettier/prettier
+2378:1  Warning: Insert `··`  prettier/prettier
+2379:29  Warning: Insert `··`  prettier/prettier
+2380:1  Warning: Insert `··`  prettier/prettier
+2381:25  Warning: Insert `··`  prettier/prettier
+2383:1  Warning: Insert `··`  prettier/prettier
+2384:1  Warning: Insert `··`  prettier/prettier
+2385:27  Warning: Replace `markersPluginRef.current.removeMarker('drawing-polygon'` with `··markersPluginRef.current.removeMarker(⏎······························'drawing-polygon',⏎····························`  prettier/prettier
+2386:25  Warning: Insert `··`  prettier/prettier
+2388:1  Warning: Insert `··`  prettier/prettier
+2389:25  Warning: Insert `··`  prettier/prettier
+2390:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2391:1  Warning: Insert `··`  prettier/prettier
+2392:27  Warning: Insert `··`  prettier/prettier
+2393:1  Warning: Replace `····························` with `······························`  prettier/prettier
+2394:1  Warning: Insert `··`  prettier/prettier
+2395:29  Warning: Insert `··`  prettier/prettier
+2396:1  Warning: Insert `··`  prettier/prettier
+2397:29  Warning: Insert `··`  prettier/prettier
+2398:29  Warning: Insert `··`  prettier/prettier
+2399:1  Warning: Insert `··`  prettier/prettier
+2400:27  Warning: Insert `··`  prettier/prettier
+2401:1  Warning: Insert `··`  prettier/prettier
+2402:29  Warning: Insert `··`  prettier/prettier
+2403:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2404:1  Warning: Insert `··`  prettier/prettier
+2405:27  Warning: Insert `··`  prettier/prettier
+2406:1  Warning: Replace `························` with `··························`  prettier/prettier
+2408:1  Warning: Replace `························console.log('✅·Polígono·renderizado·con·ID:',·data.id` with `··························console.log(⏎····························'✅·Polígono·renderizado·con·ID:',⏎····························data.id,⏎··························`  prettier/prettier
+2409:1  Warning: Replace `························alert(`✅·Polígono·guardado·exitosamente·en·la·base·de·datos!\n\nID:·${data.id}\nPuntos:·${points.length}\nVista:·${currentImageIndex·+·1}`` with `··························alert(⏎····························`✅·Polígono·guardado·exitosamente·en·la·base·de·datos!\n\nID:·${data.id}\nPuntos:·${points.length}\nVista:·${currentImageIndex·+·1}`,⏎··························`  prettier/prettier
+2410:1  Warning: Insert `··`  prettier/prettier
+2411:25  Warning: Replace `console.error('❌·Error·renderizando·polígono:',·renderError);` with `··console.error(⏎····························'❌·Error·renderizando·polígono:',⏎····························renderError,⏎··························);⏎························}`  prettier/prettier
+2413:22  Warning: Insert `}`  prettier/prettier
+2414:2  Warning: Replace `·················}}⏎··················` with `···················`  prettier/prettier
+2416:19  Warning: Insert `··`  prettier/prettier
+2417:1  Warning: Insert `··`  prettier/prettier
+2418:1  Warning: Insert `··`  prettier/prettier
+2419:21  Warning: Replace `background:` with `··background:⏎·······················`  prettier/prettier
+2420:1  Warning: Insert `····`  prettier/prettier
+2421:1  Warning: Replace `······················` with `··························`  prettier/prettier
+2422:21  Warning: Insert `··`  prettier/prettier
+2423:1  Warning: Insert `··`  prettier/prettier
+2424:21  Warning: Insert `··`  prettier/prettier
+2425:21  Warning: Insert `··`  prettier/prettier
+2426:1  Warning: Insert `··`  prettier/prettier
+2427:21  Warning: Insert `··`  prettier/prettier
+2428:1  Warning: Insert `··`  prettier/prettier
+2429:19  Warning: Insert `··`  prettier/prettier
+2430:1  Warning: Replace `················` with `··················`  prettier/prettier
+2431:1  Warning: Replace `··················💾·Guardar·Polígono` with `····················💾·Guardar·Polígono{'·'}⏎···················`  prettier/prettier
+2432:17  Warning: Insert `··`  prettier/prettier
+2434:1  Warning: Replace `················` with `··················`  prettier/prettier
+2435:1  Warning: Insert `··`  prettier/prettier
+2436:1  Warning: Insert `··`  prettier/prettier
+2437:1  Warning: Insert `··`  prettier/prettier
+2439:21  Warning: Insert `··`  prettier/prettier
+2440:1  Warning: Insert `··`  prettier/prettier
+2442:1  Warning: Insert `··`  prettier/prettier
+2443:21  Warning: Insert `··`  prettier/prettier
+2444:1  Warning: Insert `··`  prettier/prettier
+2445:25  Warning: Insert `··`  prettier/prettier
+2446:1  Warning: Replace `························` with `··························`  prettier/prettier
+2447:1  Warning: Replace `··························markersPluginRef.current.removeMarker('drawing-polygon'` with `····························markersPluginRef.current.removeMarker(⏎······························'drawing-polygon',⏎····························`  prettier/prettier
+2448:1  Warning: Insert `··`  prettier/prettier
+2450:1  Warning: Insert `··`  prettier/prettier
+2451:1  Warning: Replace `························` with `··························`  prettier/prettier
+2452:1  Warning: Replace `··························markersPluginRef.current.removeMarker('saved-polygon'` with `····························markersPluginRef.current.removeMarker(⏎······························'saved-polygon',⏎····························`  prettier/prettier
+2453:25  Warning: Insert `··`  prettier/prettier
+2455:1  Warning: Insert `··`  prettier/prettier
+2456:25  Warning: Insert `··`  prettier/prettier
+2457:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2458:1  Warning: Replace `····························markersPluginRef.current.removeMarker(`polygon-point-${i}`` with `······························markersPluginRef.current.removeMarker(⏎································`polygon-point-${i}`,⏎······························`  prettier/prettier
+2459:1  Warning: Insert `··`  prettier/prettier
+2460:25  Warning: Insert `··`  prettier/prettier
+2462:1  Warning: Replace `························console.log(`✅·Limpiados·${currentPoints}·puntos·y·polígonos`` with `··························console.log(⏎····························`✅·Limpiados·${currentPoints}·puntos·y·polígonos`,⏎··························`  prettier/prettier
+2463:1  Warning: Insert `··`  prettier/prettier
+2464:25  Warning: Insert `··`  prettier/prettier
+2465:23  Warning: Insert `··`  prettier/prettier
+2466:1  Warning: Insert `··`  prettier/prettier
+2468:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2469:1  Warning: Insert `··`  prettier/prettier
+2470:21  Warning: Insert `··`  prettier/prettier
+2471:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2472:1  Warning: Insert `··`  prettier/prettier
+2473:21  Warning: Insert `··`  prettier/prettier
+2474:1  Warning: Insert `··`  prettier/prettier
+2475:21  Warning: Insert `··`  prettier/prettier
+2476:21  Warning: Insert `··`  prettier/prettier
+2477:1  Warning: Insert `··`  prettier/prettier
+2478:21  Warning: Insert `··`  prettier/prettier
+2479:1  Warning: Insert `··`  prettier/prettier
+2480:21  Warning: Insert `··`  prettier/prettier
+2481:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2482:1  Warning: Insert `··`  prettier/prettier
+2483:17  Warning: Insert `··`  prettier/prettier
+2484:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2485:1  Warning: Insert `··`  prettier/prettier
+2486:15  Warning: Insert `··`  prettier/prettier
+2487:1  Warning: Replace `············` with `··············`  prettier/prettier
+2488:1  Warning: Insert `··`  prettier/prettier
+2490:11  Warning: Replace `<button` with `··<button⏎·············`  prettier/prettier
+2491:13  Warning: Insert `··`  prettier/prettier
+2492:1  Warning: Insert `··`  prettier/prettier
+2493:13  Warning: Insert `··`  prettier/prettier
+2494:15  Warning: Replace `opacity:` with `··opacity:⏎·················`  prettier/prettier
+2495:15  Warning: Insert `··`  prettier/prettier
+2496:1  Warning: Insert `··`  prettier/prettier
+2497:1  Warning: Insert `··`  prettier/prettier
+2498:19  Warning: Insert `··`  prettier/prettier
+2499:13  Warning: Insert `··`  prettier/prettier
+2500:1  Warning: Insert `··`  prettier/prettier
+2501:13  Warning: Insert `··`  prettier/prettier
+2502:1  Warning: Insert `··`  prettier/prettier
+2503:15  Warning: Insert `··`  prettier/prettier
+2504:1  Warning: Replace `················` with `··················`  prettier/prettier
+2505:1  Warning: Insert `··`  prettier/prettier
+2506:19  Warning: Insert `··`  prettier/prettier
+2507:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2508:11  Warning: Insert `··`  prettier/prettier
+2509:1  Warning: Insert `··`  prettier/prettier
+2510:1  Warning: Insert `··`  prettier/prettier
+2511:15  Warning: Insert `··`  prettier/prettier
+2512:13  Warning: Insert `··`  prettier/prettier
+2513:1  Warning: Insert `··`  prettier/prettier
+2514:11  Warning: Insert `··`  prettier/prettier
+2515:1  Warning: Insert `··`  prettier/prettier
+2516:1  Warning: Insert `··`  prettier/prettier
+2517:13  Warning: Insert `··`  prettier/prettier
+2518:11  Warning: Insert `··`  prettier/prettier
+2519:1  Warning: Insert `··`  prettier/prettier
+2527:32  Warning: Replace `·?·'✏️·Editar·Hotspot'` with `⏎··················?·'✏️·Editar·Hotspot'⏎·················`  prettier/prettier
+2556:48  Warning: Replace `🧭·Navegación·(ir·a·otra·vista)` with `⏎······················🧭·Navegación·(ir·a·otra·vista)⏎····················`  prettier/prettier
+2557:42  Warning: Replace `ℹ️·Información·(texto·descriptivo)` with `⏎······················ℹ️·Información·(texto·descriptivo)⏎····················`  prettier/prettier
+2562:80  Warning: Insert `⏎···················`  prettier/prettier
+2578:25  Warning: Replace `·style={{·margin:·0,·fontSize:·'13px',·color:·'#1e40af'·}}` with `⏎························style={{⏎··························margin:·0,⏎··························fontSize:·'13px',⏎··························color:·'#1e40af',⏎························}}⏎······················`  prettier/prettier
+2643:76  Warning: Insert `⏎···························`  prettier/prettier
+2666:42  Warning: Replace `·...newHotspot,·create_backlink:·e.target.checked` with `⏎····························...newHotspot,⏎····························create_backlink:·e.target.checked,⏎·························`  prettier/prettier
+2688:25  Warning: Replace `·style={{·margin:·0,·fontSize:·'13px',·color:·'#92400e'·}}` with `⏎························style={{⏎··························margin:·0,⏎··························fontSize:·'13px',⏎··························color:·'#92400e',⏎························}}⏎······················`  prettier/prettier
+2689:78  Warning: Insert `⏎·······················`  prettier/prettier
+2693:54  Warning: Replace `📝·Texto·Informativo·*` with `⏎························📝·Texto·Informativo·*⏎······················`  prettier/prettier
+2697:42  Warning: Replace `·...newHotspot,·content_text:·e.target.value` with `⏎····························...newHotspot,⏎····························content_text:·e.target.value,⏎·························`  prettier/prettier
+2718:25  Warning: Replace `·style={{·margin:·0,·fontSize:·'13px',·color:·'#3730a3'·}}` with `⏎························style={{⏎··························margin:·0,⏎··························fontSize:·'13px',⏎··························color:·'#3730a3',⏎························}}⏎······················`  prettier/prettier
+2719:76  Warning: Insert `⏎·······················`  prettier/prettier
+2724:54  Warning: Replace `📝·Descripción·de·la·Galería·(opcional)` with `⏎························📝·Descripción·de·la·Galería·(opcional)⏎······················`  prettier/prettier
+2728:42  Warning: Replace `·...newHotspot,·content_text:·e.target.value` with `⏎····························...newHotspot,⏎····························content_text:·e.target.value,⏎·························`  prettier/prettier
+2752:45  Warning: Replace `prev` with `(prev)`  prettier/prettier
+2754:78  Warning: Insert `,`  prettier/prettier
+2764:67  Warning: Replace `⏳·Subiendo·imagen...` with `⏎··························⏳·Subiendo·imagen...⏎························`  prettier/prettier
+2769:54  Warning: Replace `🖼️·Imágenes·Agregadas` with `⏎························🖼️·Imágenes·Agregadas⏎······················`  prettier/prettier
+2773:33  Warning: Replace `·key={index}·className="flex·items-center·gap-2·bg-gray-100·p-2·rounded"` with `⏎······························key={index}⏎······························className="flex·items-center·gap-2·bg-gray-100·p-2·rounded"⏎····························`  prettier/prettier
+2774:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+2774:35  Warning: Replace `·src={url}·alt={`Imagen·${index·+·1}`}·className="w-12·h-12·object-cover·rounded"` with `⏎································src={url}⏎································alt={`Imagen·${index·+·1}`}⏎································className="w-12·h-12·object-cover·rounded"⏎·····························`  prettier/prettier
+2775:73  Warning: Replace `{url}` with `⏎································{url}⏎······························`  prettier/prettier
+2778:49  Warning: Replace `prev` with `(prev)`  prettier/prettier
+2780:80  Warning: Replace `(_,·i)·=>·i·!==·index)` with `⏎······································(_,·i)·=>·i·!==·index,⏎····································),`  prettier/prettier
+2791:62  Warning: Replace `No·hay·imágenes·agregadas` with `⏎··························No·hay·imágenes·agregadas⏎························`  prettier/prettier
+2808:25  Warning: Replace `·style={{·margin:·0,·fontSize:·'13px',·color:·'#831843'·}}` with `⏎························style={{⏎··························margin:·0,⏎··························fontSize:·'13px',⏎··························color:·'#831843',⏎························}}⏎······················`  prettier/prettier
+2809:80  Warning: Insert `⏎·······················`  prettier/prettier
+2817:31  Warning: Insert `⏎·························`  prettier/prettier
+2818:35  Warning: Replace `·borderColor:·videoSourceType·===·'upload'·?·'#3b82f6'·:·'#d1d5db'·}}` with `⏎····························borderColor:⏎······························videoSourceType·===·'upload'⏎································?·'#3b82f6'⏎································:·'#d1d5db',⏎··························}}⏎························`  prettier/prettier
+2825:45  Warning: Replace `prev·=>·({·...prev,·content_video_url:·''` with `(prev)·=>·({⏎································...prev,⏎································content_video_url:·'',⏎·····························`  prettier/prettier
+2830:31  Warning: Insert `⏎·························`  prettier/prettier
+2831:35  Warning: Replace `·borderColor:·videoSourceType·===·'embed'·?·'#3b82f6'·:·'#d1d5db'·}}` with `⏎····························borderColor:⏎······························videoSourceType·===·'embed'⏎································?·'#3b82f6'⏎································:·'#d1d5db',⏎··························}}⏎························`  prettier/prettier
+2838:45  Warning: Replace `prev·=>·({·...prev,·content_video_url:·''` with `(prev)·=>·({⏎································...prev,⏎································content_video_url:·'',⏎·····························`  prettier/prettier
+2849:56  Warning: Replace `📤·Subir·Video·Corto·(Máx·60·seg)` with `⏎··························📤·Subir·Video·Corto·(Máx·60·seg)⏎························`  prettier/prettier
+2861:68  Warning: Insert `·`  prettier/prettier
+2866:39  Warning: Replace ``⚠️·El·video·dura·${Math.round(duration)}·segundos.\n\nPara·videos·mayores·a·60·segundos,·usa·YouTube·o·Vimeo.`` with `⏎··································`⚠️·El·video·dura·${Math.round(duration)}·segundos.\n\nPara·videos·mayores·a·60·segundos,·usa·YouTube·o·Vimeo.`,⏎································`  prettier/prettier
+2872:67  Warning: Replace `file,·'video'` with `⏎································file,⏎································'video',⏎······························`  prettier/prettier
+2874:47  Warning: Replace `prev` with `(prev)`  prettier/prettier
+2876:57  Warning: Insert `,`  prettier/prettier
+2887:69  Warning: Replace `⏳·Subiendo·video...` with `⏎····························⏳·Subiendo·video...⏎··························`  prettier/prettier
+2896:56  Warning: Replace `🔗·URL·de·YouTube·o·Vimeo` with `⏎··························🔗·URL·de·YouTube·o·Vimeo⏎························`  prettier/prettier
+2901:44  Warning: Replace `·...newHotspot,·content_video_url:·e.target.value` with `⏎······························...newHotspot,⏎······························content_video_url:·e.target.value,⏎···························`  prettier/prettier
+2915:56  Warning: Replace `🎥·Video·Agregado` with `⏎··························🎥·Video·Agregado⏎························`  prettier/prettier
+2917:79  Warning: Insert `⏎·························`  prettier/prettier
+2920:35  Warning: Replace `·src={newHotspot.content_video_url}·className="w-24·h-16·object-cover·rounded"` with `⏎······························src={newHotspot.content_video_url}⏎······························className="w-24·h-16·object-cover·rounded"⏎···························`  prettier/prettier
+2922:69  Warning: Replace `{newHotspot.content_video_url}` with `⏎····························{newHotspot.content_video_url}⏎··························`  prettier/prettier
+2925:45  Warning: Replace `prev` with `(prev)`  prettier/prettier
+2927:54  Warning: Insert `,`  prettier/prettier
+2940:1  Warning: Delete `⏎`  prettier/prettier
+2943:50  Warning: Replace `🎨·Icono·Personalizado·(opcional)` with `⏎····················🎨·Icono·Personalizado·(opcional)⏎··················`  prettier/prettier
+2948:38  Warning: Replace `·...newHotspot,·custom_icon_url:·e.target.value` with `⏎························...newHotspot,⏎························custom_icon_url:·e.target.value,⏎·····················`  prettier/prettier
+2961:28  Warning: Replace `editingHotspot·?·handleUpdateHotspot·:·handleAddHotspot` with `⏎····················editingHotspot·?·handleUpdateHotspot·:·handleAddHotspot⏎··················`  prettier/prettier
+2962:29  Warning: Replace `uploadingImage·||·(!editingHotspot·&&·createNewView·&&·!newImageFile)` with `⏎····················uploadingImage·||⏎····················(!editingHotspot·&&·createNewView·&&·!newImageFile)⏎··················`  prettier/prettier
+2965:34  Warning: Delete `·?·(`  prettier/prettier
+2966:20  Warning: Insert `·?`  prettier/prettier
+2967:19  Warning: Replace `)·:·uploadingImage·?·(⏎····················createNewView·?·'🔄·Optimizando·y·subiendo...'·:·'⏳·Guardando...'⏎··················)·:·(` with `··:·uploadingImage⏎······················?·createNewView⏎························?·'🔄·Optimizando·y·subiendo...'⏎························:·'⏳·Guardando...'`  prettier/prettier
+2970:1  Warning: Replace `····················'✅·Crear·Hotspot'⏎··················)` with `······················:·'✅·Crear·Hotspot'`  prettier/prettier
+3009:27  Warning: Replace `hotspots.filter((h)·=>·h.imageIndex·===·currentImageIndex).length` with `⏎··············hotspots.filter((h)·=>·h.imageIndex·===·currentImageIndex).length⏎············`  prettier/prettier
+
+./app/terreno/[slug]/editor/page.js
+283:19  Warning: Replace ``📤·Subiendo·${mediaType}:·${file.name}·(${(file.size·/·1024·/·1024).toFixed(2)}MB)`` with `⏎········`📤·Subiendo·${mediaType}:·${file.name}·(${(file.size·/·1024·/·1024).toFixed(2)}MB)`,⏎······`  prettier/prettier
+490:17  Warning: Replace ``🎨·Estilo·de·marcadores·cambiado·a:·"${newStyle}"·(pendiente·de·guardar)`` with `⏎······`🎨·Estilo·de·marcadores·cambiado·a:·"${newStyle}"·(pendiente·de·guardar)`,⏎····`  prettier/prettier
+538:53  Warning: Insert `⏎·······`  prettier/prettier
+624:19  Warning: Replace `'📦·Datos·a·insertar·en·RPC:',·JSON.stringify(hotspotsToInsert,·null,·2)` with `⏎········'📦·Datos·a·insertar·en·RPC:',⏎········JSON.stringify(hotspotsToInsert,·null,·2),⏎······`  prettier/prettier
+651:15  Warning: Replace `'⚠️·Hotspots·guardados,·pero·hubo·un·error·al·guardar·el·estilo·de·marcadores.'` with `⏎··········'⚠️·Hotspots·guardados,·pero·hubo·un·error·al·guardar·el·estilo·de·marcadores.',⏎········`  prettier/prettier
+665:47  Warning: Replace `·count:·hotspotsData?.length,·error:·hotspotsError` with `⏎········count:·hotspotsData?.length,⏎········error:·hotspotsError,⏎·····`  prettier/prettier
+696:13  Warning: Replace ``✅·${newHotspots.length}·hotspot(s)·y·estilo·de·marcadores·guardados·correctamente.`` with `⏎········`✅·${newHotspots.length}·hotspot(s)·y·estilo·de·marcadores·guardados·correctamente.`,⏎······`  prettier/prettier
+
+./app/terreno/[slug]/page.tsx
+1:33  Warning: Delete `␍`  prettier/prettier
+2:53  Warning: Delete `␍`  prettier/prettier
+3:53  Warning: Delete `␍`  prettier/prettier
+4:1  Warning: Delete `␍`  prettier/prettier
+5:57  Warning: Delete `␍`  prettier/prettier
+6:41  Warning: Delete `␍`  prettier/prettier
+7:10  Warning: Delete `␍`  prettier/prettier
+8:5  Warning: Delete `␍`  prettier/prettier
+9:37  Warning: Delete `␍`  prettier/prettier
+10:24  Warning: Delete `␍`  prettier/prettier
+11:35  Warning: Delete `␍`  prettier/prettier
+12:33  Warning: Delete `␍`  prettier/prettier
+13:1  Warning: Delete `␍`  prettier/prettier
+14:64  Warning: Delete `␍`  prettier/prettier
+15:43  Warning: Delete `␍`  prettier/prettier
+16:22  Warning: Delete `␍`  prettier/prettier
+17:17  Warning: Delete `␍`  prettier/prettier
+18:22  Warning: Delete `␍`  prettier/prettier
+19:15  Warning: Delete `␍`  prettier/prettier
+20:1  Warning: Delete `␍`  prettier/prettier
+21:37  Warning: Delete `␍`  prettier/prettier
+22:18  Warning: Delete `␍`  prettier/prettier
+23:13  Warning: Delete `␍`  prettier/prettier
+24:53  Warning: Delete `␍`  prettier/prettier
+25:66  Warning: Delete `␍`  prettier/prettier
+26:7  Warning: Delete `␍`  prettier/prettier
+27:4  Warning: Delete `␍`  prettier/prettier
+28:1  Warning: Delete `␍`  prettier/prettier
+29:26  Warning: Delete `␍`  prettier/prettier
+30:30  Warning: Delete `␍`  prettier/prettier
+31:40  Warning: Delete `␍`  prettier/prettier
+32:18  Warning: Delete `␍`  prettier/prettier
+33:41  Warning: Delete `␍`  prettier/prettier
+34:17  Warning: Delete `␍`  prettier/prettier
+35:51  Warning: Delete `␍`  prettier/prettier
+36:27  Warning: Delete `␍`  prettier/prettier
+37:25  Warning: Delete `␍`  prettier/prettier
+38:1  Warning: Delete `␍`  prettier/prettier
+39:18  Warning: Delete `␍`  prettier/prettier
+40:42  Warning: Delete `␍`  prettier/prettier
+41:32  Warning: Replace `␍⏎······?·`${terreno.total_square_meters}m²`␍⏎······:·null,␍` with `·?·`${terreno.total_square_meters}m²`·:·null,`  prettier/prettier
+44:23  Warning: Delete `␍`  prettier/prettier
+45:23  Warning: Delete `␍`  prettier/prettier
+46:63  Warning: Delete `␍`  prettier/prettier
+47:14  Warning: Delete `␍`  prettier/prettier
+48:19  Warning: Delete `␍`  prettier/prettier
+49:4  Warning: Delete `␍`  prettier/prettier
+50:21  Warning: Delete `␍`  prettier/prettier
+51:16  Warning: Delete `␍`  prettier/prettier
+52:1  Warning: Delete `␍`  prettier/prettier
+53:32  Warning: Delete `␍`  prettier/prettier
+54:24  Warning: Delete `␍`  prettier/prettier
+55:136  Warning: Delete `␍`  prettier/prettier
+56:24  Warning: Replace `␍⏎······?·terreno.description.substring(0,·100)·+·'...'␍⏎······:·'',␍` with `·?·terreno.description.substring(0,·100)·+·'...'·:·'',`  prettier/prettier
+59:38  Warning: Delete `␍`  prettier/prettier
+60:57  Warning: Delete `␍`  prettier/prettier
+61:23  Warning: Delete `␍`  prettier/prettier
+62:69  Warning: Delete `␍`  prettier/prettier
+63:12  Warning: Delete `␍`  prettier/prettier
+64:26  Warning: Delete `␍`  prettier/prettier
+65:66  Warning: Delete `␍`  prettier/prettier
+66:12  Warning: Delete `␍`  prettier/prettier
+67:4  Warning: Delete `␍`  prettier/prettier
+68:21  Warning: Delete `␍`  prettier/prettier
+69:16  Warning: Delete `␍`  prettier/prettier
+70:1  Warning: Delete `␍`  prettier/prettier
+71:29  Warning: Delete `␍`  prettier/prettier
+72:21  Warning: Delete `␍`  prettier/prettier
+73:27  Warning: Delete `␍`  prettier/prettier
+74:27  Warning: Delete `␍`  prettier/prettier
+75:23  Warning: Delete `␍`  prettier/prettier
+76:22  Warning: Delete `␍`  prettier/prettier
+77:15  Warning: Delete `␍`  prettier/prettier
+78:14  Warning: Delete `␍`  prettier/prettier
+79:37  Warning: Delete `␍`  prettier/prettier
+80:32  Warning: Replace `␍⏎······?·`${terreno.total_square_meters}·m²`␍⏎······:·null,␍` with `·?·`${terreno.total_square_meters}·m²`·:·null,`  prettier/prettier
+83:32  Warning: Delete `␍`  prettier/prettier
+84:58  Warning: Delete `␍`  prettier/prettier
+85:14  Warning: Delete `␍`  prettier/prettier
+86:24  Warning: Delete `␍`  prettier/prettier
+87:20  Warning: Delete `␍`  prettier/prettier
+88:25  Warning: Delete `␍`  prettier/prettier
+89:21  Warning: Delete `␍`  prettier/prettier
+90:20  Warning: Delete `␍`  prettier/prettier
+91:13  Warning: Delete `␍`  prettier/prettier
+92:62  Warning: Delete `␍`  prettier/prettier
+93:39  Warning: Replace `␍⏎······?·'desarrollo·inmobiliario'␍⏎······:·null,␍` with `·?·'desarrollo·inmobiliario'·:·null,`  prettier/prettier
+96:4  Warning: Delete `␍`  prettier/prettier
+97:21  Warning: Delete `␍`  prettier/prettier
+98:17  Warning: Delete `␍`  prettier/prettier
+99:1  Warning: Delete `␍`  prettier/prettier
+100:11  Warning: Delete `␍`  prettier/prettier
+101:11  Warning: Delete `␍`  prettier/prettier
+102:17  Warning: Delete `␍`  prettier/prettier
+103:14  Warning: Delete `␍`  prettier/prettier
+104:1  Warning: Delete `␍`  prettier/prettier
+105:52  Warning: Delete `␍`  prettier/prettier
+106:17  Warning: Delete `␍`  prettier/prettier
+107:13  Warning: Delete `␍`  prettier/prettier
+108:19  Warning: Delete `␍`  prettier/prettier
+109:53  Warning: Delete `␍`  prettier/prettier
+110:30  Warning: Delete `␍`  prettier/prettier
+111:38  Warning: Delete `␍`  prettier/prettier
+112:12  Warning: Delete `␍`  prettier/prettier
+113:14  Warning: Delete `␍`  prettier/prettier
+114:44  Warning: Delete `␍`  prettier/prettier
+115:27  Warning: Delete `␍`  prettier/prettier
+116:27  Warning: Delete `␍`  prettier/prettier
+117:57  Warning: Delete `␍`  prettier/prettier
+118:15  Warning: Delete `␍`  prettier/prettier
+119:12  Warning: Delete `␍`  prettier/prettier
+120:34  Warning: Delete `␍`  prettier/prettier
+121:14  Warning: Delete `␍`  prettier/prettier
+122:16  Warning: Delete `␍`  prettier/prettier
+123:44  Warning: Delete `␍`  prettier/prettier
+124:29  Warning: Delete `␍`  prettier/prettier
+125:29  Warning: Delete `␍`  prettier/prettier
+126:59  Warning: Delete `␍`  prettier/prettier
+127:17  Warning: Delete `␍`  prettier/prettier
+128:14  Warning: Delete `␍`  prettier/prettier
+129:16  Warning: Delete `␍`  prettier/prettier
+130:23  Warning: Delete `␍`  prettier/prettier
+131:23  Warning: Delete `␍`  prettier/prettier
+132:7  Warning: Delete `␍`  prettier/prettier
+133:1  Warning: Delete `␍`  prettier/prettier
+134:23  Warning: Delete `␍`  prettier/prettier
+135:15  Warning: Delete `␍`  prettier/prettier
+136:35  Warning: Delete `␍`  prettier/prettier
+137:13  Warning: Delete `␍`  prettier/prettier
+138:19  Warning: Delete `␍`  prettier/prettier
+139:38  Warning: Delete `␍`  prettier/prettier
+140:36  Warning: Delete `␍`  prettier/prettier
+141:34  Warning: Delete `␍`  prettier/prettier
+142:36  Warning: Delete `␍`  prettier/prettier
+143:16  Warning: Delete `␍`  prettier/prettier
+144:7  Warning: Delete `␍`  prettier/prettier
+145:1  Warning: Delete `␍`  prettier/prettier
+146:32  Warning: Delete `␍`  prettier/prettier
+147:14  Warning: Delete `␍`  prettier/prettier
+148:64  Warning: Delete `␍`  prettier/prettier
+149:13  Warning: Delete `␍`  prettier/prettier
+150:51  Warning: Replace `␍⏎········terreno.status·===·'active',␍` with `·terreno.status·===·'active',`  prettier/prettier
+152:20  Warning: Delete `␍`  prettier/prettier
+153:19  Warning: Delete `␍`  prettier/prettier
+154:15  Warning: Delete `␍`  prettier/prettier
+155:53  Warning: Delete `␍`  prettier/prettier
+156:39  Warning: Delete `␍`  prettier/prettier
+157:22  Warning: Delete `␍`  prettier/prettier
+158:9  Warning: Delete `␍`  prettier/prettier
+159:7  Warning: Delete `␍`  prettier/prettier
+160:1  Warning: Delete `␍`  prettier/prettier
+161:32  Warning: Delete `␍`  prettier/prettier
+162:13  Warning: Delete `␍`  prettier/prettier
+163:30  Warning: Delete `␍`  prettier/prettier
+164:42  Warning: Delete `␍`  prettier/prettier
+165:48  Warning: Delete `␍`  prettier/prettier
+166:73  Warning: Delete `␍`  prettier/prettier
+167:15  Warning: Delete `␍`  prettier/prettier
+168:7  Warning: Delete `␍`  prettier/prettier
+169:5  Warning: Delete `␍`  prettier/prettier
+170:2  Warning: Delete `␍`  prettier/prettier
+171:1  Warning: Delete `␍`  prettier/prettier
+172:38  Warning: Delete `␍`  prettier/prettier
+173:44  Warning: Delete `␍`  prettier/prettier
+174:10  Warning: Delete `␍`  prettier/prettier
+175:5  Warning: Delete `␍`  prettier/prettier
+176:37  Warning: Delete `␍`  prettier/prettier
+177:5  Warning: Delete `␍`  prettier/prettier
+178:35  Warning: Delete `␍`  prettier/prettier
+179:33  Warning: Delete `␍`  prettier/prettier
+180:1  Warning: Delete `␍`  prettier/prettier
+181:84  Warning: Delete `␍`  prettier/prettier
+182:43  Warning: Delete `␍`  prettier/prettier
+183:22  Warning: Delete `␍`  prettier/prettier
+184:24  Warning: Delete `␍`  prettier/prettier
+185:22  Warning: Delete `␍`  prettier/prettier
+186:15  Warning: Delete `␍`  prettier/prettier
+187:1  Warning: Delete `␍`  prettier/prettier
+188:18  Warning: Delete `␍`  prettier/prettier
+189:13  Warning: Delete `␍`  prettier/prettier
+190:116  Warning: Delete `␍`  prettier/prettier
+191:49  Warning: Delete `␍`  prettier/prettier
+192:79  Warning: Delete `␍`  prettier/prettier
+193:46  Warning: Delete `␍`  prettier/prettier
+194:67  Warning: Delete `␍`  prettier/prettier
+195:15  Warning: Delete `␍`  prettier/prettier
+196:13  Warning: Delete `␍`  prettier/prettier
+197:32  Warning: Delete `␍`  prettier/prettier
+198:131  Warning: Delete `␍`  prettier/prettier
+199:12  Warning: Delete `␍`  prettier/prettier
+200:38  Warning: Delete `␍`  prettier/prettier
+201:15  Warning: Delete `␍`  prettier/prettier
+202:15  Warning: Delete `␍`  prettier/prettier
+203:13  Warning: Delete `␍`  prettier/prettier
+204:7  Warning: Delete `␍`  prettier/prettier
+205:4  Warning: Delete `␍`  prettier/prettier
+206:1  Warning: Delete `␍`  prettier/prettier
+207:48  Warning: Delete `␍`  prettier/prettier
+208:2  Warning: Delete `␍`  prettier/prettier
+
+./app/terreno/[slug]/PhotoSphereViewer.js
+205:21  Warning: Insert `⏎·······`  prettier/prettier
+216:1  Warning: Delete `··`  prettier/prettier
+315:21  Warning: Replace ``⚡·Precargada:·${imageUrl.substring(imageUrl.lastIndexOf('/')·+·1)}`` with `⏎··········`⚡·Precargada:·${imageUrl.substring(imageUrl.lastIndexOf('/')·+·1)}`,⏎········`  prettier/prettier
+373:22  Warning: Insert `⏎············`  prettier/prettier
+374:13  Warning: Replace `console.log(`🎵·Audio·ambiente·reproducido·con·fade-in:·${ambientUrl}`` with `··console.log(⏎················`🎵·Audio·ambiente·reproducido·con·fade-in:·${ambientUrl}`,⏎··············`  prettier/prettier
+376:13  Warning: Insert `··`  prettier/prettier
+377:1  Warning: Insert `··`  prettier/prettier
+378:13  Warning: Insert `··`  prettier/prettier
+379:1  Warning: Insert `··`  prettier/prettier
+380:13  Warning: Insert `··`  prettier/prettier
+382:1  Warning: Insert `··`  prettier/prettier
+383:15  Warning: Insert `··`  prettier/prettier
+384:1  Warning: Replace `··············ambientAudio.volume·=·Math.min(volumeStep·*·currentStep,·targetVolume` with `················ambientAudio.volume·=·Math.min(⏎··················volumeStep·*·currentStep,⏎··················targetVolume,⏎················`  prettier/prettier
+386:15  Warning: Insert `··`  prettier/prettier
+387:1  Warning: Insert `··`  prettier/prettier
+388:17  Warning: Replace `console.log(`✅·Fade-in·completado·al·${(targetVolume·*·100).toFixed(0)}%`` with `··console.log(⏎····················`✅·Fade-in·completado·al·${(targetVolume·*·100).toFixed(0)}%`,⏎··················`  prettier/prettier
+389:15  Warning: Insert `··`  prettier/prettier
+390:1  Warning: Insert `··`  prettier/prettier
+391:11  Warning: Replace `})` with `··})⏎············`  prettier/prettier
+392:13  Warning: Replace `console.warn('⚠️·No·se·pudo·reproducir·audio·ambiente·automáticamente:',·error` with `··console.warn(⏎················'⚠️·No·se·pudo·reproducir·audio·ambiente·automáticamente:',⏎················error,⏎··············`  prettier/prettier
+393:1  Warning: Replace `············console.log('💡·En·móvil,·el·audio·se·reproducirá·al·tocar·la·pantalla'` with `··············console.log(⏎················'💡·En·móvil,·el·audio·se·reproducirá·al·tocar·la·pantalla',⏎··············`  prettier/prettier
+395:1  Warning: Insert `··`  prettier/prettier
+396:1  Warning: Insert `··`  prettier/prettier
+397:15  Warning: Insert `··`  prettier/prettier
+398:1  Warning: Insert `··`  prettier/prettier
+400:17  Warning: Insert `··`  prettier/prettier
+401:17  Warning: Insert `··`  prettier/prettier
+402:1  Warning: Replace `················` with `··················`  prettier/prettier
+403:17  Warning: Insert `··`  prettier/prettier
+404:1  Warning: Replace `················` with `··················`  prettier/prettier
+406:1  Warning: Insert `··`  prettier/prettier
+407:1  Warning: Insert `··`  prettier/prettier
+408:19  Warning: Replace `ambientAudio.volume·=·Math.min(volumeStep·*·currentStep,·targetVolume` with `··ambientAudio.volume·=·Math.min(⏎······················volumeStep·*·currentStep,⏎······················targetVolume,⏎····················`  prettier/prettier
+410:1  Warning: Insert `··`  prettier/prettier
+411:21  Warning: Insert `··`  prettier/prettier
+412:1  Warning: Replace `··················` with `····················`  prettier/prettier
+413:1  Warning: Insert `··`  prettier/prettier
+414:1  Warning: Insert `··`  prettier/prettier
+416:15  Warning: Insert `··`  prettier/prettier
+417:1  Warning: Insert `··`  prettier/prettier
+418:15  Warning: Insert `··`  prettier/prettier
+419:13  Warning: Insert `··`  prettier/prettier
+421:1  Warning: Replace `············document.addEventListener('touchstart',·playOnInteraction,·{·once:·true` with `··············document.addEventListener('touchstart',·playOnInteraction,·{⏎················once:·true,⏎·············`  prettier/prettier
+422:1  Warning: Replace `············document.addEventListener('click',·playOnInteraction,·{·once:·true` with `··············document.addEventListener('click',·playOnInteraction,·{⏎················once:·true,⏎·············`  prettier/prettier
+423:1  Warning: Insert `··`  prettier/prettier
+445:22  Warning: Insert `⏎············`  prettier/prettier
+446:13  Warning: Replace `console.log(`🗣️·Narración·reproducida·con·fade-in:·${narrationUrl}`` with `··console.log(⏎················`🗣️·Narración·reproducida·con·fade-in:·${narrationUrl}`,⏎··············`  prettier/prettier
+448:1  Warning: Insert `··`  prettier/prettier
+449:1  Warning: Replace `············` with `··············`  prettier/prettier
+450:1  Warning: Insert `··`  prettier/prettier
+451:1  Warning: Insert `··`  prettier/prettier
+452:13  Warning: Insert `··`  prettier/prettier
+454:1  Warning: Insert `··`  prettier/prettier
+455:15  Warning: Insert `··`  prettier/prettier
+456:1  Warning: Replace `··············narrationAudio.volume·=·Math.min(volumeStep·*·currentStep,·targetVolume` with `················narrationAudio.volume·=·Math.min(⏎··················volumeStep·*·currentStep,⏎··················targetVolume,⏎················`  prettier/prettier
+458:1  Warning: Insert `··`  prettier/prettier
+459:1  Warning: Replace `················` with `··················`  prettier/prettier
+460:17  Warning: Replace `console.log(`✅·Fade-in·narración·completado·al·${(targetVolume·*·100).toFixed(0)}%`` with `··console.log(⏎····················`✅·Fade-in·narración·completado·al·${(targetVolume·*·100).toFixed(0)}%`,⏎··················`  prettier/prettier
+461:15  Warning: Insert `··`  prettier/prettier
+462:1  Warning: Insert `··`  prettier/prettier
+463:11  Warning: Replace `})` with `··})⏎············`  prettier/prettier
+464:13  Warning: Replace `console.warn('⚠️·No·se·pudo·reproducir·narración·automáticamente:',·error` with `··console.warn(⏎················'⚠️·No·se·pudo·reproducir·narración·automáticamente:',⏎················error,⏎··············`  prettier/prettier
+466:1  Warning: Replace `············` with `··············`  prettier/prettier
+467:13  Warning: Insert `··`  prettier/prettier
+468:1  Warning: Insert `··`  prettier/prettier
+469:17  Warning: Replace `console.log(`🗣️·Narración·iniciada·tras·interacción·del·usuario`` with `··console.log(⏎····················`🗣️·Narración·iniciada·tras·interacción·del·usuario`,⏎··················`  prettier/prettier
+471:1  Warning: Insert `··`  prettier/prettier
+472:1  Warning: Insert `··`  prettier/prettier
+473:1  Warning: Insert `··`  prettier/prettier
+474:17  Warning: Insert `··`  prettier/prettier
+476:1  Warning: Insert `··`  prettier/prettier
+477:19  Warning: Insert `··`  prettier/prettier
+478:1  Warning: Replace `··················narrationAudio.volume·=·Math.min(volumeStep·*·currentStep,·targetVolume` with `····················narrationAudio.volume·=·Math.min(⏎······················volumeStep·*·currentStep,⏎······················targetVolume,⏎····················`  prettier/prettier
+480:1  Warning: Insert `··`  prettier/prettier
+481:1  Warning: Replace `····················` with `······················`  prettier/prettier
+482:19  Warning: Insert `··`  prettier/prettier
+483:1  Warning: Insert `··`  prettier/prettier
+484:15  Warning: Insert `··`  prettier/prettier
+486:1  Warning: Insert `··`  prettier/prettier
+487:15  Warning: Insert `··`  prettier/prettier
+488:13  Warning: Insert `··`  prettier/prettier
+490:1  Warning: Replace `············document.addEventListener('touchstart',·playOnInteraction,·{·once:·true` with `··············document.addEventListener('touchstart',·playOnInteraction,·{⏎················once:·true,⏎·············`  prettier/prettier
+491:1  Warning: Replace `············document.addEventListener('click',·playOnInteraction,·{·once:·true` with `··············document.addEventListener('click',·playOnInteraction,·{⏎················once:·true,⏎·············`  prettier/prettier
+492:1  Warning: Insert `··`  prettier/prettier
+519:19  Warning: Replace ``🔷·[Viewer·Público]·Cargando·polígonos·para·vista·${currentIndex}...`` with `⏎········`🔷·[Viewer·Público]·Cargando·polígonos·para·vista·${currentIndex}...`,⏎······`  prettier/prettier
+530:59  Warning: Replace `terreno.id,·currentIndex` with `⏎········terreno.id,⏎········currentIndex,⏎······`  prettier/prettier
+538:21  Warning: Replace ``📭·[Viewer·Público]·No·hay·polígonos·guardados·para·vista·${currentIndex}`` with `⏎··········`📭·[Viewer·Público]·No·hay·polígonos·guardados·para·vista·${currentIndex}`,⏎········`  prettier/prettier
+542:19  Warning: Replace ``✅·[Viewer·Público]·${data.length}·polígonos·cargados·para·vista·${currentIndex}`` with `⏎········`✅·[Viewer·Público]·${data.length}·polígonos·cargados·para·vista·${currentIndex}`,⏎······`  prettier/prettier
+545:23  Warning: Insert `⏎·······`  prettier/prettier
+564:27  Warning: Replace `·?·{}` with `⏎················?·{}⏎···············`  prettier/prettier
+566:34  Warning: Insert `⏎·············`  prettier/prettier
+567:1  Warning: Insert `····`  prettier/prettier
+568:15  Warning: Insert `····`  prettier/prettier
+569:1  Warning: Replace `············}` with `················}⏎·············`  prettier/prettier
+577:23  Warning: Replace ``··✓·Polígono·renderizado:·${polygon.name·||·'Sin·nombre'}·(ID:·${polygon.id})`` with `⏎············`··✓·Polígono·renderizado:·${polygon.name·||·'Sin·nombre'}·(ID:·${polygon.id})`,⏎··········`  prettier/prettier
+579:25  Warning: Replace ``❌·Error·al·renderizar·polígono·${polygon.id}:`,·renderError` with `⏎············`❌·Error·al·renderizar·polígono·${polygon.id}:`,⏎············renderError,⏎··········`  prettier/prettier
+624:23  Warning: Insert `⏎·······`  prettier/prettier
+638:21  Warning: Replace `'📱·PlanPlugin·deshabilitado·en·móvil·(optimización·de·rendimiento)'` with `⏎··········'📱·PlanPlugin·deshabilitado·en·móvil·(optimización·de·rendimiento)',⏎········`  prettier/prettier
+641:5  Warning: Insert `··`  prettier/prettier
+642:1  Warning: Insert `··`  prettier/prettier
+643:1  Warning: Insert `··`  prettier/prettier
+644:7  Warning: Insert `··`  prettier/prettier
+645:7  Warning: Insert `··`  prettier/prettier
+646:1  Warning: Replace `········` with `··········`  prettier/prettier
+647:1  Warning: Insert `··`  prettier/prettier
+648:9  Warning: Replace `...(PlanPlugin` with `··...(PlanPlugin⏎···········`  prettier/prettier
+649:1  Warning: Replace `··········` with `················`  prettier/prettier
+650:1  Warning: Replace `············` with `··················`  prettier/prettier
+651:13  Warning: Insert `······`  prettier/prettier
+652:1  Warning: Insert `········`  prettier/prettier
+653:1  Warning: Replace `············` with `····················`  prettier/prettier
+654:1  Warning: Insert `········`  prettier/prettier
+655:1  Warning: Replace `··············` with `······················`  prettier/prettier
+656:1  Warning: Insert `········`  prettier/prettier
+657:1  Warning: Replace `··············` with `······················`  prettier/prettier
+658:13  Warning: Insert `········`  prettier/prettier
+659:1  Warning: Insert `········`  prettier/prettier
+660:13  Warning: Insert `········`  prettier/prettier
+661:13  Warning: Insert `········`  prettier/prettier
+662:1  Warning: Replace `············` with `····················`  prettier/prettier
+663:13  Warning: Insert `········`  prettier/prettier
+664:1  Warning: Replace `············` with `····················`  prettier/prettier
+665:13  Warning: Insert `········`  prettier/prettier
+666:1  Warning: Replace `············` with `····················`  prettier/prettier
+667:1  Warning: Insert `········`  prettier/prettier
+668:1  Warning: Replace `············` with `····················`  prettier/prettier
+669:1  Warning: Insert `········`  prettier/prettier
+670:1  Warning: Insert `········`  prettier/prettier
+671:15  Warning: Insert `········`  prettier/prettier
+672:15  Warning: Insert `········`  prettier/prettier
+673:1  Warning: Replace `············` with `····················`  prettier/prettier
+674:1  Warning: Insert `········`  prettier/prettier
+675:1  Warning: Replace `··············` with `······················`  prettier/prettier
+676:13  Warning: Insert `········`  prettier/prettier
+677:1  Warning: Replace `············` with `····················`  prettier/prettier
+678:13  Warning: Insert `········`  prettier/prettier
+679:1  Warning: Replace `··············` with `······················`  prettier/prettier
+680:1  Warning: Insert `········`  prettier/prettier
+681:15  Warning: Insert `········`  prettier/prettier
+682:1  Warning: Replace `··············` with `······················`  prettier/prettier
+683:13  Warning: Insert `········`  prettier/prettier
+684:1  Warning: Replace `············` with `····················`  prettier/prettier
+685:13  Warning: Insert `········`  prettier/prettier
+686:1  Warning: Replace `··············` with `······················`  prettier/prettier
+687:1  Warning: Insert `········`  prettier/prettier
+688:1  Warning: Replace `················urlTemplate:` with `························urlTemplate:⏎·························`  prettier/prettier
+689:1  Warning: Replace `················` with `························`  prettier/prettier
+690:15  Warning: Insert `········`  prettier/prettier
+691:1  Warning: Insert `········`  prettier/prettier
+692:11  Warning: Insert `········`  prettier/prettier
+693:1  Warning: Replace `··········]` with `················],`  prettier/prettier
+694:1  Warning: Replace `········]` with `··············]⏎···········`  prettier/prettier
+695:7  Warning: Insert `··`  prettier/prettier
+696:1  Warning: Replace `······` with `········`  prettier/prettier
+697:1  Warning: Insert `··`  prettier/prettier
+698:7  Warning: Insert `··`  prettier/prettier
+699:7  Warning: Insert `··`  prettier/prettier
+700:1  Warning: Insert `··`  prettier/prettier
+701:5  Warning: Insert `··`  prettier/prettier
+703:1  Warning: Insert `··`  prettier/prettier
+704:5  Warning: Insert `··`  prettier/prettier
+705:1  Warning: Insert `··`  prettier/prettier
+707:5  Warning: Insert `··`  prettier/prettier
+708:5  Warning: Insert `··`  prettier/prettier
+709:1  Warning: Replace `······` with `········`  prettier/prettier
+710:1  Warning: Insert `··`  prettier/prettier
+711:1  Warning: Replace `······` with `········`  prettier/prettier
+712:1  Warning: Insert `··`  prettier/prettier
+713:7  Warning: Insert `··`  prettier/prettier
+714:1  Warning: Replace `····` with `······`  prettier/prettier
+716:1  Warning: Insert `··`  prettier/prettier
+717:5  Warning: Insert `··`  prettier/prettier
+718:7  Warning: Insert `··`  prettier/prettier
+719:1  Warning: Replace `······` with `········`  prettier/prettier
+720:1  Warning: Insert `··`  prettier/prettier
+721:1  Warning: Replace `······` with `········`  prettier/prettier
+722:7  Warning: Insert `··`  prettier/prettier
+723:1  Warning: Replace `········` with `··········`  prettier/prettier
+724:7  Warning: Insert `··`  prettier/prettier
+726:1  Warning: Replace `······` with `········`  prettier/prettier
+727:7  Warning: Insert `··`  prettier/prettier
+728:1  Warning: Insert `··`  prettier/prettier
+729:11  Warning: Insert `··`  prettier/prettier
+730:1  Warning: Insert `··`  prettier/prettier
+731:13  Warning: Insert `··`  prettier/prettier
+732:13  Warning: Insert `··`  prettier/prettier
+733:1  Warning: Replace `············` with `··············`  prettier/prettier
+734:13  Warning: Replace `let·bearingDegrees·=·(position.yaw·*·180·/·Math.PI)` with `··let·bearingDegrees·=·(position.yaw·*·180)·/·Math.PI`  prettier/prettier
+736:1  Warning: Insert `··`  prettier/prettier
+737:1  Warning: Insert `··`  prettier/prettier
+739:13  Warning: Insert `··`  prettier/prettier
+740:1  Warning: Insert `··`  prettier/prettier
+742:11  Warning: Insert `··`  prettier/prettier
+743:1  Warning: Insert `··`  prettier/prettier
+745:11  Warning: Insert `··`  prettier/prettier
+746:1  Warning: Insert `··`  prettier/prettier
+748:11  Warning: Insert `··`  prettier/prettier
+749:11  Warning: Insert `··`  prettier/prettier
+750:1  Warning: Replace `············` with `··············`  prettier/prettier
+751:1  Warning: Insert `··`  prettier/prettier
+753:1  Warning: Replace `············const·planContainer·=·document.querySelector('.psv-plan-container'` with `··············const·planContainer·=·document.querySelector(⏎················'.psv-plan-container',⏎··············`  prettier/prettier
+754:1  Warning: Replace `············const·leafletContainer·=·document.querySelector('.psv-plan-container·.leaflet-container'` with `··············const·leafletContainer·=·document.querySelector(⏎················'.psv-plan-container·.leaflet-container',⏎··············`  prettier/prettier
+756:1  Warning: Insert `··`  prettier/prettier
+757:15  Warning: Insert `··`  prettier/prettier
+758:1  Warning: Insert `··`  prettier/prettier
+759:1  Warning: Replace `··············` with `················`  prettier/prettier
+760:1  Warning: Insert `··`  prettier/prettier
+761:1  Warning: Replace `··············` with `················`  prettier/prettier
+762:15  Warning: Insert `··`  prettier/prettier
+763:1  Warning: Insert `··`  prettier/prettier
+764:15  Warning: Insert `··`  prettier/prettier
+765:1  Warning: Insert `··`  prettier/prettier
+767:15  Warning: Insert `··`  prettier/prettier
+768:1  Warning: Insert `··`  prettier/prettier
+769:1  Warning: Replace `··············` with `················`  prettier/prettier
+770:15  Warning: Replace `planContainer.style.boxShadow·=` with `··planContainer.style.boxShadow·=⏎·················`  prettier/prettier
+772:1  Warning: Replace `··············` with `················`  prettier/prettier
+773:13  Warning: Insert `··`  prettier/prettier
+775:1  Warning: Insert `··`  prettier/prettier
+776:15  Warning: Insert `··`  prettier/prettier
+777:1  Warning: Insert `··`  prettier/prettier
+778:15  Warning: Insert `··`  prettier/prettier
+779:1  Warning: Insert `··`  prettier/prettier
+780:15  Warning: Insert `··`  prettier/prettier
+781:1  Warning: Insert `··`  prettier/prettier
+782:15  Warning: Insert `··`  prettier/prettier
+783:1  Warning: Insert `··`  prettier/prettier
+784:1  Warning: Replace `··············` with `················`  prettier/prettier
+786:1  Warning: Insert `··`  prettier/prettier
+787:1  Warning: Replace `··············` with `················`  prettier/prettier
+788:1  Warning: Insert `··`  prettier/prettier
+789:1  Warning: Insert `··`  prettier/prettier
+790:19  Warning: Insert `··`  prettier/prettier
+791:1  Warning: Insert `··`  prettier/prettier
+792:19  Warning: Insert `··`  prettier/prettier
+793:1  Warning: Insert `··`  prettier/prettier
+794:1  Warning: Replace `··················` with `····················`  prettier/prettier
+795:19  Warning: Insert `··`  prettier/prettier
+796:1  Warning: Replace `··················` with `····················`  prettier/prettier
+798:1  Warning: Insert `··`  prettier/prettier
+799:1  Warning: Insert `··`  prettier/prettier
+800:19  Warning: Replace `console.log('🔒·Interacciones·del·mapa·desactivadas·(estilo·DJI)'` with `··console.log(⏎······················'🔒·Interacciones·del·mapa·desactivadas·(estilo·DJI)',⏎····················`  prettier/prettier
+801:1  Warning: Replace `················` with `··················`  prettier/prettier
+802:1  Warning: Insert `··`  prettier/prettier
+803:17  Warning: Replace `console.warn('⚠️·No·se·pudieron·desactivar·interacciones·del·mapa'` with `··console.warn(⏎····················'⚠️·No·se·pudieron·desactivar·interacciones·del·mapa',⏎··················`  prettier/prettier
+804:1  Warning: Insert `··`  prettier/prettier
+805:13  Warning: Insert `··`  prettier/prettier
+807:1  Warning: Insert `··`  prettier/prettier
+808:1  Warning: Replace `············` with `··············`  prettier/prettier
+809:1  Warning: Replace `··············'.leaflet-control-zoom,·.leaflet-control-attribution,·.leaflet-control-container'` with `················'.leaflet-control-zoom,·.leaflet-control-attribution,·.leaflet-control-container',`  prettier/prettier
+810:1  Warning: Insert `··`  prettier/prettier
+811:1  Warning: Replace `············controls.forEach(control` with `··············controls.forEach((control)`  prettier/prettier
+812:1  Warning: Insert `··`  prettier/prettier
+813:1  Warning: Replace `··············` with `················`  prettier/prettier
+814:1  Warning: Insert `··`  prettier/prettier
+815:1  Warning: Insert `··`  prettier/prettier
+816:13  Warning: Insert `··`  prettier/prettier
+817:1  Warning: Insert `··`  prettier/prettier
+819:1  Warning: Insert `··`  prettier/prettier
+820:11  Warning: Insert `··`  prettier/prettier
+821:1  Warning: Insert `··`  prettier/prettier
+822:11  Warning: Insert `··`  prettier/prettier
+823:1  Warning: Insert `··`  prettier/prettier
+824:1  Warning: Replace `··········` with `············`  prettier/prettier
+826:11  Warning: Insert `··`  prettier/prettier
+827:1  Warning: Insert `··`  prettier/prettier
+828:9  Warning: Insert `··`  prettier/prettier
+829:1  Warning: Insert `··`  prettier/prettier
+830:9  Warning: Insert `··`  prettier/prettier
+831:1  Warning: Insert `··`  prettier/prettier
+832:1  Warning: Insert `··`  prettier/prettier
+834:5  Warning: Insert `··`  prettier/prettier
+835:1  Warning: Insert `··`  prettier/prettier
+836:1  Warning: Replace `······` with `········`  prettier/prettier
+837:7  Warning: Insert `··`  prettier/prettier
+838:1  Warning: Insert `··`  prettier/prettier
+839:5  Warning: Insert `··`  prettier/prettier
+841:1  Warning: Insert `··`  prettier/prettier
+842:1  Warning: Replace `····` with `······`  prettier/prettier
+843:7  Warning: Insert `··`  prettier/prettier
+844:1  Warning: Insert `··`  prettier/prettier
+846:7  Warning: Insert `··`  prettier/prettier
+847:7  Warning: Insert `··`  prettier/prettier
+848:1  Warning: Replace `········` with `··········`  prettier/prettier
+849:7  Warning: Insert `··`  prettier/prettier
+851:1  Warning: Insert `··`  prettier/prettier
+853:7  Warning: Insert `··`  prettier/prettier
+855:7  Warning: Insert `··`  prettier/prettier
+856:1  Warning: Replace `······` with `········`  prettier/prettier
+857:9  Warning: Insert `··`  prettier/prettier
+858:1  Warning: Replace `··········` with `············`  prettier/prettier
+859:1  Warning: Insert `··`  prettier/prettier
+860:11  Warning: Replace `hotspotType` with `··hotspotType,`  prettier/prettier
+861:1  Warning: Replace `········` with `··········`  prettier/prettier
+862:1  Warning: Insert `··`  prettier/prettier
+864:1  Warning: Insert `··`  prettier/prettier
+865:1  Warning: Replace `······if·(hotspotType·===·'navigation'·&&·hotspot.targetImageIndex·!==·undefined` with `········if·(⏎··········hotspotType·===·'navigation'·&&⏎··········hotspot.targetImageIndex·!==·undefined⏎········`  prettier/prettier
+866:1  Warning: Insert `··`  prettier/prettier
+867:1  Warning: Insert `··`  prettier/prettier
+868:9  Warning: Insert `··`  prettier/prettier
+869:7  Warning: Insert `··`  prettier/prettier
+870:1  Warning: Insert `··`  prettier/prettier
+892:6  Warning: React Hook useEffect has missing dependencies: 'analytics', 'images', 'terreno?.latitude', and 'terreno?.longitude'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+915:9  Warning: Replace `validImages.length·===·0·||·currentIndex·<·0·||·currentIndex·>=·validImages.length` with `⏎······validImages.length·===·0·||⏎······currentIndex·<·0·||⏎······currentIndex·>=·validImages.length⏎····`  prettier/prettier
+1100:6  Warning: React Hook useEffect has missing dependencies: 'loadedPanoramaIndex', 'onSceneChange', and 'showTransitionLoader'. Either include them or remove the dependency array. If 'onSceneChange' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+1352:1  Warning: Insert `······`  prettier/prettier
+1478:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+1895:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+1914:31  Warning: Replace `·activeMediaModal.type·===·'video'·?·'transparent'` with `⏎················activeMediaModal.type·===·'video'⏎··················?·'transparent'⏎·················`  prettier/prettier
+1915:30  Warning: Insert `⏎···············`  prettier/prettier
+1922:29  Warning: Insert `⏎···············`  prettier/prettier
+1928:33  Warning: Insert `⏎·················`  prettier/prettier
+1929:30  Warning: Insert `⏎·················`  prettier/prettier
+1934:27  Warning: Insert `⏎·················`  prettier/prettier
+1935:19  Warning: Insert `··`  prettier/prettier
+1936:1  Warning: Insert `··`  prettier/prettier
+1938:27  Warning: Insert `⏎·················`  prettier/prettier
+1946:23  Warning: Replace `·style={{·display:·'flex',·justifyContent:·'space-between',·alignItems:·'start',·marginBottom:·'1.5rem'·}}` with `⏎····················style={{⏎······················display:·'flex',⏎······················justifyContent:·'space-between',⏎······················alignItems:·'start',⏎······················marginBottom:·'1.5rem',⏎····················}}⏎··················`  prettier/prettier
+1947:24  Warning: Replace `·style={{·margin:·0,·fontSize:·'1.5rem',·color:·'#1f2937',·fontWeight:·'bold'·}}` with `⏎······················style={{⏎························margin:·0,⏎························fontSize:·'1.5rem',⏎························color:·'#1f2937',⏎························fontWeight:·'bold',⏎······················}}⏎····················`  prettier/prettier
+1969:21  Warning: Replace `·style={{·color:·'#4b5563',·lineHeight:·'1.6',·whiteSpace:·'pre-wrap'·}}` with `⏎····················style={{⏎······················color:·'#4b5563',⏎······················lineHeight:·'1.6',⏎······················whiteSpace:·'pre-wrap',⏎····················}}⏎··················`  prettier/prettier
+1978:23  Warning: Replace `·style={{·display:·'flex',·justifyContent:·'space-between',·alignItems:·'start',·marginBottom:·'1.5rem'·}}` with `⏎····················style={{⏎······················display:·'flex',⏎······················justifyContent:·'space-between',⏎······················alignItems:·'start',⏎······················marginBottom:·'1.5rem',⏎····················}}⏎··················`  prettier/prettier
+1979:24  Warning: Replace `·style={{·margin:·0,·fontSize:·'1.5rem',·color:·'#1f2937',·fontWeight:·'bold'·}}` with `⏎······················style={{⏎························margin:·0,⏎························fontSize:·'1.5rem',⏎························color:·'#1f2937',⏎························fontWeight:·'bold',⏎······················}}⏎····················`  prettier/prettier
+2004:23  Warning: Insert `⏎·····················`  prettier/prettier
+2005:1  Warning: Insert `··`  prettier/prettier
+2006:23  Warning: Insert `··`  prettier/prettier
+2007:1  Warning: Insert `··`  prettier/prettier
+2008:23  Warning: Insert `··`  prettier/prettier
+2009:1  Warning: Replace `······················fontSize:·'0.95rem'` with `························fontSize:·'0.95rem',`  prettier/prettier
+2010:1  Warning: Replace `····················}}` with `······················}}⏎····················`  prettier/prettier
+2015:23  Warning: Replace `·style={{·display:·'grid',·gridTemplateColumns:·'repeat(auto-fill,·minmax(200px,·1fr))',·gap:·'1rem'·}}` with `⏎····················style={{⏎······················display:·'grid',⏎······················gridTemplateColumns:⏎························'repeat(auto-fill,·minmax(200px,·1fr))',⏎······················gap:·'1rem',⏎····················}}⏎··················`  prettier/prettier
+2017:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+2036:52  Warning: Insert `⏎···············`  prettier/prettier
+2037:1  Warning: Replace `················` with `··················`  prettier/prettier
+2038:17  Warning: Insert `··`  prettier/prettier
+2039:1  Warning: Insert `··`  prettier/prettier
+2041:17  Warning: Insert `··`  prettier/prettier
+2042:1  Warning: Insert `··`  prettier/prettier
+2043:19  Warning: Insert `··`  prettier/prettier
+2044:1  Warning: Insert `··`  prettier/prettier
+2045:19  Warning: Insert `··`  prettier/prettier
+2046:1  Warning: Insert `··`  prettier/prettier
+2047:19  Warning: Replace `const·videoId·=·videoUrl.split('youtu.be/')[1]` with `··const·videoId·=·videoUrl⏎······················.split('youtu.be/')[1]⏎······················`  prettier/prettier
+2048:1  Warning: Insert `··`  prettier/prettier
+2049:1  Warning: Replace `··················` with `····················`  prettier/prettier
+2050:17  Warning: Insert `··`  prettier/prettier
+2051:1  Warning: Insert `··`  prettier/prettier
+2052:17  Warning: Insert `··`  prettier/prettier
+2053:1  Warning: Replace `··················const·videoId·=·videoUrl.split('vimeo.com/')[1]` with `····················const·videoId·=·videoUrl⏎······················.split('vimeo.com/')[1]⏎······················`  prettier/prettier
+2054:1  Warning: Insert `··`  prettier/prettier
+2055:19  Warning: Insert `··`  prettier/prettier
+2056:1  Warning: Insert `··`  prettier/prettier
+2058:17  Warning: Insert `··`  prettier/prettier
+2059:1  Warning: Insert `··`  prettier/prettier
+2060:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2061:21  Warning: Insert `··`  prettier/prettier
+2062:1  Warning: Replace `······················` with `························`  prettier/prettier
+2063:23  Warning: Insert `··`  prettier/prettier
+2064:1  Warning: Insert `··`  prettier/prettier
+2065:25  Warning: Insert `··`  prettier/prettier
+2066:1  Warning: Insert `··`  prettier/prettier
+2067:25  Warning: Insert `··`  prettier/prettier
+2068:25  Warning: Insert `··`  prettier/prettier
+2069:1  Warning: Replace `························` with `··························`  prettier/prettier
+2070:1  Warning: Insert `··`  prettier/prettier
+2071:1  Warning: Replace `························` with `··························`  prettier/prettier
+2072:1  Warning: Insert `··`  prettier/prettier
+2073:1  Warning: Insert `··`  prettier/prettier
+2074:25  Warning: Insert `··`  prettier/prettier
+2075:1  Warning: Insert `··`  prettier/prettier
+2076:25  Warning: Insert `··`  prettier/prettier
+2077:1  Warning: Insert `··`  prettier/prettier
+2078:1  Warning: Replace `························` with `··························`  prettier/prettier
+2079:25  Warning: Insert `··`  prettier/prettier
+2080:1  Warning: Replace `························` with `··························`  prettier/prettier
+2081:25  Warning: Insert `··`  prettier/prettier
+2082:1  Warning: Insert `··`  prettier/prettier
+2083:23  Warning: Insert `··`  prettier/prettier
+2084:1  Warning: Insert `··`  prettier/prettier
+2085:25  Warning: Insert `··`  prettier/prettier
+2086:23  Warning: Insert `··`  prettier/prettier
+2087:1  Warning: Insert `··`  prettier/prettier
+2088:1  Warning: Insert `··`  prettier/prettier
+2089:25  Warning: Insert `··`  prettier/prettier
+2090:23  Warning: Insert `··`  prettier/prettier
+2091:1  Warning: Insert `··`  prettier/prettier
+2092:23  Warning: Insert `··`  prettier/prettier
+2093:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2095:1  Warning: Insert `··`  prettier/prettier
+2096:21  Warning: Insert `··`  prettier/prettier
+2097:23  Warning: Insert `··`  prettier/prettier
+2098:1  Warning: Insert `··`  prettier/prettier
+2099:27  Warning: Insert `··`  prettier/prettier
+2100:27  Warning: Insert `··`  prettier/prettier
+2101:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2102:1  Warning: Insert `··`  prettier/prettier
+2103:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2104:1  Warning: Insert `··`  prettier/prettier
+2105:25  Warning: Insert `··`  prettier/prettier
+2106:23  Warning: Insert `··`  prettier/prettier
+2107:1  Warning: Insert `··`  prettier/prettier
+2108:27  Warning: Insert `··`  prettier/prettier
+2109:1  Warning: Insert `··`  prettier/prettier
+2110:1  Warning: Replace `····························` with `······························`  prettier/prettier
+2111:29  Warning: Insert `··`  prettier/prettier
+2112:1  Warning: Replace `····························` with `······························`  prettier/prettier
+2113:1  Warning: Insert `··`  prettier/prettier
+2114:1  Warning: Insert `··`  prettier/prettier
+2115:29  Warning: Insert `··`  prettier/prettier
+2116:1  Warning: Insert `··`  prettier/prettier
+2117:29  Warning: Insert `··`  prettier/prettier
+2118:27  Warning: Insert `··`  prettier/prettier
+2119:1  Warning: Replace `························` with `··························`  prettier/prettier
+2120:1  Warning: Insert `··`  prettier/prettier
+2121:1  Warning: Replace `························` with `··························`  prettier/prettier
+2122:23  Warning: Insert `··`  prettier/prettier
+2123:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2125:1  Warning: Insert `··`  prettier/prettier
+2126:1  Warning: Replace `····················` with `······················`  prettier/prettier
+2127:23  Warning: Insert `··`  prettier/prettier
+2128:1  Warning: Insert `··`  prettier/prettier
+2129:25  Warning: Insert `··`  prettier/prettier
+2130:1  Warning: Insert `··`  prettier/prettier
+2131:27  Warning: Insert `··`  prettier/prettier
+2132:1  Warning: Insert `··`  prettier/prettier
+2133:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2134:1  Warning: Insert `··`  prettier/prettier
+2135:1  Warning: Replace `························` with `··························`  prettier/prettier
+2136:1  Warning: Insert `··`  prettier/prettier
+2137:25  Warning: Insert `··`  prettier/prettier
+2138:23  Warning: Insert `··`  prettier/prettier
+2139:1  Warning: Insert `··`  prettier/prettier
+2140:23  Warning: Insert `··`  prettier/prettier
+2141:1  Warning: Insert `··`  prettier/prettier
+2142:1  Warning: Replace `························` with `··························`  prettier/prettier
+2143:1  Warning: Insert `··`  prettier/prettier
+2144:1  Warning: Replace `··························` with `····························`  prettier/prettier
+2145:1  Warning: Insert `··`  prettier/prettier
+2146:1  Warning: Insert `··`  prettier/prettier
+2147:27  Warning: Insert `··`  prettier/prettier
+2148:1  Warning: Insert `··`  prettier/prettier
+2149:25  Warning: Insert `··`  prettier/prettier
+2150:23  Warning: Insert `··`  prettier/prettier
+2151:1  Warning: Insert `··`  prettier/prettier
+2152:25  Warning: Insert `··`  prettier/prettier
+2153:1  Warning: Replace `······················` with `························`  prettier/prettier
+2154:21  Warning: Insert `··`  prettier/prettier
+2155:1  Warning: Insert `··`  prettier/prettier
+2156:17  Warning: Insert `··`  prettier/prettier
+2157:1  Warning: Insert `··`  prettier/prettier
+2162:23  Warning: Replace `·style={{·display:·'flex',·justifyContent:·'space-between',·alignItems:·'start',·marginBottom:·'1.5rem'·}}` with `⏎····················style={{⏎······················display:·'flex',⏎······················justifyContent:·'space-between',⏎······················alignItems:·'start',⏎······················marginBottom:·'1.5rem',⏎····················}}⏎··················`  prettier/prettier
+2163:24  Warning: Replace `·style={{·margin:·0,·fontSize:·'1.5rem',·color:·'#1f2937',·fontWeight:·'bold'·}}` with `⏎······················style={{⏎························margin:·0,⏎························fontSize:·'1.5rem',⏎························color:·'#1f2937',⏎························fontWeight:·'bold',⏎······················}}⏎····················`  prettier/prettier
+2185:23  Warning: Replace `·style={{·display:·'flex',·flexDirection:·'column',·gap:·'1.5rem'·}}` with `⏎····················style={{⏎······················display:·'flex',⏎······················flexDirection:·'column',⏎······················gap:·'1.5rem',⏎····················}}⏎··················`  prettier/prettier
+2188:28  Warning: Replace `·style={{·fontSize:·'1rem',·color:·'#374151',·marginBottom:·'0.5rem'·}}` with `⏎··························style={{⏎····························fontSize:·'1rem',⏎····························color:·'#374151',⏎····························marginBottom:·'0.5rem',⏎··························}}⏎························`  prettier/prettier
+2197:34  Warning: Replace `·src={activeMediaModal.data.audio_ambient_url}·type="audio/mpeg"` with `⏎····························src={activeMediaModal.data.audio_ambient_url}⏎····························type="audio/mpeg"⏎·························`  prettier/prettier
+2204:28  Warning: Replace `·style={{·fontSize:·'1rem',·color:·'#374151',·marginBottom:·'0.5rem'·}}` with `⏎··························style={{⏎····························fontSize:·'1rem',⏎····························color:·'#374151',⏎····························marginBottom:·'0.5rem',⏎··························}}⏎························`  prettier/prettier
+2212:34  Warning: Replace `·src={activeMediaModal.data.audio_narration_url}·type="audio/mpeg"` with `⏎····························src={activeMediaModal.data.audio_narration_url}⏎····························type="audio/mpeg"⏎·························`  prettier/prettier
+2235:2  Warning: Delete `;`  prettier/prettier
+
+./app/terreno/[slug]/TerrenoClientPage.tsx
+1:14  Warning: Delete `␍`  prettier/prettier
+2:1  Warning: Delete `␍`  prettier/prettier
+3:67  Warning: Delete `␍`  prettier/prettier
+4:53  Warning: Delete `␍`  prettier/prettier
+5:53  Warning: Delete `␍`  prettier/prettier
+6:51  Warning: Delete `␍`  prettier/prettier
+7:61  Warning: Delete `␍`  prettier/prettier
+8:1  Warning: Delete `␍`  prettier/prettier
+9:67  Warning: Delete `␍`  prettier/prettier
+10:33  Warning: Delete `␍`  prettier/prettier
+11:1  Warning: Delete `␍`  prettier/prettier
+12:68  Warning: Delete `␍`  prettier/prettier
+13:55  Warning: Delete `␍`  prettier/prettier
+14:53  Warning: Delete `␍`  prettier/prettier
+15:55  Warning: Delete `␍`  prettier/prettier
+16:48  Warning: Delete `␍`  prettier/prettier
+17:59  Warning: Delete `␍`  prettier/prettier
+18:69  Warning: Delete `␍`  prettier/prettier
+19:65  Warning: Delete `␍`  prettier/prettier
+20:1  Warning: Delete `␍`  prettier/prettier
+21:75  Warning: Delete `␍`  prettier/prettier
+22:64  Warning: Delete `␍`  prettier/prettier
+23:34  Warning: Delete `␍`  prettier/prettier
+24:68  Warning: Delete `␍`  prettier/prettier
+25:26  Warning: Replace `␍` with `,`  prettier/prettier
+26:5  Warning: Delete `␍`  prettier/prettier
+27:1  Warning: Delete `␍`  prettier/prettier
+28:75  Warning: Delete `␍`  prettier/prettier
+29:39  Warning: Delete `␍`  prettier/prettier
+30:31  Warning: Delete `␍`  prettier/prettier
+31:37  Warning: Delete `␍`  prettier/prettier
+32:23  Warning: Delete `␍`  prettier/prettier
+33:45  Warning: Delete `␍`  prettier/prettier
+34:6  Warning: Delete `␍`  prettier/prettier
+35:1  Warning: Delete `␍`  prettier/prettier
+36:75  Warning: Delete `␍`  prettier/prettier
+37:65  Warning: Delete `␍`  prettier/prettier
+38:61  Warning: Delete `␍`  prettier/prettier
+39:33  Warning: Delete `␍`  prettier/prettier
+40:10  Warning: Delete `␍`  prettier/prettier
+41:1  Warning: Delete `␍`  prettier/prettier
+42:64  Warning: Delete `␍`  prettier/prettier
+43:20  Warning: Delete `␍`  prettier/prettier
+44:21  Warning: Delete `␍`  prettier/prettier
+45:1  Warning: Delete `␍`  prettier/prettier
+46:38  Warning: Delete `␍`  prettier/prettier
+47:12  Warning: Delete `␍`  prettier/prettier
+48:50  Warning: Delete `␍`  prettier/prettier
+49:16  Warning: Delete `␍`  prettier/prettier
+50:12  Warning: Replace `·data:·{·user·}·},␍` with `⏎············data:·{·user·},⏎··········},`  prettier/prettier
+51:54  Warning: Delete `␍`  prettier/prettier
+52:55  Warning: Replace `␍` with `,`  prettier/prettier
+53:32  Warning: Delete `␍`  prettier/prettier
+54:35  Warning: Delete `␍`  prettier/prettier
+55:71  Warning: Delete `␍`  prettier/prettier
+56:69  Warning: Replace `␍` with `,`  prettier/prettier
+57:12  Warning: Delete `␍`  prettier/prettier
+58:1  Warning: Delete `␍`  prettier/prettier
+59:46  Warning: Delete `␍`  prettier/prettier
+60:48  Warning: Delete `␍`  prettier/prettier
+61:1  Warning: Delete `␍`  prettier/prettier
+62:30  Warning: Delete `␍`  prettier/prettier
+63:33  Warning: Delete `␍`  prettier/prettier
+64:1  Warning: Delete `␍`  prettier/prettier
+65:76  Warning: Delete `␍`  prettier/prettier
+66:28  Warning: Delete `␍`  prettier/prettier
+67:26  Warning: Delete `␍`  prettier/prettier
+68:31  Warning: Delete `␍`  prettier/prettier
+69:35  Warning: Delete `␍`  prettier/prettier
+70:40  Warning: Delete `␍`  prettier/prettier
+71:53  Warning: Delete `␍`  prettier/prettier
+72:33  Warning: Delete `␍`  prettier/prettier
+73:48  Warning: Delete `␍`  prettier/prettier
+74:40  Warning: Delete `␍`  prettier/prettier
+75:44  Warning: Delete `␍`  prettier/prettier
+76:50  Warning: Delete `␍`  prettier/prettier
+77:62  Warning: Delete `␍`  prettier/prettier
+78:50  Warning: Delete `␍`  prettier/prettier
+79:56  Warning: Delete `␍`  prettier/prettier
+80:52  Warning: Delete `␍`  prettier/prettier
+81:54  Warning: Delete `␍`  prettier/prettier
+82:60  Warning: Delete `␍`  prettier/prettier
+83:44  Warning: Delete `␍`  prettier/prettier
+84:46  Warning: Delete `␍`  prettier/prettier
+85:34  Warning: Delete `␍`  prettier/prettier
+86:13  Warning: Delete `␍`  prettier/prettier
+87:1  Warning: Delete `␍`  prettier/prettier
+88:42  Warning: Delete `␍`  prettier/prettier
+89:27  Warning: Delete `␍`  prettier/prettier
+90:65  Warning: Delete `␍`  prettier/prettier
+91:31  Warning: Delete `␍`  prettier/prettier
+92:18  Warning: Delete `␍`  prettier/prettier
+93:27  Warning: Delete `␍`  prettier/prettier
+94:8  Warning: Delete `␍`  prettier/prettier
+95:7  Warning: Delete `␍`  prettier/prettier
+96:1  Warning: Delete `␍`  prettier/prettier
+97:19  Warning: Delete `␍`  prettier/prettier
+98:12  Warning: Delete `␍`  prettier/prettier
+99:1  Warning: Delete `␍`  prettier/prettier
+100:32  Warning: Delete `␍`  prettier/prettier
+101:17  Warning: Delete `␍`  prettier/prettier
+102:13  Warning: Delete `␍`  prettier/prettier
+103:11  Warning: Delete `␍`  prettier/prettier
+104:17  Warning: Delete `␍`  prettier/prettier
+105:27  Warning: Delete `␍`  prettier/prettier
+106:32  Warning: Delete `␍`  prettier/prettier
+107:36  Warning: Delete `␍`  prettier/prettier
+108:27  Warning: Delete `␍`  prettier/prettier
+109:31  Warning: Delete `␍`  prettier/prettier
+110:26  Warning: Delete `␍`  prettier/prettier
+111:11  Warning: Delete `␍`  prettier/prettier
+112:8  Warning: Delete `␍`  prettier/prettier
+113:30  Warning: Delete `␍`  prettier/prettier
+114:13  Warning: Delete `␍`  prettier/prettier
+115:7  Warning: Delete `␍`  prettier/prettier
+116:4  Warning: Delete `␍`  prettier/prettier
+117:1  Warning: Delete `␍`  prettier/prettier
+118:15  Warning: Delete `␍`  prettier/prettier
+119:13  Warning: Delete `␍`  prettier/prettier
+120:11  Warning: Delete `␍`  prettier/prettier
+121:17  Warning: Delete `␍`  prettier/prettier
+122:27  Warning: Delete `␍`  prettier/prettier
+123:32  Warning: Delete `␍`  prettier/prettier
+124:36  Warning: Delete `␍`  prettier/prettier
+125:27  Warning: Delete `␍`  prettier/prettier
+126:31  Warning: Delete `␍`  prettier/prettier
+127:24  Warning: Delete `␍`  prettier/prettier
+128:11  Warning: Delete `␍`  prettier/prettier
+129:8  Warning: Delete `␍`  prettier/prettier
+130:23  Warning: Delete `␍`  prettier/prettier
+131:13  Warning: Delete `␍`  prettier/prettier
+132:7  Warning: Delete `␍`  prettier/prettier
+133:4  Warning: Delete `␍`  prettier/prettier
+134:1  Warning: Delete `␍`  prettier/prettier
+135:37  Warning: Delete `␍`  prettier/prettier
+136:13  Warning: Delete `␍`  prettier/prettier
+137:11  Warning: Delete `␍`  prettier/prettier
+138:17  Warning: Delete `␍`  prettier/prettier
+139:27  Warning: Delete `␍`  prettier/prettier
+140:32  Warning: Delete `␍`  prettier/prettier
+141:36  Warning: Delete `␍`  prettier/prettier
+142:27  Warning: Delete `␍`  prettier/prettier
+143:31  Warning: Delete `␍`  prettier/prettier
+144:26  Warning: Delete `␍`  prettier/prettier
+145:11  Warning: Delete `␍`  prettier/prettier
+146:8  Warning: Delete `␍`  prettier/prettier
+147:53  Warning: Delete `␍`  prettier/prettier
+148:13  Warning: Delete `␍`  prettier/prettier
+149:7  Warning: Delete `␍`  prettier/prettier
+150:4  Warning: Delete `␍`  prettier/prettier
+151:1  Warning: Delete `␍`  prettier/prettier
+152:11  Warning: Delete `␍`  prettier/prettier
+153:23  Warning: Delete `␍`  prettier/prettier
+154:30  Warning: Delete `␍`  prettier/prettier
+155:24  Warning: Delete `␍`  prettier/prettier
+156:26  Warning: Delete `␍`  prettier/prettier
+157:32  Warning: Delete `␍`  prettier/prettier
+158:40  Warning: Delete `␍`  prettier/prettier
+159:28  Warning: Delete `␍`  prettier/prettier
+160:7  Warning: Delete `␍`  prettier/prettier
+161:5  Warning: Delete `␍`  prettier/prettier
+162:2  Warning: Delete `␍`  prettier/prettier
+
+./components/admin/LogsTab.js
+26:6  Warning: React Hook useEffect has a missing dependency: 'loadLogs'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/HotspotIcon.js
+9:38  Warning: Replace `·type·=·'navigation',·size·=·24,·color·=·'white'·` with `⏎··type·=·'navigation',⏎··size·=·24,⏎··color·=·'white',⏎`  prettier/prettier
+97:14  Warning: Replace `·d="M12·15V18M10·18H14"·stroke="currentColor"·strokeWidth="1.5"·strokeLinecap="round"` with `⏎··········d="M12·15V18M10·18H14"⏎··········stroke="currentColor"⏎··········strokeWidth="1.5"⏎··········strokeLinecap="round"⏎·······`  prettier/prettier
+138:20  Warning: Delete `······`  prettier/prettier
+139:20  Warning: Delete `·····`  prettier/prettier
+140:21  Warning: Delete `·····`  prettier/prettier
+141:21  Warning: Delete `·····`  prettier/prettier
+142:24  Warning: Delete `·`  prettier/prettier
+
+./components/landing/FinalCTASection.tsx
+6:13  Warning: Replace `·className="py-32·sm:py-40·relative·overflow-hidden"·style={{·background:·'var(--gradient-ocean)'·}}` with `⏎······className="py-32·sm:py-40·relative·overflow-hidden"⏎······style={{·background:·'var(--gradient-ocean)'·}}⏎····`  prettier/prettier
+19:30  Warning: Insert `,`  prettier/prettier
+
+./components/landing/HeroSection.tsx
+17:37  Warning: Insert `,`  prettier/prettier
+27:49  Warning: Insert `,`  prettier/prettier
+39:78  Warning: Insert `⏎·········`  prettier/prettier
+
+./components/landing/ProblemSolutionSection.tsx
+34:32  Warning: Insert `,`  prettier/prettier
+44:51  Warning: Insert `,`  prettier/prettier
+64:20  Warning: Replace `·className="text-2xl·font-semibold·text-[var(--gray-900)]·mb-4"·style={{·letterSpacing:·'-0.02em'·}}` with `⏎··················className="text-2xl·font-semibold·text-[var(--gray-900)]·mb-4"⏎··················style={{·letterSpacing:·'-0.02em'·}}⏎················`  prettier/prettier
+
+./components/landing/ProductTourSection.tsx
+14:32  Warning: Insert `,`  prettier/prettier
+23:51  Warning: Insert `,`  prettier/prettier
+45:16  Warning: Replace `·className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"·style={{·letterSpacing:·'-0.02em'·}}` with `⏎··············className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"⏎··············style={{·letterSpacing:·'-0.02em'·}}⏎············`  prettier/prettier
+48:15  Warning: Replace `·className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"·style={{·letterSpacing:·'-0.01em'·}}` with `⏎··············className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"⏎··············style={{·letterSpacing:·'-0.01em'·}}⏎············`  prettier/prettier
+63:70  Warning: Replace `{benefit}` with `⏎····················{benefit}⏎··················`  prettier/prettier
+74:16  Warning: Replace `·className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"·style={{·letterSpacing:·'-0.02em'·}}` with `⏎··············className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"⏎··············style={{·letterSpacing:·'-0.02em'·}}⏎············`  prettier/prettier
+77:15  Warning: Replace `·className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"·style={{·letterSpacing:·'-0.01em'·}}` with `⏎··············className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"⏎··············style={{·letterSpacing:·'-0.01em'·}}⏎············`  prettier/prettier
+92:70  Warning: Replace `{benefit}` with `⏎····················{benefit}⏎··················`  prettier/prettier
+123:16  Warning: Replace `·className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"·style={{·letterSpacing:·'-0.02em'·}}` with `⏎··············className="text-3xl·font-semibold·text-[var(--gray-900)]·mb-4"⏎··············style={{·letterSpacing:·'-0.02em'·}}⏎············`  prettier/prettier
+126:15  Warning: Replace `·className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"·style={{·letterSpacing:·'-0.01em'·}}` with `⏎··············className="text-xl·text-[var(--gray-600)]·mb-8·leading-relaxed"⏎··············style={{·letterSpacing:·'-0.01em'·}}⏎············`  prettier/prettier
+140:70  Warning: Replace `{benefit}` with `⏎····················{benefit}⏎··················`  prettier/prettier
+
+./components/landing/PropertiesSection.tsx
+22:25  Warning: Replace `resolve` with `(resolve)`  prettier/prettier
+29:23  Warning: Insert `⏎···········`  prettier/prettier
+37:23  Warning: Insert `⏎···········`  prettier/prettier
+60:13  Warning: Replace `·id="propiedades"·className="py-24·bg-gradient-to-b·from-white·to-gray-50"` with `⏎······id="propiedades"⏎······className="py-24·bg-gradient-to-b·from-white·to-gray-50"⏎····`  prettier/prettier
+114:27  Warning: Replace `·className="w-4·h-4"·fill="currentColor"·viewBox="0·0·20·20"` with `⏎························className="w-4·h-4"⏎························fill="currentColor"⏎························viewBox="0·0·20·20"⏎······················`  prettier/prettier
+120:27  Warning: Replace `·className="w-4·h-4"·fill="currentColor"·viewBox="0·0·20·20"` with `⏎························className="w-4·h-4"⏎························fill="currentColor"⏎························viewBox="0·0·20·20"⏎······················`  prettier/prettier
+121:30  Warning: Replace `·fillRule="evenodd"·d="M3·5a1·1·0·011-1h12a1·1·0·110·2H4a1·1·0·01-1-1zM3·10a1·1·0·011-1h12a1·1·0·110·2H4a1·1·0·01-1-1zM3·15a1·1·0·011-1h6a1·1·0·110·2H4a1·1·0·01-1-1z"·clipRule="evenodd"` with `⏎··························fillRule="evenodd"⏎··························d="M3·5a1·1·0·011-1h12a1·1·0·110·2H4a1·1·0·01-1-1zM3·10a1·1·0·011-1h12a1·1·0·110·2H4a1·1·0·01-1-1zM3·15a1·1·0·011-1h6a1·1·0·110·2H4a1·1·0·01-1-1z"⏎··························clipRule="evenodd"⏎·······················`  prettier/prettier
+134:27  Warning: Replace `·className="w-4·h-4·group-hover:translate-x-1·transition-transform"·fill="none"·stroke="currentColor"·viewBox="0·0·24·24"` with `⏎························className="w-4·h-4·group-hover:translate-x-1·transition-transform"⏎························fill="none"⏎························stroke="currentColor"⏎························viewBox="0·0·24·24"⏎······················`  prettier/prettier
+135:30  Warning: Replace `·strokeLinecap="round"·strokeLinejoin="round"·strokeWidth={2}·d="M9·5l7·7-7·7"` with `⏎··························strokeLinecap="round"⏎··························strokeLinejoin="round"⏎··························strokeWidth={2}⏎··························d="M9·5l7·7-7·7"⏎·······················`  prettier/prettier
+152:17  Warning: Replace `·className="w-5·h-5"·fill="none"·stroke="currentColor"·viewBox="0·0·24·24"` with `⏎··············className="w-5·h-5"⏎··············fill="none"⏎··············stroke="currentColor"⏎··············viewBox="0·0·24·24"⏎············`  prettier/prettier
+153:20  Warning: Replace `·strokeLinecap="round"·strokeLinejoin="round"·strokeWidth={2}·d="M17·8l4·4m0·0l-4·4m4-4H3"` with `⏎················strokeLinecap="round"⏎················strokeLinejoin="round"⏎················strokeWidth={2}⏎················d="M17·8l4·4m0·0l-4·4m4-4H3"⏎·············`  prettier/prettier
+
+./components/landing/TestimonialSection.tsx
+14:32  Warning: Insert `,`  prettier/prettier
+23:51  Warning: Insert `,`  prettier/prettier
+72:75  Warning: Replace `María·González` with `⏎················María·González⏎··············`  prettier/prettier
+94:43  Warning: Insert `,`  prettier/prettier
+
+./components/layout/Navbar.tsx
+120:14  Warning: Replace `·backdropFilter:·'var(--blur-lg)',·WebkitBackdropFilter:·'var(--blur-lg)'` with `⏎··············backdropFilter:·'var(--blur-lg)',⏎··············WebkitBackdropFilter:·'var(--blur-lg)',⏎···········`  prettier/prettier
+121:14  Warning: Replace `·backdropFilter:·'var(--blur-lg)',·WebkitBackdropFilter:·'var(--blur-lg)'` with `⏎··············backdropFilter:·'var(--blur-lg)',⏎··············WebkitBackdropFilter:·'var(--blur-lg)',⏎···········`  prettier/prettier
+
+./components/LocationPicker.js
+125:6  Warning: React Hook useEffect has missing dependencies: 'currentLat', 'currentLng', 'latitude', 'longitude', 'map', and 'onChange'. Either include them or remove the dependency array. If 'onChange' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./components/MobileBottomBar.js
+24:20  Warning: Insert `⏎·········`  prettier/prettier
+48:18  Warning: Replace `·style={{·color:·'#10b981',·fontSize:·'13px',·fontWeight:·'600'·}}` with `⏎··············style={{·color:·'#10b981',·fontSize:·'13px',·fontWeight:·'600'·}}⏎············`  prettier/prettier
+56:18  Warning: Replace `·style={{·color:·'#fbbf24',·fontSize:·'13px',·fontWeight:·'600'·}}` with `⏎··············style={{·color:·'#fbbf24',·fontSize:·'13px',·fontWeight:·'600'·}}⏎············`  prettier/prettier
+114:24  Warning: Insert `⏎·············`  prettier/prettier
+115:1  Warning: Insert `··`  prettier/prettier
+116:15  Warning: Insert `··`  prettier/prettier
+118:38  Warning: Replace `·?·'2px·solid·#fbbf24'` with `⏎··············?·'2px·solid·#fbbf24'⏎·············`  prettier/prettier
+127:41  Warning: Replace `·?·'0·2px·12px·rgba(16,·185,·129,·0.3)'` with `⏎··············?·'0·2px·12px·rgba(16,·185,·129,·0.3)'⏎·············`  prettier/prettier
+142:46  Warning: Replace `{isSaving·?·'⏳'·:·hasUnsavedChanges·?·'💾'·:·'✅'}` with `⏎············{isSaving·?·'⏳'·:·hasUnsavedChanges·?·'💾'·:·'✅'}⏎··········`  prettier/prettier
+143:17  Warning: Replace `{isSaving·?·'Guardando...'·:·hasUnsavedChanges·?·'Guardar'·:·'Guardado'}` with `⏎············{isSaving⏎··············?·'Guardando...'⏎··············:·hasUnsavedChanges⏎················?·'Guardar'⏎················:·'Guardado'}⏎··········`  prettier/prettier
+155:38  Warning: Replace `·?·'2px·solid·#fbbf24'` with `⏎··············?·'2px·solid·#fbbf24'⏎·············`  prettier/prettier
+206:28  Warning: Insert `⏎·················`  prettier/prettier
+207:1  Warning: Insert `··`  prettier/prettier
+208:1  Warning: Insert `··`  prettier/prettier
+210:24  Warning: Insert `⏎·················`  prettier/prettier
+211:1  Warning: Insert `··`  prettier/prettier
+212:1  Warning: Insert `··`  prettier/prettier
+220:27  Warning: Insert `⏎·················`  prettier/prettier
+221:1  Warning: Insert `··`  prettier/prettier
+222:1  Warning: Insert `··`  prettier/prettier
+
+./components/MobileBottomSheet.js
+8:44  Warning: Replace `·isOpen,·onClose,·title,·children,·fullHeight·=·false·` with `⏎··isOpen,⏎··onClose,⏎··title,⏎··children,⏎··fullHeight·=·false,⏎`  prettier/prettier
+104:31  Warning: Replace `·?·`translateY(${getTranslateY()}px)`` with `⏎············?·`translateY(${getTranslateY()}px)`⏎···········`  prettier/prettier
+105:33  Warning: Replace `·?·'none'` with `⏎············?·'none'⏎···········`  prettier/prettier
+
+./components/MobileHotspotForm.js
+18:22  Warning: Replace `·hotspot?.targetImageIndex·??·((currentViewIndex·+·1)·%·viewNames.length)` with `⏎······hotspot?.targetImageIndex·??·(currentViewIndex·+·1)·%·viewNames.length`  prettier/prettier
+33:10  Warning: Replace `·onSubmit={handleSubmit}·style={{·display:·'flex',·flexDirection:·'column',·gap:·'20px'·}}` with `⏎······onSubmit={handleSubmit}⏎······style={{·display:·'flex',·flexDirection:·'column',·gap:·'20px'·}}⏎····`  prettier/prettier
+36:15  Warning: Replace `·style={{·display:·'block',·fontWeight:·'600',·fontSize:·'15px',·color:·'#1f2937',·marginBottom:·'8px'·}}` with `⏎··········style={{⏎············display:·'block',⏎············fontWeight:·'600',⏎············fontSize:·'15px',⏎············color:·'#1f2937',⏎············marginBottom:·'8px',⏎··········}}⏎········`  prettier/prettier
+67:15  Warning: Replace `·style={{·display:·'block',·fontWeight:·'600',·fontSize:·'15px',·color:·'#1f2937',·marginBottom:·'8px'·}}` with `⏎··········style={{⏎············display:·'block',⏎············fontWeight:·'600',⏎············fontSize:·'15px',⏎············color:·'#1f2937',⏎············marginBottom:·'8px',⏎··········}}⏎········`  prettier/prettier
+96:19  Warning: Replace `·style={{·display:·'block',·fontWeight:·'600',·fontSize:·'15px',·color:·'#1f2937',·marginBottom:·'8px'·}}` with `⏎··············style={{⏎················display:·'block',⏎················fontWeight:·'600',⏎················fontSize:·'15px',⏎················color:·'#1f2937',⏎················marginBottom:·'8px',⏎··············}}⏎············`  prettier/prettier
+101:31  Warning: Replace `·setFormData({·...formData,·targetImageIndex:·parseInt(e.target.value)·})` with `⏎················setFormData({⏎··················...formData,⏎··················targetImageIndex:·parseInt(e.target.value),⏎················})⏎··············`  prettier/prettier
+143:31  Warning: Replace `·setFormData({·...formData,·create_backlink:·e.target.checked·})` with `⏎················setFormData({·...formData,·create_backlink:·e.target.checked·})⏎··············`  prettier/prettier
+150:18  Warning: Replace `·style={{·fontSize:·'15px',·color:·'#1f2937',·fontWeight:·'500'·}}` with `⏎··············style={{·fontSize:·'15px',·color:·'#1f2937',·fontWeight:·'500'·}}⏎············`  prettier/prettier
+159:17  Warning: Replace `·style={{·display:·'block',·fontWeight:·'600',·fontSize:·'15px',·color:·'#1f2937',·marginBottom:·'8px'·}}` with `⏎············style={{⏎··············display:·'block',⏎··············fontWeight:·'600',⏎··············fontSize:·'15px',⏎··············color:·'#1f2937',⏎··············marginBottom:·'8px',⏎············}}⏎··········`  prettier/prettier
+164:29  Warning: Replace `·setFormData({·...formData,·content_text:·e.target.value·})` with `⏎··············setFormData({·...formData,·content_text:·e.target.value·})⏎············`  prettier/prettier
+198:13  Warning: Replace `·style={{·margin:·0,·fontSize:·'14px',·color:·'#92400e',·lineHeight:·1.5·}}` with `⏎············style={{⏎··············margin:·0,⏎··············fontSize:·'14px',⏎··············color:·'#92400e',⏎··············lineHeight:·1.5,⏎············}}⏎··········`  prettier/prettier
+199:80  Warning: Replace `·del·editor.⏎···········` with `⏎············del·editor.`  prettier/prettier
+214:13  Warning: Replace `·style={{·margin:·0,·fontSize:·'14px',·color:·'#92400e',·lineHeight:·1.5·}}` with `⏎············style={{⏎··············margin:·0,⏎··············fontSize:·'14px',⏎··············color:·'#92400e',⏎··············lineHeight:·1.5,⏎············}}⏎··········`  prettier/prettier
+215:77  Warning: Insert `·En`  prettier/prettier
+216:12  Warning: Delete `·En`  prettier/prettier
+250:21  Warning: Replace `·?·'⏳·Guardando...'·:·isEditing·?·'💾·Guardar·Cambios'` with `⏎············?·'⏳·Guardando...'⏎············:·isEditing⏎··············?·'💾·Guardar·Cambios'⏎·············`  prettier/prettier
+
+./components/PropertyMap.js
+176:6  Warning: React Hook useEffect has missing dependencies: 'hoveredPropertyId', 'isMapReady', 'onMarkerHover', and 'properties'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+219:23  Warning: Replace `'Click·en·marcador:',·property.slug·||·property.id,·property.title` with `⏎············'Click·en·marcador:',⏎············property.slug·||·property.id,⏎············property.title,⏎··········`  prettier/prettier
+282:6  Warning: React Hook useEffect has missing dependencies: 'hoveredPropertyId' and 'onMarkerHover'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/ui/PotentiaSkeleton.tsx
+18:19  Warning: Insert `,`  prettier/prettier
+19:28  Warning: Delete `⏎`  prettier/prettier
+
+./lib/deviceDetection.js
+15:22  Warning: Insert `⏎···`  prettier/prettier
+36:17  Warning: Replace `·/ipad/.test(userAgent)·||` with `⏎····/ipad/.test(userAgent)·||⏎···`  prettier/prettier
+37:26  Warning: Insert `⏎···`  prettier/prettier
+48:10  Warning: Replace `'ontouchstart'·in·window·||·navigator.maxTouchPoints·>·0·||·navigator.msMaxTouchPoints·>·0` with `(⏎····'ontouchstart'·in·window·||⏎····navigator.maxTouchPoints·>·0·||⏎····navigator.msMaxTouchPoints·>·0⏎··)`  prettier/prettier
+113:12  Warning: Delete `··`  prettier/prettier
+114:12  Warning: Delete `··`  prettier/prettier
+115:12  Warning: Delete `·`  prettier/prettier
+116:12  Warning: Delete `·`  prettier/prettier
+
+./lib/hotspotsService.js
+140:67  Warning: Insert `,`  prettier/prettier
+172:19  Warning: Replace `'✅·Backlink·eliminado·automáticamente:',·hotspot.backlink_id` with `⏎········'✅·Backlink·eliminado·automáticamente:',⏎········hotspot.backlink_id,⏎······`  prettier/prettier
+
+./lib/polygonsService.js
+28:17  Warning: Replace ``✅·Loaded·${data?.length·||·0}·polygons·for·panorama·${panoramaIndex}`` with `⏎······`✅·Loaded·${data?.length·||·0}·polygons·for·panorama·${panoramaIndex}`,⏎····`  prettier/prettier
+63:7  Warning: Replace `!polygon.terrenoId·||·polygon.panoramaIndex·===·undefined·||·!polygon.points` with `⏎····!polygon.terrenoId·||⏎····polygon.panoramaIndex·===·undefined·||⏎····!polygon.points⏎··`  prettier/prettier
+67:24  Warning: Replace `'Missing·required·fields:·terrenoId,·panoramaIndex,·points'` with `⏎········'Missing·required·fields:·terrenoId,·panoramaIndex,·points',⏎······`  prettier/prettier
+96:20  Warning: Insert `⏎·······`  prettier/prettier
+128:41  Warning: Replace `.from('polygons').delete().eq('id',·id).select()` with `⏎····.from('polygons')⏎····.delete()⏎····.eq('id',·id)⏎····.select()⏎····`  prettier/prettier
+160:17  Warning: Replace ``✅·Deleted·${data?.length·||·0}·polygons·from·panorama·${panoramaIndex}`` with `⏎······`✅·Deleted·${data?.length·||·0}·polygons·from·panorama·${panoramaIndex}`,⏎····`  prettier/prettier
+
+./lib/sanitize.js
+141:14  Warning: Replace `⏎····.map(url·=>·sanitizeURL(url))⏎····.filter(url` with `.map((url)·=>·sanitizeURL(url)).filter((url)`  prettier/prettier
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/27) ...
+   Generating static pages (6/27) 
+   Generating static pages (13/27) 
+   Generating static pages (20/27) 
+ ✓ Generating static pages (27/27)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                          Size  First Load JS
+┌ ○ /                             19.6 kB         198 kB
+├ ○ /_not-found                       0 B         178 kB
+├ ƒ /api/analytics/[slug]             0 B            0 B
+├ ƒ /api/check-env                    0 B            0 B
+├ ƒ /api/contact                      0 B            0 B
+├ ƒ /api/create-demo-tour             0 B            0 B
+├ ƒ /api/health                       0 B            0 B
+├ ƒ /api/send-welcome                 0 B            0 B
+├ ○ /apple-icon.png                   0 B            0 B
+├ ○ /dashboard                    31.9 kB         254 kB
+├ ○ /dashboard/add-terrain        12.6 kB         255 kB
+├ ƒ /dashboard/analytics/[slug]    188 kB         366 kB
+├ ƒ /dashboard/edit-terrain/[id]  11.1 kB         233 kB
+├ ○ /dashboard/storage-cleanup    3.09 kB         225 kB
+├ ƒ /demo-embed/[id]              2.97 kB         225 kB
+├ ƒ /embed/terreno/[id]           1.52 kB         413 kB
+├ ○ /icon.png                         0 B            0 B
+├ ○ /legal/cookies                    0 B         180 kB
+├ ○ /legal/privacidad                 0 B         180 kB
+├ ○ /legal/terminos                   0 B         180 kB
+├ ○ /login                        10.3 kB         233 kB
+├ ○ /propiedades                  9.77 kB         232 kB
+├ ○ /propiedades/casas            9.15 kB         231 kB
+├ ○ /propiedades/departamentos    9.15 kB         231 kB
+├ ○ /propiedades/terrenos         9.15 kB         231 kB
+├ ○ /reset-password               3.96 kB         226 kB
+├ ○ /robots.txt                       0 B            0 B
+├ ○ /servicios-captura                0 B         178 kB
+├ ○ /signup                       11.1 kB         233 kB
+├ ○ /sitemap.xml                      0 B            0 B
+├ ƒ /terreno/[slug]               1.81 kB         413 kB
+└ ƒ /terreno/[slug]/editor        19.7 kB         439 kB
++ First Load JS shared by all      204 kB
+  ├ chunks/1cdfad27f7f38b63.js      13 kB
+  ├ chunks/5f11500e67954124.js    59.2 kB
+  ├ chunks/69174a0e52e48217.js    52.3 kB
+  ├ chunks/929b06cc00ae16ff.js    17.2 kB
+  ├ chunks/30f6d439ce53837c.css   21.8 kB
+  └ other shared chunks (total)   40.2 kB
+
+
+ƒ Middleware                      73.6 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -207,7 +207,7 @@ export default function TermsOfServicePage() {
             <p className="text-sm text-gray-700">
               Garantía de devolución de <strong>7 días sin preguntas</strong>.
               Si no está satisfecho, solicite reembolso completo a:
-              hola@potentiamx.com
+              contacto@potentiamx.com
             </p>
           </div>
         </div>
