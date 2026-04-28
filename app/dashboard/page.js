@@ -87,13 +87,8 @@ export default function Dashboard() {
     'victor.admin@potentiamx.com', // Admin secundario (futuro)
   ];
 
-  const fetchTerrenos = useCallback(async () => {
+  const fetchTerrenos = useCallback(async (user) => {
     setLoading(true);
-
-    // Obtener usuario actual
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
     if (!user) {
       console.error('No hay usuario autenticado');
@@ -155,11 +150,7 @@ export default function Dashboard() {
     setLoading(false);
   }, [supabase]);
 
-  const fetchUserProfile = useCallback(async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+  const fetchUserProfile = useCallback(async (user) => {
     if (!user) return;
 
     // Guardar datos del usuario autenticado (incluye email y user_metadata)
@@ -179,24 +170,26 @@ export default function Dashboard() {
   useEffect(() => {
     const checkSessionAndFetchData = async () => {
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-      } else {
-        await fetchTerrenos();
-        await fetchUserProfile();
+        data: { user },
+      } = await supabase.auth.getUser();
 
-        // Verificar si es admin
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user && ADMIN_EMAILS.includes(user.email)) {
-          setIsAdmin(true);
-          loadSystemStats(); // Cargar estadísticas del sistema
-          loadPendingTerrenos(); // Cargar terrenos pendientes de aprobación
-        }
+      if (!user) {
+        router.push('/login');
+        return;
       }
+
+      // Verificar admin antes de las queries (sin bloquear)
+      if (ADMIN_EMAILS.includes(user.email)) {
+        setIsAdmin(true);
+        loadSystemStats();
+        loadPendingTerrenos();
+      }
+
+      // fetchTerrenos y fetchUserProfile en paralelo con el user ya obtenido
+      await Promise.all([
+        fetchTerrenos(user),
+        fetchUserProfile(user),
+      ]);
     };
     checkSessionAndFetchData();
   }, [supabase, router, fetchTerrenos, fetchUserProfile]);
