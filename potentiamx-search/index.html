@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ── Scenes ── */
+    .scene {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #fff;
+    }
+    #scene1 { z-index: 1; }
+    #scene2 { z-index: 2; opacity: 0; }
+
+    /* ── Background decoration ── */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .blob-blue {
+      width: 1100px; height: 700px;
+      background: radial-gradient(ellipse, rgba(66,133,244,0.07) 0%, rgba(66,133,244,0) 65%);
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+    }
+    .blob-green {
+      width: 1000px; height: 600px;
+      background: radial-gradient(ellipse, rgba(52,168,83,0.06) 0%, rgba(52,168,83,0) 65%);
+      bottom: -60px; right: -100px;
+    }
+
+    /* ── Scene 1: Search ── */
+    .s1-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      gap: 32px;
+    }
+
+    .g-logo {
+      font-size: 108px;
+      font-weight: 700;
+      letter-spacing: -4px;
+      line-height: 1;
+      user-select: none;
+    }
+    .gl-b { color: #4285F4; }
+    .gl-r { color: #EA4335; }
+    .gl-y { color: #FBBC05; }
+    .gl-g { color: #34A853; }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      width: 860px;
+      height: 68px;
+      background: #fff;
+      border: 1.5px solid #DADCE0;
+      border-radius: 34px;
+      box-shadow: 0 2px 14px rgba(32,33,36,0.09);
+      padding: 0 26px;
+      gap: 16px;
+    }
+    .search-icon { flex-shrink: 0; }
+
+    .search-text {
+      flex: 1;
+      font-size: 30px;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .char { display: inline; opacity: 0; }
+
+    #cursor {
+      display: inline-block;
+      width: 2px;
+      height: 34px;
+      background: #4285F4;
+      vertical-align: middle;
+      margin-left: 2px;
+      opacity: 0;
+    }
+
+    .search-btns {
+      display: flex;
+      gap: 16px;
+    }
+    .btn-google {
+      background: #F8F9FA;
+      border: 1px solid #F8F9FA;
+      border-radius: 8px;
+      padding: 13px 26px;
+      font-size: 19px;
+      color: #3C4043;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── Scene 2: Results ── */
+    .s2-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 84px;
+      border-bottom: 1px solid #EBEBEB;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 54px;
+      gap: 32px;
+    }
+    .g-logo-sm {
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      flex-shrink: 0;
+    }
+    .search-bar-sm {
+      display: flex;
+      align-items: center;
+      width: 720px;
+      height: 48px;
+      background: #fff;
+      border: 1.5px solid #DADCE0;
+      border-radius: 24px;
+      padding: 0 20px;
+      gap: 12px;
+    }
+    .search-bar-sm-text {
+      font-size: 22px;
+      color: #202124;
+    }
+    .header-tabs {
+      display: flex;
+      gap: 30px;
+      margin-left: 12px;
+    }
+    .tab {
+      font-size: 18px;
+      color: #70757A;
+      padding-bottom: 6px;
+      cursor: pointer;
+    }
+    .tab.on {
+      color: #4285F4;
+      border-bottom: 3px solid #4285F4;
+      font-weight: 600;
+    }
+
+    .s2-stats {
+      position: absolute;
+      top: 106px;
+      left: 248px;
+      font-size: 16px;
+      color: #70757A;
+    }
+
+    .results {
+      position: absolute;
+      top: 140px;
+      left: 248px;
+      width: 820px;
+    }
+
+    .r-item { margin-bottom: 38px; }
+    .r-site {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+    .r-favicon {
+      width: 28px; height: 28px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .r-url { font-size: 18px; color: #202124; }
+    .r-title {
+      font-size: 26px;
+      color: #1558D6;
+      font-weight: 500;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .r-snippet {
+      font-size: 20px;
+      color: #3C4043;
+      line-height: 1.55;
+    }
+    .r-generic { opacity: 0.42; }
+
+    /* PotentiaMX featured card */
+    .r-featured {
+      background: #EAF6ED;
+      border: 1.5px solid #A8D5A2;
+      border-radius: 14px;
+      padding: 28px 34px;
+    }
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #34A853;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      padding: 5px 16px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .featured-title {
+      font-size: 34px;
+      color: #0D47A1;
+      font-weight: 800;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 8px;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+    }
+    .featured-url {
+      font-size: 18px;
+      color: #188038;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 12px;
+    }
+    .featured-snippet {
+      font-size: 21px;
+      color: #202124;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.65;
+    }
+    .featured-stars {
+      margin-top: 12px;
+      font-size: 19px;
+      color: #E37400;
+      font-family: 'DM Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"
+    data-composition-id="potentiamx-search"
+    data-width="1920"
+    data-height="1080"
+    data-start="0"
+    data-duration="9">
+
+    <!-- ══ SCENE 1: Google Search ══ -->
+    <div id="scene1" class="scene">
+      <div class="bg-blob blob-blue" data-layout-ignore="true"></div>
+
+      <div class="s1-center">
+        <div class="g-logo" id="s1-logo">
+          <span class="gl-b">G</span><span class="gl-r">o</span><span class="gl-y">o</span><span class="gl-b">g</span><span class="gl-g">l</span><span class="gl-r">e</span>
+        </div>
+
+        <div class="search-bar" id="s1-bar">
+          <div class="search-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="#9AA0A6" stroke-width="2.2"/>
+              <path d="M16.5 16.5L21 21" stroke="#9AA0A6" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="search-text">
+            <span class="char">T</span><span class="char">e</span><span class="char">r</span><span class="char">r</span><span class="char">e</span><span class="char">n</span><span class="char">o</span><span class="char">&nbsp;</span><span class="char">e</span><span class="char">n</span><span class="char">&nbsp;</span><span class="char">P</span><span class="char">u</span><span class="char">e</span><span class="char">r</span><span class="char">t</span><span class="char">o</span><span class="char">&nbsp;</span><span class="char">V</span><span class="char">a</span><span class="char">l</span><span class="char">l</span><span class="char">a</span><span class="char">r</span><span class="char">t</span><span class="char">a</span>
+            <span id="cursor"></span>
+          </div>
+        </div>
+
+        <div class="search-btns" id="s1-btns">
+          <button class="btn-google">Buscar en Google</button>
+          <button class="btn-google">Me siento con suerte</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCENE 2: Search Results ══ -->
+    <div id="scene2" class="scene">
+      <div class="bg-blob blob-green" data-layout-ignore="true"></div>
+
+      <!-- Header -->
+      <div class="s2-header" id="s2-header" data-layout-allow-overflow="true">
+        <div class="g-logo-sm">
+          <span class="gl-b">G</span><span class="gl-r">o</span><span class="gl-y">o</span><span class="gl-b">g</span><span class="gl-g">l</span><span class="gl-r">e</span>
+        </div>
+        <div class="search-bar-sm">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="#9AA0A6" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="search-bar-sm-text">Terreno en Puerto Vallarta</span>
+        </div>
+        <div class="header-tabs">
+          <span class="tab on">Todos</span>
+          <span class="tab">Imágenes</span>
+          <span class="tab">Maps</span>
+          <span class="tab">Más</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="s2-stats" id="s2-stats">Aproximadamente 2,340,000 resultados (0.48 segundos)</div>
+
+      <!-- Results list -->
+      <div class="results">
+
+        <!-- Generic 1 -->
+        <div class="r-item r-generic" id="r1">
+          <div class="r-site">
+            <div class="r-favicon" style="background:#4A90D9;">i</div>
+            <span class="r-url">inmuebles24.com › Jalisco › Puerto Vallarta</span>
+          </div>
+          <div class="r-title">Terrenos en Venta en Puerto Vallarta, Jalisco</div>
+          <div class="r-snippet">Más de 480 terrenos disponibles. Compara precios y ubicaciones…</div>
+        </div>
+
+        <!-- Generic 2 -->
+        <div class="r-item r-generic" id="r2">
+          <div class="r-site">
+            <div class="r-favicon" style="background:#D62828;">L</div>
+            <span class="r-url">lamudi.com.mx › Puerto-Vallarta</span>
+          </div>
+          <div class="r-title">Compra Terrenos en Puerto Vallarta | Lamudi México</div>
+          <div class="r-snippet">Terrenos residenciales y comerciales en la Bahía de Banderas…</div>
+        </div>
+
+        <!-- PotentiaMX Featured -->
+        <div class="r-featured" id="r-featured">
+          <div class="featured-badge" id="feat-badge">⭐ Resultado Destacado</div>
+          <div class="featured-title">PotentiaMX — Terrenos en Puerto Vallarta</div>
+          <div class="featured-url">🌐 potentiamx.com › terrenos › puerto-vallarta</div>
+          <div class="featured-snippet">Descubre terrenos premium frente al mar en Puerto Vallarta. Vistas panorámicas, financiamiento accesible y amenidades de lujo. Agenda tu recorrido virtual 360° hoy.</div>
+          <div class="featured-stars">★★★★★ 4.9 &nbsp;·&nbsp; 120 reseñas &nbsp;·&nbsp; Desarrollador verificado ✓</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    // ── SCENE 1 ────────────────────────────────────────────────────
+
+    // Background glow
+    tl.from(".blob-blue", { opacity: 0, duration: 1.4, ease: "power1.inOut" }, 0);
+
+    // Google logo slides in from above
+    tl.from("#s1-logo", { y: -50, opacity: 0, duration: 0.55, ease: "power3.out" }, 0.1);
+
+    // Search bar expands from center
+    tl.from("#s1-bar", { scaleX: 0.88, opacity: 0, duration: 0.45, ease: "back.out(1.4)" }, 0.3);
+
+    // Buttons fade up
+    tl.from("#s1-btns", { y: 24, opacity: 0, duration: 0.38, ease: "power2.out" }, 0.55);
+
+    // Cursor appears when typing starts
+    tl.to("#cursor", { opacity: 1, duration: 0.01 }, 0.5);
+
+    // Typing: 26 chars × 0.075s stagger → last char at t = 0.5 + 25 × 0.075 = 2.375s
+    tl.to(".char", { opacity: 1, duration: 0.01, stagger: 0.075 }, 0.5);
+
+    // Cursor blinks after typing (2 blink cycles = 0.48s, ends at 2.93s)
+    tl.to("#cursor", { opacity: 0, duration: 0.12, ease: "none", yoyo: true, repeat: 3 }, 2.45);
+
+    // Enter: border flashes blue
+    tl.to("#s1-bar", { borderColor: "#4285F4", duration: 0.1, ease: "none" }, 2.75);
+
+    // ── TRANSITION: Blur Crossfade at T = 2.9s ─────────────────────
+    var T = 2.9;
+
+    tl.to("#scene1", {
+      filter: "blur(10px)", scale: 1.03, opacity: 0,
+      duration: 0.48, ease: "power2.inOut"
+    }, T);
+
+    tl.fromTo("#scene2",
+      { filter: "blur(10px)", scale: 0.97, opacity: 0 },
+      { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.48, ease: "power2.inOut" },
+      T + 0.1
+    );
+
+    // ── SCENE 2 ────────────────────────────────────────────────────
+    var S2 = 3.4;
+
+    // Background glow
+    tl.from(".blob-green", { opacity: 0, duration: 0.9, ease: "power1.inOut" }, S2);
+
+    // Header slides down
+    tl.from("#s2-header", { y: -84, opacity: 0, duration: 0.36, ease: "power3.out" }, S2);
+
+    // Stats
+    tl.from("#s2-stats", { opacity: 0, duration: 0.28, ease: "power2.out" }, S2 + 0.22);
+
+    // Generic result 1 slides up (tweens to opacity: 0.42 — CSS state of .r-generic)
+    tl.from("#r1", { y: 36, opacity: 0, duration: 0.32, ease: "power2.out" }, S2 + 0.28);
+
+    // Generic result 2 slides up with different ease
+    tl.from("#r2", { y: 36, opacity: 0, duration: 0.32, ease: "expo.out" }, S2 + 0.44);
+
+    // PotentiaMX card — hero entrance
+    tl.from("#r-featured", {
+      y: 56, opacity: 0, scale: 0.94,
+      duration: 0.5, ease: "back.out(1.25)"
+    }, S2 + 0.6);
+
+    // Badge pops in
+    tl.from("#feat-badge", {
+      scale: 0, opacity: 0,
+      duration: 0.28, ease: "back.out(2.8)"
+    }, S2 + 0.92);
+
+    window.__timelines["potentiamx-search"] = tl;
+  </script>
+</body>
+</html>

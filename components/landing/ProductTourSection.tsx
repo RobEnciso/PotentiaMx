@@ -97,12 +97,9 @@ export default function ProductTourSection() {
 
           {/* Visual */}
           <div>
-            <div className="relative rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--palm)]/5 to-[var(--ocean)]/5 p-12 shadow-[var(--shadow-lg)] border border-[var(--gray-200)] aspect-video flex items-center justify-center">
-              <Search className="w-24 h-24 text-[var(--palm)] opacity-20" />
-              <span className="absolute text-[var(--gray-400)] font-medium text-sm">
-                [Google Results Mockup]
-              </span>
-            </div>
+            <video autoPlay loop muted playsInline className="w-full rounded-2xl shadow-xl border border-gray-200">
+              <source src="/videos/search-feature.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
 
@@ -110,12 +107,9 @@ export default function ProductTourSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
           {/* Visual */}
           <div className="order-2 lg:order-1">
-            <div className="relative rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--coral)]/5 to-[var(--ocean)]/5 p-12 shadow-[var(--shadow-lg)] border border-[var(--gray-200)] aspect-video flex items-center justify-center">
-              <Share2 className="w-24 h-24 text-[var(--coral)] opacity-20" />
-              <span className="absolute text-[var(--gray-400)] font-medium text-sm">
-                [Embed Animation]
-              </span>
-            </div>
+            <video autoPlay loop muted playsInline className="w-full rounded-2xl shadow-xl border border-gray-200">
+              <source src="/videos/share-feature.mp4" type="video/mp4" />
+            </video>
           </div>
 
           {/* Content */}
